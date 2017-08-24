@@ -4,7 +4,7 @@ function lockets_affiliate() {
 // ポストされた値の入力チェックと書き込み
 if (isset($_POST['update_option'])) {
 check_admin_referer('lockets-options');
-update_option('valuecommerce_pid', $_POST['valuecommerce_pid']);
+update_option('valuecommerce_pid', sanitize_text_field($_POST['valuecommerce_pid']));
 ?>
 <div class="updated fade"><p><strong><?php _e('Options saved.'); ?></strong></p>
 </div>
