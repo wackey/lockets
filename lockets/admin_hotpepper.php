@@ -4,8 +4,8 @@ function lockets_recruit_webservice() {
 // ポストされた値の入力チェックと書き込み
 if (isset($_POST['update_option'])) {
 check_admin_referer('lockets-options');
-update_option('recruit_webservice_key', $_POST['recruit_webservice_key']);
-update_option('lockets_hotpepper_template', $_POST['lockets_hotpepper_template']);
+update_option('recruit_webservice_key', sanitize_text_field($_POST['recruit_webservice_key']));
+update_option('lockets_hotpepper_template', sanitize_text_field($_POST['lockets_hotpepper_template']));
 ?>
 <div class="updated fade"><p><strong><?php _e('Options saved.'); ?></strong></p>
 </div>
