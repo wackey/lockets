@@ -280,8 +280,12 @@ function remove_lockets()
 {
 	delete_option('rakuten_affiliate_id');
 	delete_option('rakuten_search_token');
-    delete_option('smartformaturl');
+    delete_option('lockets_rakuten_travel_template');
+    
     delete_option('valuecommerce_pid');
+    
+    delete_option('recruit_webservice_key');
+    delete_option('lockets_hotpepper_template');
 }
 
 /***------------------------------------------

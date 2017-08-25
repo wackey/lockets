@@ -20,9 +20,14 @@ A plug-in that gets information on spots such as shops and inns from various API
 
 
 *Value Commerce Auto MyLink ex.HOT PEPPER ,Jaran's link, etc.
-*Rakuten Travel Search API(Hotel)
-*HOTPEPPER Search API(Restaurant)
-*with Google Maps embed.(Map)
+　https://www.valuecommerce.ne.jp/topics/auto_mylink
+ 　バリューコマースのオートMyLink機能を使ってホットペッパーやじゃらんのリンクをアフィリエイトリンクに変換する機能もあります。
+*Rakuten Travel Search API(Hotel) https://webservice.rakuten.co.jp/api/hoteldetailsearch/
+ 楽天トラベル施設情報APIを使用して楽天トラベルのホテルや旅館の施設情報を取得し、WordPressで作成したブログ上にその情報を表示します。
+*HOTPEPPER Search API(Restaurant)  https://webservice.recruit.co.jp/hotpepper/reference.html#a1to
+　リクルートWebサービスのホットペッパーグルメサーチAPIを使用して飲食店情報を取得し、WordPressで作成したブログ上にその情報を表示します。
+*with Google Maps embed.(Map) https://www.google.co.jp/maps
+　Google Mapsの地図埋め込み機能を使い、WordPressで作成したブログ上に地図を表示します。
 
 
 == Installation ==
