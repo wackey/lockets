@@ -4,7 +4,7 @@ Donate link:
 Tags: AD,affiliate,Web API,location
 Requires at least: 4.8
 Tested up to: 4.8.1
-Stable tag: 0.11
+Stable tag: 0.12
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -46,6 +46,8 @@ none.
 An answer to that question.
 
 == Changelog ==
+= 0.12 =
+* Function name change.remove_script_tag -> lockets_remove_script_tag
 = 0.08 =
 * Rakuten Travel Search API,and HOTPEPPER Search API.
 = 0.02 =

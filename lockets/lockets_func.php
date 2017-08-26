@@ -10,7 +10,7 @@ function locketsh($str)
 }
 
 /* scriptタグ削除 */
-function remove_script_tag($target) {
+function lockets_remove_script_tag($target) {
 	return mb_eregi_replace('/<script.*<\/script>/', '', $target);
 }
 ?>
