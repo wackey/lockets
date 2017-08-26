@@ -6,7 +6,7 @@ if (isset($_POST['update_option'])) {
 check_admin_referer('lockets-options');
 update_option('rakuten_search_token', sanitize_text_field($_POST['rakuten_search_token']));
 update_option('rakuten_affiliate_id', sanitize_text_field($_POST['rakuten_affiliate_id']));
-update_option('lockets_rakuten_travel_template', sanitize_text_field($_POST['lockets_rakuten_travel_template']));
+update_option('lockets_rakuten_travel_template', wp_kses_post($_POST['lockets_rakuten_travel_template']));
 ?>
 <div class="updated fade"><p><strong><?php _e('Options saved.'); ?></strong></p>
 </div>
