@@ -4,7 +4,7 @@ Plugin Name: Lockets
 Plugin URI: http://lockets.jp/
 Description: A plug-in that gets information on spots such as shops and inns from various APIs and displays the latest information embedded in the blog.Also, This plugin will assist you such as creating affiliate links. お店や旅館などスポットに関する情報を各種APIから取得し、ブログ内に最新の情報を埋め込んで表示するプラグイン。また、アフィリエイトリンク作成支援を行います。
 Author: wackey
-Version: 0.17
+Version: 0.18
 Author URI: http://musilog.net/
 License: GPL2
 */
@@ -64,7 +64,19 @@ $xml = simplexml_load_string($Buff);
 $hotelBasicInfo = $xml->hotels->hotel->hotelBasicInfo;
 $hotelRatingInfo = $xml->hotels->hotel->hotelRatingInfo;
 
-
+//デフォルトテンプレートの登録
+if ($lockets_rakuten_travel_template=="") {
+$lockets_rakuten_travel_template= <<<EOT
+<p><strong>【施設名称】</strong></p>
+<p><a href="【施設情報ページURL】" rel="nofollow"><img src="【施設画像サムネイルURL】"> <img src="【部屋画像サムネイルURL】"></a></p>
+<p>【施設特色】<br>
+【郵便番号】<br>
+【住所１】【住所２】</p>
+<p><a href="【宿泊プラン一覧ページURL】" target="_blank" rel="nofollow">宿泊プランはこちら</a></p>
+【Google Maps埋め込み】
+<p>【楽天ウェブサービスクレジットA】</p>
+EOT;
+}
 $lockets_rakuten_travel_template=str_replace('\\','',$lockets_rakuten_travel_template);
 $lockets_rakuten_travel_template=str_replace('【施設番号】',locketsh($hotelBasicInfo->hotelNo),$lockets_rakuten_travel_template);
 $lockets_rakuten_travel_template=str_replace('【施設名称】',locketsh($hotelBasicInfo->hotelName),$lockets_rakuten_travel_template);
@@ -108,21 +120,6 @@ $gmap = lockets_gmap_draw(locketsh($hotelBasicInfo->hotelName),locketsh($hotelBa
 $lockets_rakuten_travel_template=str_replace('【Google Maps埋め込み】',$gmap,$lockets_rakuten_travel_template);
 //メモ　その他の要素後日追加
 
-/*   
-$ret = '<img src="'.locketsh($hotelBasicInfo->hotelImageUrl).'" class="img-responsive"><br>';
-$ret .= '<a href="'.locketsh($hotelBasicInfo->hotelInformationUrl).'">'.locketsh($hotelBasicInfo->hotelName).'</a><br>';
-$ret .= '評価：<br>'.locketsh($hotelBasicInfo->reviewAverage).'<br>';
-$ret .= '<a href="'.locketsh($hotelBasicInfo->planListUrl).'">プランはこちら</a><br>';
-$ret .= '<a href="'.locketsh($hotelBasicInfo->reviewUrl).'">お客様の声はこちら</a><br>';
-$ret .= '最安料金：'.locketsh($hotelBasicInfo->hotelMinCharge).'円〜<br>';
-$ret .= 'アクセス方法：'.locketsh($hotelBasicInfo->access).'<br>';
-$ret .= '最寄り駅：'.locketsh($hotelBasicInfo->nearestStation).'<br>';
-$ret .= '駐車場情報：'.locketsh($hotelBasicInfo->parkingInformation).'<br>';
-$ret .= '郵便番号：'.locketsh($hotelBasicInfo->postalCode).'<br>';
-$ret .= '住所：<br>'.locketsh($hotelBasicInfo->address1).'<br>';
-$ret .= locketsh($hotelBasicInfo->address2).'<br>';
-$ret .= '<img src="'.locketsh($hotelBasicInfo->hotelMapImageUrl).'" class="img-responsive"><br>';
-*/
 return $lockets_rakuten_travel_template;
 
 }
@@ -157,6 +154,22 @@ set_transient( $shopid, $Buff, 3600 * 24 );
 
 $xml = simplexml_load_string($Buff);
 $shop = $xml->shop;
+
+//デフォルトテンプレートの登録
+if ($lockets_hotpepper_template=="") {
+$lockets_hotpepper_template= <<<EOT
+<p><strong><a href="【店舗URL(PC)】">【掲載店名】</a></strong><p>
+<p>【お店キャッチ】</p>
+<p><img src="【写真PC向けLサイズ】 " class="img-responsive"></p>
+<p>住所：【住所】</p>
+<p>交通アクセス：【交通アクセス】</p>
+<p>営業時間：【営業時間】</p>
+<p>定休日：【定休日】</p>
+
+【Google Maps埋め込み】
+<p>【HOT PEPPERクレジットA】</p>
+EOT;
+}
 
 $lockets_hotpepper_template=str_replace('\\','',$lockets_hotpepper_template);
 $lockets_hotpepper_template=str_replace('【お店ID】',locketsh($shop->id),$lockets_hotpepper_template);

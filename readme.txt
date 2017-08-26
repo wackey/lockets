@@ -46,6 +46,8 @@ none.
 An answer to that question.
 
 == Changelog ==
+= 0.18 =
+Default Template at hotel,HOTPEPPER SHOP.
 = 0.15 =
 * typo bugfix.
 = 0.14 =
