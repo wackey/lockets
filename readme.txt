@@ -4,7 +4,7 @@ Donate link:
 Tags: AD,affiliate,Web API,location
 Requires at least: 4.8
 Tested up to: 4.8.1
-Stable tag: 0.13
+Stable tag: 0.14
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -46,6 +46,8 @@ none.
 An answer to that question.
 
 == Changelog ==
+= 0.14 =
+* Goole Maps shortcode and settings add.
 = 0.13 =
 * HTML template sanitize changed.
 = 0.12 =

@@ -4,7 +4,7 @@ Plugin Name: Lockets
 Plugin URI: http://lockets.jp/
 Description: A plug-in that gets information on spots such as shops and inns from various APIs and displays the latest information embedded in the blog.Also, This plugin will assist you such as creating affiliate links. お店や旅館などスポットに関する情報を各種APIから取得し、ブログ内に最新の情報を埋め込んで表示するプラグイン。また、アフィリエイトリンク作成支援を行います。
 Author: wackey
-Version: 0.13
+Version: 0.14
 Author URI: http://musilog.net/
 License: GPL2
 */
@@ -43,7 +43,10 @@ $lockets_rakuten_travel_template=get_option('lockets_rakuten_travel_template');
 
 // [LocketsRakutenTravel]属性情報取得
 extract(shortcode_atts(array(
-'hotelno' => null, ), $atts));
+    'hotelno' => null,
+    'zoom' => null,
+    'width' => null,
+    'height' => null,), $atts));
 
 // リクエストURL
 $rwsurl="https://app.rakuten.co.jp/services/api/Travel/HotelDetailSearch/20170426?applicationId=$rakutentoken&affiliateId=$rakutenaffid&format=xml&hotelNo=$hotelno&datumType=1";
@@ -101,7 +104,8 @@ $lockets_rakuten_travel_template=str_replace('【楽天ウェブサービスク�
 $lockets_rakuten_travel_template=str_replace('【楽天ウェブサービスクレジットD】','<!-- Rakuten Web Services Attribution Snippet FROM HERE -->
 <a href="https://webservice.rakuten.co.jp/" target="_blank">Supported by 楽天ウェブサービス</a>
 <!-- Rakuten Web Services Attribution Snippet TO HERE -->',$lockets_rakuten_travel_template);
-$lockets_rakuten_travel_template=str_replace('【Google Maps埋め込み】','<iframe src="https://maps.google.co.jp/maps?q='.locketsh($hotelBasicInfo->hotelName).'&ll='.locketsh($hotelBasicInfo->latitude).','.locketsh($hotelBasicInfo->longitude).'&output=embed&t=m&z=14&hl=ja" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" width="100%" height="450"></iframe>',$lockets_rakuten_travel_template);
+$gmap = lockets_gmap_draw(locketsh($hotelBasicInfo->hotelName),locketsh($hotelBasicInfo->latitude),locketsh($hotelBasicInfo->longitude),$zoom,$width,$height);
+$lockets_rakuten_travel_template=str_replace('【Google Maps埋め込み】',$gmap,$lockets_rakuten_travel_template);
 //メモ　その他の要素後日追加
 
 /*   
@@ -135,7 +139,10 @@ $lockets_hotpepper_template= get_option('lockets_hotpepper_template');
 
 // [LocketsHotpepper]属性情報取得
 extract(shortcode_atts(array(
-'shopid' => null, ), $atts));
+'shopid' => null,
+'zoom' => null,
+'width' => null,
+'height' => null,), $atts));
 
 // リクエストURL
 $recruiturl="http://webservice.recruit.co.jp/hotpepper/gourmet/v1/?key=$recruit_webservice_key&id=$shopid&datum=world";
@@ -203,10 +210,49 @@ $lockets_hotpepper_template=str_replace('【クーポンURL(PC)】',locketsh($sh
 $lockets_hotpepper_template=str_replace('【HOT PEPPERクレジットA】','<a href="http://webservice.recruit.co.jp/"><img src="http://webservice.recruit.co.jp/banner/hotpepper-s.gif" alt="ホットペッパー Webサービス" width="135" height="17" border="0" title="ホットペッパー Webサービス"></a>',$lockets_hotpepper_template);
 $lockets_hotpepper_template=str_replace('【HOT PEPPERクレジットB】','<a href="http://webservice.recruit.co.jp/"><img src="http://webservice.recruit.co.jp/banner/hotpepper-m.gif" alt="ホットペッパー Webサービス" width="88" height="35" border="0" title="ホットペッパー Webサービス"></a>',$lockets_hotpepper_template);
 $lockets_hotpepper_template=str_replace('【HOT PEPPERクレジットC】','Powered by <a href="http://webservice.recruit.co.jp/">ホットペッパー Webサービス</a>',$lockets_hotpepper_template);
-$lockets_hotpepper_template=str_replace('【Google Maps埋め込み】','<iframe src="https://maps.google.co.jp/maps?q='.locketsh($shop->name).'&ll='.locketsh($shop->lat).','.locketsh($shop->lng).'&output=embed&t=m&z=16&hl=ja" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" width="100%" height="450"></iframe>',$lockets_hotpepper_template);
+$gmap = lockets_gmap_draw(locketsh($shop->name),locketsh($shop->lat),locketsh($shop->lng),$zoom,$width.$height);
+$lockets_hotpepper_template=str_replace('【Google Maps埋め込み】',$gmap,$lockets_hotpepper_template);
 //抜けている項目は後日追加する
 
 return $lockets_hotpepper_template;
+}
+
+
+/***------------------------------------------
+　Google Maps表示機能
+------------------------------------------***/
+// ショートコード呼び出し
+function lockets_gmaps_func ( $atts, $content = null ) {
+
+    // [LocketsGMaps]属性情報取得
+    extract(shortcode_atts(array(
+        'keyword' => null,
+        'lat' => null,
+        'lng' => null,
+        'zoom' => null,
+        'width' => null,
+        'height' => null,), $atts));
+
+    $ret= lockets_gmap_draw($keyword,$lat,$lng,$zoom,$width,$height);
+    return $ret;
+}
+
+// 関数呼び出し
+function lockets_gmap_draw($keyword,$lat,$lng,$zoom,$width,$height) {
+    $lockets_gmap_zoom= get_option('lockets_gmap_zoom');
+    $lockets_gmap_width= get_option('lockets_gmap_width');
+    $lockets_gmap_height= get_option('lockets_gmap_height');
+    if ($zoom == "") {
+        if ($lockets_gmap_zoom == "") {$zoom="14";} else {$zoom=$lockets_gmap_zoom;}
+        }
+    if ($width == "") {
+        if ($lockets_gmap_width == "") {$width="100%";} else {$width=$lockets_gmap_width;}
+        }
+    if ($height == "") {
+        if ($lockets_gmap_height == "") {$height="450";} else {$height=$lockets_gmap_height;}
+        }
+    $ret = '<iframe src="https://maps.google.co.jp/maps?q='.$keyword.'&ll='.$lat.','.$lng.'&output=embed&t=m&z='.$zoom.'&hl=ja" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" width="'.$width.'" height="'.$height.'"></iframe>';
+    return $ret;
 }
 
 
@@ -218,6 +264,7 @@ return $lockets_hotpepper_template;
 require_once("admin_rakuten.php");
 require_once("admin_hotpepper.php");
 require_once("admin_affiliate.php");
+require_once("admin_gmap.php");
 
 
 // 管理画面メニュー作成関数
@@ -226,31 +273,44 @@ function lockets_menu() {
     add_submenu_page(__FILE__, '楽天ウェブサービス', '楽天ウェブサービス', 8, "admin_rakuten", 'lockets_rws');
     add_submenu_page(__FILE__, 'リクルートWEBサービス', 'リクルートWEBサービス', 8, "admin_recruit_webservice", 'lockets_recruit_webservice');
     add_submenu_page(__FILE__, 'その他アフィリエイト', 'その他アフィリエイト', 8, "admin_affiliate", 'lockets_affiliate');
+    add_submenu_page(__FILE__, 'Google Maps表示設定', 'Google Maps表示設定', 8, "admin_gmap", 'lockets_gmap');
 }
 
 
 // 管理画面描画
 function lockets_options() {
+$rakutentoken= get_option('rakuten_search_token');
+$rakutenaffid= get_option('rakuten_affiliate_id');
+$recruit_webservice_key= get_option('recruit_webservice_key');
 ?>
 
 <h2>Lockets設定画面</h2>
 
 <h3>使い方</h3>
-<p>まだシンプルな使い方しか出来ません。<br>
-例えばショートコード<strong>[LocketsRakutenTravel hotelno="xxxxxxx"]</strong>みたいな感じでホテル番号を指定したらホテルの情報を外部から取得しブログ記事内で表示させます。</p>
-<p>こちらはで動作環境の確認が出来ます。</p>
+<p>例えばショートコード<strong>[LocketsRakutenTravel hotelno="xxxxxxx"]</strong>のような感じでホテル番号を指定したらホテルの情報を外部から取得しブログ記事内で表示させます。</p>
+<p>こちらのページでは設定状況や使える機能の確認が出来ます。</p>
+<h4>楽天ウェブサービス(RAKUTEN WEBSERVICE)</h4>
+<p><?php
+if ($rakutentoken=="" and $rakutenaffid=="") {echo '[NG]楽天ウェブサービス(RAKUTEN WEBSERVICE)の設定がされていません。';} else {echo '[OK]楽天ウェブサービス(RAKUTEN WEBSERVICE)の設定がされています。';}
+?> 
+</p>
+<p>楽天ウェブサービス(RAKUTEN WEBSERVICE)の設定をすると以下の機能が使用出来ます。</p>
+<ul>
+    <li>[LocketsRakutenTravel hotelno="xxxxxxx"]<br>
+    楽天トラベルの施設（ホテル・旅館等）詳細情報表示ができます。</li>
+</ul>
+
+<h4>リクルート WEBサービス</h4>
+<p><?php
+if ($recruit_webservice_key=="") {echo '[NG]リクルート WEBサービスの設定がされていません。';} else {echo '[OK]リクルート WEBサービスの設定がされています。';}
+?> 
+</p>
+<p>リクルート WEBサービスの設定をすると以下の機能が使用出来ます。</p>
+<ul>
+    <li>[LocketsHotpepper shopno="xxxxxxx"]<br>
+    ホットペッパー（HOT PEPPER）の飲食店詳細情報表示ができます。</li>
+</ul>
 <?php
-// simplexml_load_fileが存在するか否か
-if (function_exists('simplexml_load_file')) {
-    echo "simpleXML functions are available.<br />\n";
-} else {
-    echo "simpleXML functions are not available.<br />\n";
-}
-if (function_exists('get_transient')) {
-    echo "get_transient functions are available.<br />\n";
-} else {
-    echo "get_transient functions are not available.<br />\n";
-}
 }
 
 
@@ -261,6 +321,7 @@ if (function_exists('get_transient')) {
 // ショートコード登録
 add_shortcode( 'LocketsRakutenTravel', 'lockets_rakuten_travel_func' );
 add_shortcode( 'LocketsHotpepper', 'lockets_hotpepper_func' );
+add_shortcode( 'LocketsGMaps', 'lockets_gmaps_func' );
 
 //管理画面登録
 add_action('admin_menu', 'lockets_menu');
