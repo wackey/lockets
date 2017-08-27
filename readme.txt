@@ -4,7 +4,7 @@ Donate link:
 Tags: AD,affiliate,Web API,location
 Requires at least: 4.8
 Tested up to: 4.8.1
-Stable tag: 0.17
+Stable tag: 0.19
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -46,8 +46,10 @@ none.
 An answer to that question.
 
 == Changelog ==
+= 0.19 =
+* post interface modified.
 = 0.18 =
-Default Template at hotel,HOTPEPPER SHOP.
+* Default Template at hotel,HOTPEPPER SHOP.
 = 0.15 =
 * typo bugfix.
 = 0.14 =

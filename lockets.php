@@ -379,19 +379,72 @@ function add_vc_automylink() {
 /***------------------------------------------
 　メディアボタン設置
 ------------------------------------------***/
-$locketsmediabutton = new locketsEditerMediaButton();
-class locketsEditerMediaButton
-{
-	public function __construct(){
-		add_filter( "media_buttons_context" , array( &$this, "lockets_media_buttons_context" ) );
-		//ポップアップウィンドウ
-		//media_upload_{ $type }
-		add_action('media_upload_locketsType', array( &$this,'lockets_wp_iframe' ) );
-		add_action( "admin_head-media-upload-popup", array( &$this, "lockets_head" ) );
-	}
-	public function lockets_head(){
-		global $type;
-		if( $type == "locketsType" ){
+/* ボタン */
+//media_buttons_contextフィルターフック
+add_filter( "media_buttons_context", "lockets_media_buttons_context");
+
+//ボタン追加
+function lockets_media_buttons_context ( $context ) {
+
+ $context .= <<<EOS
+    <a title='Lockets' href='media-upload.php?tab=locketsHotpepper&type=locketsType1&TB_iframe=true&width=600&height=550' class='thickbox button'>Lockets</a>
+EOS;
+ return $context;
+}
+
+/* コンテンツ */
+// ポップアップウインドウの作成
+add_action( 'media_upload_locketsType1',  'lockets1_wp_iframe' );
+add_action( "admin_head-media-upload-popup", 'lockets1_head');
+function lockets1_wp_iframe() {
+        wp_iframe( media_upload_lockets1_form );
+}
+
+
+//コンテンツ
+function media_upload_lockets1_form() {
+	add_filter( "media_upload_tabs", "lockets1_upload_tabs"  ,1000);
+	media_upload_header();
+    
+echo <<< EOS
+<div id="locketsHotpepper">
+			<form  action="">
+				<h2>HOT PEPPER</h2>
+				<p>
+				<input type="text" id="locketsHotpepper_editer_insert_content" value="" /><br>
+                ホットペッパーのお店URLに含まれている「strJxxxxxxxxx」のうち「Jxxxxxxxxx」（xは数字）を入力してください。
+				</p>
+				<input type="button" value="OK" id="locketsHotpepper_ei_btn_yes" class="button button-primary" /> 
+				<input type="button" value="キャンセル" id="locketsHotpepper_ei_btn_no"  class="button" />
+			</form>
+</div>
+<div id="locketsRakutenTravel">
+			<form  action="">
+				<h2>楽天トラベル</h2>
+				<p>
+				<input type="text" id="locketsRakutenTravel_editer_insert_content" value="" /><br>
+                楽天トラベルのホテルURLに含まれている「https://travel.rakuten.co.jp/HOTEL/xxxxx/」のうち「xxxxx」（xは数字）を入力してください。
+				</p>
+				<input type="button" value="OK" id="locketsRakutenTravel_ei_btn_yes" class="button button-primary" /> 
+				<input type="button" value="キャンセル" id="locketsRakutenTravel_ei_btn_no"  class="button" />
+			</form>
+</div>
+<div id="locketsGMaps">
+			<form  action="">
+				<h2>Google Maps</h2>
+				<p>
+				<input type="text" id="locketsGMaps_editer_insert_content" value="" /><br>
+                Google Mapsに存在するスポット名称を入れて下さい。
+				</p>
+				<input type="button" value="OK" id="locketsGMaps_ei_btn_yes" class="button button-primary" /> 
+				<input type="button" value="キャンセル" id="locketsGMaps_ei_btn_no"  class="button" />
+			</form>
+</div>
+EOS;
+}
+
+// jQuery
+function lockets1_head(){
 		echo <<< EOS
 			<script type="text/javascript">
 			jQuery(function($) {
@@ -418,57 +471,66 @@ class locketsEditerMediaButton
 				});
 			})
 			</script>
+            			<script type="text/javascript">
+			jQuery(function($) {
+		
+				$(document).ready(function() {
+					$('#locketsRakutenTravel_ei_btn_yes').on('click', function() {
+						var str = $('#locketsRakutenTravel_editer_insert_content').val();
+						//inlineのときはwindow
+						top.send_to_editor( '[LocketsRakutenTravel hotelno="' + str + '"]');
+						top.tb_remove(); 
+					});
+					$('#locketsRakutenTravel_ei_btn_no').on('click', function() {
+						top.tb_remove(); 
+					});
+					
+					//Enterキーが入力されたとき
+					$('#locketsRakutenTravel_editer_insert_content').on('keypress',function () {
+						if(event.which == 13) {
+							$('#locketsRakutenTravel_ei_btn_yes').trigger("click");
+						}
+						//Form内のエンター：サブミット回避
+						return event.which !== 13;
+					});
+				});
+			})
+			</script>
+            			<script type="text/javascript">
+			jQuery(function($) {
+		
+				$(document).ready(function() {
+					$('#locketsGMaps_ei_btn_yes').on('click', function() {
+						var str = $('#locketsGMaps_editer_insert_content').val();
+						//inlineのときはwindow
+						top.send_to_editor( '[LocketsGMaps keyword="' + str + '"]');
+						top.tb_remove(); 
+					});
+					$('#locketsGMaps_ei_btn_no').on('click', function() {
+						top.tb_remove(); 
+					});
+					
+					//Enterキーが入力されたとき
+					$('#locketsGMaps_editer_insert_content').on('keypress',function () {
+						if(event.which == 13) {
+							$('#locketsGMaps_ei_btn_yes').trigger("click");
+						}
+						//Form内のエンター：サブミット回避
+						return event.which !== 13;
+					});
+				});
+			})
+			</script>
 EOS;
 		}
-	}
-	//##########################
-	//メディアボタンの表示
-	//##########################
-	public function lockets_media_buttons_context ( $context ) {
-		$img = plugin_dir_url( __FILE__ ) ."icon16.png";
-		$link = "media-upload.php?tab=locketsTabHotpepper&type=locketsType&TB_iframe=true&width=600&height=550";
-		$context .= <<<EOS
-    <a href='{$link}'
-    class='thickbox' title='Lockets'>
-      <img src='{$img}' /></a>
-EOS;
-		return $context;
-	}
-	//##########################
-	//ポップアップウィンドウ
-	//##########################
-	function lockets_wp_iframe() {
-		wp_iframe(array( $this , 'media_upload_lockets_form' ) );
-	}
 
-	function media_upload_lockets_form() {
-		add_filter( "media_upload_tabs", array( &$this, "lockets_upload_tabs" ) ,1000);
-		media_upload_header();
-		echo <<< EOS
-			<div id="locketsHotpepper_popup_window" >
-			<form  action="">
-				<h2>HOT PEPPER</h2>
-				<p>
-				<input type="text" id="locketsHotpepper_editer_insert_content" value="" />
-				</p>
-				<input type="button" value="OK" id="locketsHotpepper_ei_btn_yes" class="button button-primary" /> 
-				<input type="button" value="キャンセル" id="locketsHotpepper_ei_btn_no"  class="button" />
-			</form>
-			</div>
-EOS;
-	}
-	//##########################
-	//ポップアップウィンドウのタブ
-	//##########################
-	function lockets_upload_tabs( $tabs )
-	{
-		$tabs = array();
-		$tabs[ "locketsTabHotpepper" ] = "HOT PEPPER" ;
-        //$tabs[ "locketsTabRakutenTravel" ] = "楽天トラベル" ;
-		return $tabs;
-	}
+
+//　タブ
+function lockets1_upload_tabs( $tabs )
+{
+	$tabs=array();
+	$tabs[ "locketsHotpepper" ] = "Lockets" ;
+	return $tabs;
 }
-
-
 
 ?>
