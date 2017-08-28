@@ -49,7 +49,7 @@ echo attribute_escape($lockets_gmap_height); ?>" /></td>
 </tbody></table>
 
 <p class="submit">
-<input type="submit" name="update_option" class="button- primary" value="<?php _e('Save Changes'); ?>" />
+<input type="submit" name="update_option" class="button-primary" value="<?php _e('Save Changes'); ?>" />
 </p>
 
 </form>

@@ -112,7 +112,7 @@ _e('表示テンプレート（HTMLで記述）', 'lockets_hotpepper_template');
 </tbody></table>
 
 <p class="submit">
-<input type="submit" name="update_option" class="button- primary" value="<?php _e('Save Changes'); ?>" />
+<input type="submit" name="update_option" class="button-primary" value="<?php _e('Save Changes'); ?>" />
 </p>
 
 </form>

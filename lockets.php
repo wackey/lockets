@@ -4,7 +4,7 @@ Plugin Name: Lockets
 Plugin URI: http://lockets.jp/
 Description: A plug-in that gets information on spots such as shops and inns from various APIs and displays the latest information embedded in the blog.Also, This plugin will assist you such as creating affiliate links. お店や旅館などスポットに関する情報を各種APIから取得し、ブログ内に最新の情報を埋め込んで表示するプラグイン。また、アフィリエイトリンク作成支援を行います。
 Author: wackey
-Version: 0.19
+Version: 0.20
 Author URI: http://musilog.net/
 License: GPL2
 */
@@ -304,7 +304,7 @@ $recruit_webservice_key= get_option('recruit_webservice_key');
 <p>こちらのページでは設定状況や使える機能の確認が出来ます。</p>
 <h4>楽天ウェブサービス(RAKUTEN WEBSERVICE)</h4>
 <p><?php
-if ($rakutentoken=="" and $rakutenaffid=="") {echo '[NG]楽天ウェブサービス(RAKUTEN WEBSERVICE)の設定がされていません。';} else {echo '[OK]楽天ウェブサービス(RAKUTEN WEBSERVICE)の設定がされています。';}
+if ($rakutentoken=="" and $rakutenaffid=="") {echo '<span style="color:red:font-weight:bold;">[NG]</span>楽天ウェブサービス(RAKUTEN WEBSERVICE)の設定がされていません。';} else {echo '<span style="color:#00AA00;:font-weight:bold;">[OK]</span>楽天ウェブサービス(RAKUTEN WEBSERVICE)の設定がされています。';}
 ?> 
 </p>
 <p>楽天ウェブサービス(RAKUTEN WEBSERVICE)の設定をすると以下の機能が使用出来ます。</p>
@@ -315,7 +315,7 @@ if ($rakutentoken=="" and $rakutenaffid=="") {echo '[NG]楽天ウェブサービ
 
 <h4>リクルート WEBサービス</h4>
 <p><?php
-if ($recruit_webservice_key=="") {echo '[NG]リクルート WEBサービスの設定がされていません。';} else {echo '[OK]リクルート WEBサービスの設定がされています。';}
+if ($recruit_webservice_key=="") {echo '<span style="color:red:font-weight:bold;">[NG]</span>リクルート WEBサービスの設定がされていません。';} else {echo '<span style="color:#00AA00;:font-weight:bold;">[OK]</span>リクルート WEBサービスの設定がされています。';}
 ?> 
 </p>
 <p>リクルート WEBサービスの設定をすると以下の機能が使用出来ます。</p>

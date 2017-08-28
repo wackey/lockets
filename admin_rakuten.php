@@ -55,7 +55,7 @@ _e('表示テンプレート（HTMLで記述）', 'lockets_rakuten_travel_templa
 【施設名称】
 【施設情報ページURL】
 【宿泊プラン一覧ページURL】
-【ダイナミックパッケージ宿泊プラン一覧ページUR
+【ダイナミックパッケージ宿泊プラン一覧ページURL】
 【お客様の声ページURL】
 【施設かな名称】
 【施設特色】
@@ -86,7 +86,7 @@ _e('表示テンプレート（HTMLで記述）', 'lockets_rakuten_travel_templa
 【楽天ウェブサービスクレジットC】※画像形式　Sサイズ（バナー版）221px × 21px<br>
 【楽天ウェブサービスクレジットD】※テキスト形式<br>
 <p class="submit">
-<input type="submit" name="update_option" class="button- primary" value="<?php _e('Save Changes'); ?>" />
+<input type="submit" name="update_option" class="button-primary" value="<?php _e('Save Changes'); ?>" />
 </p>
 
 </form>
