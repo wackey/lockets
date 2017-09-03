@@ -4,7 +4,7 @@ Donate link:
 Tags: AD,affiliate,Web API,location
 Requires at least: 4.8
 Tested up to: 4.8.1
-Stable tag: 0.21
+Stable tag: 0.22
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -24,8 +24,10 @@ A plug-in that gets information on spots such as shops and inns from various API
  　バリューコマースのオートMyLink機能を使ってホットペッパーやじゃらんのリンクをアフィリエイトリンクに変換する機能もあります。
 *Rakuten Travel Search API(Hotel) https://webservice.rakuten.co.jp/api/hoteldetailsearch/
  楽天トラベル施設情報APIを使用して楽天トラベルのホテルや旅館の施設情報を取得し、WordPressで作成したブログ上にその情報を表示します。
-*HOTPEPPER Search API(Restaurant)  https://webservice.recruit.co.jp/hotpepper/reference.html#a1to
+*HOTPEPPER Search API(Restaurant search)  https://webservice.recruit.co.jp/hotpepper/reference.html#a1to
 　リクルートWebサービスのホットペッパーグルメサーチAPIを使用して飲食店情報を取得し、WordPressで作成したブログ上にその情報を表示します。
+*Gurunavi Web Service(Restaurant search)  http://api.gnavi.co.jp/api/manual/restsearch/
+　ぐるなびWebサービスのレストラン検索APIを使用して飲食店情報を取得し、WordPressで作成したブログ上にその情報を表示します。
 *with Google Maps embed.(Map) https://www.google.co.jp/maps
 　Google Mapsの地図埋め込み機能を使い、WordPressで作成したブログ上に地図を表示します。
 
@@ -46,6 +48,8 @@ none.
 An answer to that question.
 
 == Changelog ==
+= 0.22 =
+* Gurunavi Web service,Gurunavi shop search.
 = 0.21 =
 * HOT PEPPER Coupon URL disabled.
 = 0.20 =

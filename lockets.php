@@ -4,7 +4,7 @@ Plugin Name: Lockets
 Plugin URI: http://lockets.jp/
 Description: A plug-in that gets information on spots such as shops and inns from various APIs and displays the latest information embedded in the blog.Also, This plugin will assist you such as creating affiliate links. お店や旅館などスポットに関する情報を各種APIから取得し、ブログ内に最新の情報を埋め込んで表示するプラグイン。また、アフィリエイトリンク作成支援を行います。
 Author: wackey
-Version: 0.21
+Version: 0.22
 Author URI: http://musilog.net/
 License: GPL2
 */
@@ -231,7 +231,99 @@ $lockets_hotpepper_template=str_replace('【Google Maps埋め込み】',$gmap,$l
 return $lockets_hotpepper_template;
 }
 
+/***------------------------------------------
+　ぐるなび店舗情報表示
+------------------------------------------***/
+// ぐるなび店舗情報単体表示
+function lockets_gurunavi_func( $atts, $content = null ) {
 
+$gnavi_webservice_key= get_option('gnavi_webservice_key');
+$lockets_gnavi_template= get_option('lockets_gnavi_template');
+
+// [LocketsGurunavi]属性情報取得
+extract(shortcode_atts(array(
+'shopid' => null,
+'zoom' => null,
+'width' => null,
+'height' => null,), $atts));
+
+// リクエストURL
+$gurunaviurl="https://api.gnavi.co.jp/RestSearchAPI/20150630/?keyid=$gnavi_webservice_key&format=xml&id=$shopid&coordinates_mode=2";
+echo $gurunaviurl;//■テスト用
+
+// キャッシュ有無確認
+$Buff = get_transient( $shopid );
+if ( $Buff === false ) {
+$Buff = file_get_contents($gurunaviurl);
+set_transient( $shopid, $Buff, 3600 * 24 );
+}
+
+$xml = simplexml_load_string($Buff);
+$shop = $xml->rest;
+
+//デフォルトテンプレートの登録
+if ($lockets_gnavi_template=="") {
+$lockets_gnavi_template= <<<EOT
+<p><strong><a href="【店舗URL(PC)】">【掲載店名】</a></strong><p>
+<p>【PR文（短:最大50文字）】</p>
+<p><img src="【店舗画像1のURL】" class="img-responsive"></p>
+<p>住所：【住所】</p>
+<p>交通アクセス：【最寄駅名】</p>
+<p>営業時間：【営業時間】</p>
+<p>定休日：【休業日】</p>
+
+【Google Maps埋め込み】
+<p>【ぐるなびクレジットA】</p>
+EOT;
+}
+
+$lockets_gnavi_template=str_replace('\\','',$lockets_gnavi_template);
+$lockets_gnavi_template=str_replace('【お店ID】',locketsh($shop->id),$lockets_gnavi_template);
+$lockets_gnavi_template=str_replace('【情報更新日時】',locketsh($shop->update_date),$lockets_gnavi_template);
+$lockets_gnavi_template=str_replace('【掲載店名】',locketsh($shop->name),$lockets_gnavi_template);
+$lockets_gnavi_template=str_replace('【掲載店名かな】',locketsh($shop->name_kana),$lockets_gnavi_template);
+
+$lockets_gnavi_template=str_replace('【緯度】',locketsh($shop->latitude),$lockets_gnavi_template);
+$lockets_gnavi_template=str_replace('【経度】',locketsh($shop->longitude),$lockets_gnavi_template);
+
+$lockets_gnavi_template=str_replace('【フリーワードカテゴリー】',locketsh($shop->category),$lockets_gnavi_template);
+
+$lockets_gnavi_template=str_replace('【店舗URL(PC)】',locketsh($shop->url),$lockets_gnavi_template);
+$lockets_gnavi_template=str_replace('【クーポンURL(PC)】',locketsh($shop->coupon_urls->pc),$lockets_gnavi_template);
+
+$lockets_gnavi_template=str_replace('【店舗画像1のURL】',locketsh($shop->image_url->shop_image1),$lockets_gnavi_template);
+$lockets_gnavi_template=str_replace('【店舗画像2のURL】',locketsh($shop->image_url->shop_image2),$lockets_gnavi_template);
+$lockets_gnavi_template=str_replace('【QRコード】',locketsh($shop->image_url->qrcode),$lockets_gnavi_template);
+
+
+$lockets_gnavi_template=str_replace('【住所】',locketsh($shop->address),$lockets_gnavi_template);
+$lockets_gnavi_template=str_replace('【電話番号】',locketsh($shop->tel),$lockets_gnavi_template);
+
+$lockets_gnavi_template=str_replace('【営業時間】',locketsh($shop->opentime),$lockets_gnavi_template);
+$lockets_gnavi_template=str_replace('【休業日】',locketsh($shop->holiday),$lockets_gnavi_template);
+
+$lockets_gnavi_template=str_replace('【最寄駅名】',locketsh($shop->access->line).locketsh($shop->access->station),$lockets_gnavi_template);
+
+$lockets_gnavi_template=str_replace('【平均予算】',locketsh($shop->budget),$lockets_gnavi_template);
+$lockets_gnavi_template=str_replace('【宴会・パーティ平均予算】',locketsh($shop->party),$lockets_gnavi_template);
+$lockets_gnavi_template=str_replace('【ランチタイム平均予算】',locketsh($shop->lunch),$lockets_gnavi_template);
+
+
+$lockets_gnavi_template=str_replace('【PR文（短:最大50文字）】',locketsh($shop->pr->pr_short),$lockets_gnavi_template);
+$lockets_gnavi_template=str_replace('【PR文（長:最大200文字）】',locketsh($shop->pr->pr_long),$lockets_gnavi_template);
+
+
+$lockets_gnavi_template=str_replace('【ぐるなびクレジットA】','<a href="http://api.gnavi.co.jp/api/scope/" target="_blank"><img src="http://api.gnavi.co.jp/api/img/credit/api_155_20.gif" width="155" height="20" border="0" alt="グルメ情報検索サイト　ぐるなび"></a>',$lockets_gnavi_template);
+$lockets_gnavi_template=str_replace('【ぐるなびクレジットB】','<a href="http://api.gnavi.co.jp/api/scope/" target="_blank"><img src="http://api.gnavi.co.jp/api/img/credit/api_90_35.gif" width="90" height="35" border="0" alt="グルメ情報検索サイト　ぐるなび"></a>',$lockets_gnavi_template);
+$lockets_gnavi_template=str_replace('【ぐるなびクレジットC】','Supported by <a href="http://api.gnavi.co.jp/api/scope/" target="_blank">ぐるなびWebService</a>',$lockets_gnavi_template);
+$gmap = lockets_gmap_draw(locketsh($shop->name),locketsh($shop->latitude),locketsh($shop->longitude),$zoom,$width,$height);
+$lockets_gnavi_template=str_replace('【Google Maps埋め込み】',$gmap,$lockets_gnavi_template);
+//抜けている項目は後日追加する
+
+return $lockets_gnavi_template;
+}
+
+                                    
 /***------------------------------------------
 　Google Maps表示機能
 ------------------------------------------***/
@@ -277,6 +369,7 @@ function lockets_gmap_draw($keyword,$lat,$lng,$zoom,$width,$height) {
 // 管理画面サブメニュー用
 require_once("admin_rakuten.php");
 require_once("admin_hotpepper.php");
+require_once("admin_gnavi.php");
 require_once("admin_affiliate.php");
 require_once("admin_gmap.php");
 
@@ -286,6 +379,7 @@ function lockets_menu() {
     add_menu_page('Lockets', 'Lockets', 8,__FILE__, 'lockets_options', WP_PLUGIN_URL.'/lockets/icon16.png');
     add_submenu_page(__FILE__, '楽天ウェブサービス', '楽天ウェブサービス', 8, "admin_rakuten", 'lockets_rws');
     add_submenu_page(__FILE__, 'リクルートWEBサービス', 'リクルートWEBサービス', 8, "admin_recruit_webservice", 'lockets_recruit_webservice');
+    add_submenu_page(__FILE__, 'ぐるなびWebサービス', 'ぐるなびWebサービス', 8, "admin_gnavi_webservice", 'lockets_gnavi_webservice');
     add_submenu_page(__FILE__, 'その他アフィリエイト', 'その他アフィリエイト', 8, "admin_affiliate", 'lockets_affiliate');
     add_submenu_page(__FILE__, 'Google Maps表示設定', 'Google Maps表示設定', 8, "admin_gmap", 'lockets_gmap');
 }
@@ -335,6 +429,7 @@ if ($recruit_webservice_key=="") {echo '<span style="color:red:font-weight:bold;
 // ショートコード登録
 add_shortcode( 'LocketsRakutenTravel', 'lockets_rakuten_travel_func' );
 add_shortcode( 'LocketsHotpepper', 'lockets_hotpepper_func' );
+add_shortcode( 'LocketsGurunavi', 'lockets_gurunavi_func' );
 add_shortcode( 'LocketsGMaps', 'lockets_gmaps_func' );
 
 //管理画面登録
@@ -361,6 +456,9 @@ function remove_lockets()
     
     delete_option('recruit_webservice_key');
     delete_option('lockets_hotpepper_template');
+    
+    delete_option('gnavi_webservice_key');
+    delete_option('lockets_hgnavi_template');
 }
 
 /***------------------------------------------
@@ -419,6 +517,17 @@ echo <<< EOS
 				<input type="button" value="キャンセル" id="locketsHotpepper_ei_btn_no"  class="button" />
 			</form>
 </div>
+<div id="locketsGurunavi">
+			<form  action="">
+				<h2>ぐるなび</h2>
+				<p>
+				<input type="text" id="locketsGurunavi_editer_insert_content" value="" /><br>
+                ぐるばびのお店URLに含まれている「yxxxxxx」（yはアルファベット小文字、xは数字）を入力してください。
+				</p>
+				<input type="button" value="OK" id="locketsGurunavi_ei_btn_yes" class="button button-primary" /> 
+				<input type="button" value="キャンセル" id="locketsGurunavi_ei_btn_no"  class="button" />
+			</form>
+</div>
 <div id="locketsRakutenTravel">
 			<form  action="">
 				<h2>楽天トラベル</h2>
@@ -465,6 +574,31 @@ function lockets1_head(){
 					$('#locketsHotpepper_editer_insert_content').on('keypress',function () {
 						if(event.which == 13) {
 							$('#locketsHotpepper_ei_btn_yes').trigger("click");
+						}
+						//Form内のエンター：サブミット回避
+						return event.which !== 13;
+					});
+				});
+			})
+			</script>
+			<script type="text/javascript">
+			jQuery(function($) {
+		
+				$(document).ready(function() {
+					$('#locketsGurunavi_ei_btn_yes').on('click', function() {
+						var str = $('#locketsGurunavi_editer_insert_content').val();
+						//inlineのときはwindow
+						top.send_to_editor( '[LocketsGurunavi shopid="' + str + '"]');
+						top.tb_remove(); 
+					});
+					$('#lockets_ei_btn_no').on('click', function() {
+						top.tb_remove(); 
+					});
+					
+					//Enterキーが入力されたとき
+					$('#locketsGurunavi_editer_insert_content').on('keypress',function () {
+						if(event.which == 13) {
+							$('#locketsGurunavi_ei_btn_yes').trigger("click");
 						}
 						//Form内のエンター：サブミット回避
 						return event.which !== 13;

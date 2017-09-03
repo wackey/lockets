@@ -6,6 +6,7 @@ function locketsh($str)
     $str=htmlspecialchars($str, ENT_QUOTES);
 	$str=str_replace("&amp;lt;!--","<!--",$str);
 	$str=str_replace("--&amp;gt; ","-->",$str);
+    $str=str_replace("&lt;BR&gt;","<br>",$str);
 	return $str;
 }
 
