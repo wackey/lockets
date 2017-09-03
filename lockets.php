@@ -4,7 +4,7 @@ Plugin Name: Lockets
 Plugin URI: http://lockets.jp/
 Description: A plug-in that gets information on spots such as shops and inns from various APIs and displays the latest information embedded in the blog.Also, This plugin will assist you such as creating affiliate links. お店や旅館などスポットに関する情報を各種APIから取得し、ブログ内に最新の情報を埋め込んで表示するプラグイン。また、アフィリエイトリンク作成支援を行います。
 Author: wackey
-Version: 0.22
+Version: 0.23
 Author URI: http://musilog.net/
 License: GPL2
 */
@@ -121,6 +121,80 @@ $lockets_rakuten_travel_template=str_replace('【Google Maps埋め込み】',$gm
 //メモ　その他の要素後日追加
 
 return $lockets_rakuten_travel_template;
+
+}
+
+
+/***------------------------------------------
+　じゃらんホテル情報表示
+------------------------------------------***/
+// じゃらんホテル単体表示
+function lockets_jalan_func( $atts, $content = null ) {
+
+$jalan_webservice_key= get_option('jalan_webservice_key');
+$lockets_jalan_template= get_option('lockets_jalan_template');
+
+// [LocketsJalan]属性情報取得
+extract(shortcode_atts(array(
+    'hotelno' => null,
+    'zoom' => null,
+    'width' => null,
+    'height' => null,), $atts));
+
+// リクエストURL
+$jalanurl="http://jws.jalan.net/APIAdvance/HotelSearch/V1/?key=$jalan_webservice_key&h_id=$hotelno";
+echo $jalanurl;//■テスト用
+// キャッシュ有無確認
+$Buff = get_transient( $hotelno );
+if ( $Buff === false ) {
+$options['ssl']['verify_peer']=false;
+$options['ssl']['verify_peer_name']=false;
+$Buff = file_get_contents($rwsurl,false, stream_context_create($options));
+set_transient( $hotelno, $Buff, 3600 * 24 );
+}
+
+$xml = simplexml_load_string($Buff);
+$jalanhotel = $xml->Hotel;
+print_r($xml);
+
+//デフォルトテンプレートの登録
+if ($lockets_jalan_template=="") {
+$lockets_jalan_template= <<<EOT
+<p><strong>【宿名漢字】</strong></p>
+<p><a href="【宿詳細ページURL】" rel="nofollow"><img src="【施設画像サムネイルURL】"></a></p>
+<p>【施設特色】<br>
+【郵便番号】<br>
+【住所】</p>
+<p>【じぇらんクレジットA】</p>
+EOT;
+}
+$lockets_jalan_template=str_replace('\\','',$lockets_jalan_template);
+$lockets_jalan_template=str_replace('【宿番号】',locketsh($jalanhotel->HotelID),$lockets_jalan_template);
+$lockets_jalan_template=str_replace('【宿名漢字】',locketsh($jalanhotel->HotelName),$lockets_jalan_template);
+$lockets_jalan_template=str_replace('【郵便番号】',locketsh($jalanhotel->PostCode	),$lockets_jalan_template);
+$lockets_jalan_template=str_replace('【住所】',locketsh($jalanhotel->HotelAddress	),$lockets_jalan_template);
+    
+$lockets_jalan_template=str_replace('【宿詳細ページURL】',locketsh($jalanhotel->HotelDetailURL),$lockets_jalan_template);
+
+$lockets_jalan_template=str_replace('【キャッチ】',locketsh($jalanhotel->HotelCatchCopy),$lockets_jalan_template);
+$lockets_jalan_template=str_replace('【コピー】',locketsh($jalanhotel->HotelCaption),$lockets_jalan_template);
+
+$lockets_jalan_template=str_replace('【宿画像URL】',locketsh($jalanhotel->PictureURL),$lockets_jalan_template);
+$lockets_jalan_template=str_replace('【宿画像キャプション】',locketsh($jalanhotel->PictureCaption),$lockets_jalan_template);
+
+$lockets_jalan_template=str_replace('【参考料金】',locketsh($jalanhotel->SampleRateFrom),$lockets_jalan_template);
+
+
+$lockets_jalan_template=str_replace('【じぇらんクレジットA】','<a href="http://www.jalan.net/jw/jwp0000/jww0001.do"><img src="http://www.jalan.net/jalan/doc/jws/images/jws_88_50_blue.gif" alt="じゃらん Web サービス" title="じゃらん Web サービス" border="0"></a>',$lockets_jalan_template);
+$lockets_jalan_template=str_replace('【じぇらんクレジットB】','<a href="http://www.jalan.net/jw/jwp0000/jww0001.do"><img src="http://www.jalan.net/jalan/doc/jws/images/jws_88_50_gray.gif" alt="じゃらん Web サービス" title="じゃらん Web サービス" border="0"></a>',$lockets_jalan_template);
+$lockets_jalan_template=str_replace('【じぇらんクレジットC】','<a href="http://www.jalan.net/jw/jwp0000/jww0001.do">じゃらん Web サービス</a>',$lockets_jalan_template);
+
+//Google Mapsは緯度経度変換のロジックを載せてから対応する 
+//$gmap = lockets_gmap_draw(locketsh($hotelBasicInfo->hotelName),locketsh($hotelBasicInfo->latitude),locketsh($hotelBasicInfo->longitude),$zoom,$width,$height);
+//$lockets_jalan_template=str_replace('【Google Maps埋め込み】',$gmap,$lockets_jalan_template);
+//メモ　その他の要素後日追加
+
+return $lockets_jalan_template;
 
 }
 
@@ -249,7 +323,6 @@ extract(shortcode_atts(array(
 
 // リクエストURL
 $gurunaviurl="https://api.gnavi.co.jp/RestSearchAPI/20150630/?keyid=$gnavi_webservice_key&format=xml&id=$shopid&coordinates_mode=2";
-echo $gurunaviurl;//■テスト用
 
 // キャッシュ有無確認
 $Buff = get_transient( $shopid );
@@ -370,6 +443,7 @@ function lockets_gmap_draw($keyword,$lat,$lng,$zoom,$width,$height) {
 require_once("admin_rakuten.php");
 require_once("admin_hotpepper.php");
 require_once("admin_gnavi.php");
+require_once("admin_jalan.php");
 require_once("admin_affiliate.php");
 require_once("admin_gmap.php");
 
@@ -380,6 +454,7 @@ function lockets_menu() {
     add_submenu_page(__FILE__, '楽天ウェブサービス', '楽天ウェブサービス', 8, "admin_rakuten", 'lockets_rws');
     add_submenu_page(__FILE__, 'リクルートWEBサービス', 'リクルートWEBサービス', 8, "admin_recruit_webservice", 'lockets_recruit_webservice');
     add_submenu_page(__FILE__, 'ぐるなびWebサービス', 'ぐるなびWebサービス', 8, "admin_gnavi_webservice", 'lockets_gnavi_webservice');
+    add_submenu_page(__FILE__, 'じゃらんWebサービス', 'じゃらんWebサービス', 8, "admin_jalan_webservice", 'lockets_jalan_webservice');
     add_submenu_page(__FILE__, 'その他アフィリエイト', 'その他アフィリエイト', 8, "admin_affiliate", 'lockets_affiliate');
     add_submenu_page(__FILE__, 'Google Maps表示設定', 'Google Maps表示設定', 8, "admin_gmap", 'lockets_gmap');
 }
@@ -387,9 +462,9 @@ function lockets_menu() {
 
 // 管理画面描画
 function lockets_options() {
-$rakutentoken= get_option('rakuten_search_token');
-$rakutenaffid= get_option('rakuten_affiliate_id');
-$recruit_webservice_key= get_option('recruit_webservice_key');
+    $rakutentoken= get_option('rakuten_search_token');
+    $rakutenaffid= get_option('rakuten_affiliate_id');
+    $recruit_webservice_key= get_option('recruit_webservice_key');
 ?>
 
 <h2>Lockets設定画面</h2>
@@ -428,6 +503,7 @@ if ($recruit_webservice_key=="") {echo '<span style="color:red:font-weight:bold;
 ------------------------------------------***/
 // ショートコード登録
 add_shortcode( 'LocketsRakutenTravel', 'lockets_rakuten_travel_func' );
+add_shortcode( 'LocketsJalan', 'lockets_jalan_func' );
 add_shortcode( 'LocketsHotpepper', 'lockets_hotpepper_func' );
 add_shortcode( 'LocketsGurunavi', 'lockets_gurunavi_func' );
 add_shortcode( 'LocketsGMaps', 'lockets_gmaps_func' );
@@ -451,6 +527,9 @@ function remove_lockets()
 	delete_option('rakuten_affiliate_id');
 	delete_option('rakuten_search_token');
     delete_option('lockets_rakuten_travel_template');
+
+    delete_option('jalan_webservice_key');
+    delete_option('lockets_jalan_template');
     
     delete_option('valuecommerce_pid');
     
