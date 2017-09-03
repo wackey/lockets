@@ -4,7 +4,7 @@ Donate link:
 Tags: AD,affiliate,Web API,location
 Requires at least: 4.8
 Tested up to: 4.8.1
-Stable tag: 0.20
+Stable tag: 0.21
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -46,6 +46,8 @@ none.
 An answer to that question.
 
 == Changelog ==
+= 0.21 =
+* HOT PEPPER Coupon URL disabled.
 = 0.20 =
 * Admin panel redesinged.
 = 0.19 =

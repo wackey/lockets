@@ -60,7 +60,6 @@ _e('表示テンプレート（HTMLで記述）', 'lockets_hotpepper_template');
     
 <h5>リンクURL</h5>
 【店舗URL(PC)】
-【クーポンURL(PC)】
     
 <h5>位置情報</h5>
 【緯度】
@@ -102,7 +101,7 @@ _e('表示テンプレート（HTMLで記述）', 'lockets_hotpepper_template');
 【HOT PEPPERクレジットB】※画像形式　中　88px × 35px<br>
 【HOT PEPPERクレジットC】※テキスト形式<br>
     
-    <br />
+<br />
 <br />
 例：<br />
 
