@@ -4,7 +4,7 @@ Donate link:
 Tags: AD,affiliate,Web API,location
 Requires at least: 4.8
 Tested up to: 4.8.1
-Stable tag: 0.27
+Stable tag: 0.30
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -20,17 +20,17 @@ A plug-in that gets information on spots such as shops and inns from various API
 
 *HOTEL Search
  -Rakuten Travel Search API,Jalan Web Service(Hotel search)
- 　楽天トラベルとじゃらんWebサービスに対応しています
+ 　楽天トラベルAPIとじゃらんWebサービスに対応しています
 
 *Restaurant search
  -HOTPEPPER,Gurunavi (Restaurant search)
- 　ホットペッパー、ぐるなびに対応しています
+ 　ホットペッパーAPI、ぐるなびWebサービスに対応しています
 
 *Affiliate
  -Rakuten Affiliate
  　楽天トラベルでの施設へのリンクなどをアフィリエイトリンクとしして出力します
- -Value Commerce Auto MyLink ex.HOT PEPPER ,Jaran's link, etc.
-  バリューコマースオートMyLink機能に対応しています（ホットペッパーやじゃらんへのリンクをバリューコマースのアフィリエイトリンクに自動変換します）
+ -Value Commerce Auto MyLink ex.HOT PEPPER ,Jalan's link, etc.
+  バリューコマースオートMyLink機能に対応しています（ホットペッパーやじゃらんへのリンクをバリューコマースのアフィリエイトリンクに自動変換します。アフィリエイトの提携作業が必要です）
 
 * ---USE API---
 
@@ -70,6 +70,8 @@ none.
 An answer to that question.
 
 == Changelog ==
+= 0.30 =
+* post interface Jalan add,typo modified.
 = 0.24 =
 * Jalan Hotel Search add.
 = 0.22 =

@@ -5,7 +5,7 @@ function lockets_gnavi_webservice() {
 if (isset($_POST['update_option'])) {
 check_admin_referer('lockets-options');
 update_option('gnavi_webservice_key', sanitize_text_field($_POST['gnavi_webservice_key']));
-update_option('lockets_gnavi_template', wp_kses_post($_POST['lockets_hgnavi_template']));
+update_option('lockets_gnavi_template', wp_kses_post($_POST['lockets_gnavi_template']));
 ?>
 <div class="updated fade"><p><strong><?php _e('Options saved.'); ?></strong></p>
 </div>
@@ -34,7 +34,7 @@ echo attribute_escape($gnavi_webservice_key); ?>" /></td>
 <th><label for="lockets_gnavi_template"><?php
 _e('表示テンプレート（HTMLで記述）', 'lockets_gnavi_template'); ?></label></th> <td>
 <textarea cols="80" rows="20" name="lockets_gnavi_template" id="lockets_gnavi_template">
-<?php echo str_replace('\\','',$lockets_gnavir_template); ?>
+<?php echo str_replace('\\','',$lockets_gnavi_template); ?>
 </textarea> <br />
 <br />
 置き換え用の文字列は下記のとおり<br />

@@ -4,7 +4,7 @@ Plugin Name: Lockets
 Plugin URI: http://lockets.jp/
 Description: A plug-in that gets information on spots such as shops and inns from various APIs and displays the latest information embedded in the blog.Also, This plugin will assist you such as creating affiliate links. お店や旅館などスポットに関する情報を各種APIから取得し、ブログ内に最新の情報を埋め込んで表示するプラグイン。また、アフィリエイトリンク作成支援を行います。
 Author: wackey
-Version: 0.27
+Version: 0.30
 Author URI: htp://musilog.net/
 License: GPL2
 */
@@ -27,8 +27,8 @@ License: GPL2
 /***------------------------------------------
 　各種ライブラリ読み込み
 ------------------------------------------***/
-//各種class、関数の読み込み※現在は関数のみ
 require_once("lockets_func.php");
+require_once("lockets_class.php");
 
 
 /***------------------------------------------
@@ -534,7 +534,7 @@ function remove_lockets()
     delete_option('lockets_hotpepper_template');
     
     delete_option('gnavi_webservice_key');
-    delete_option('lockets_hgnavi_template');
+    delete_option('lockets_gnavi_template');
 }
 
 /***------------------------------------------
@@ -571,10 +571,28 @@ EOS;
 // ポップアップウインドウの作成
 add_action( 'media_upload_locketsType1',  'lockets1_wp_iframe' );
 add_action( "admin_head-media-upload-popup", 'lockets1_head');
+
 function lockets1_wp_iframe() {
         wp_iframe( media_upload_lockets1_form );
 }
 
+//検索インタフェース用
+function media_upload_lockets2_form() {
+	add_filter( "media_upload_tabs", "lockets1_upload_tabs"  ,1000);
+	media_upload_header();
+    
+echo <<< EOS
+<div id="test">
+			<form action="">
+				<h2>検索窓</h2>
+				<p>
+				<input type="text" id= value="" /><br>
+				</p>
+				<input type="submit" value="OK" class="button button-primary" /> 
+			</form>
+</div>
+EOS;
+}
 
 //コンテンツ
 function media_upload_lockets1_form() {
@@ -613,6 +631,17 @@ echo <<< EOS
 				</p>
 				<input type="button" value="OK" id="locketsRakutenTravel_ei_btn_yes" class="button button-primary" /> 
 				<input type="button" value="キャンセル" id="locketsRakutenTravel_ei_btn_no"  class="button" />
+			</form>
+</div>
+<div id="locketsJalan">
+			<form  action="">
+				<h2>じゃらん</h2>
+				<p>
+				<input type="text" id="locketsJalan_editer_insert_content" value="" /><br>
+                じゃらんのホテルURLに含まれている「http://www.jalan.net/yadxxxxxx/」のうち「xxxxxx」（xは数字）を入力してください。
+				</p>
+				<input type="button" value="OK" id="locketsJalan_ei_btn_yes" class="button button-primary" /> 
+				<input type="button" value="キャンセル" id="locketsJalan_ei_btn_no"  class="button" />
 			</form>
 </div>
 <div id="locketsGMaps">
@@ -725,6 +754,31 @@ function lockets1_head(){
 					$('#locketsGMaps_editer_insert_content').on('keypress',function () {
 						if(event.which == 13) {
 							$('#locketsGMaps_ei_btn_yes').trigger("click");
+						}
+						//Form内のエンター：サブミット回避
+						return event.which !== 13;
+					});
+				});
+			})
+			</script>
+            <script type="text/javascript">
+			jQuery(function($) {
+		
+				$(document).ready(function() {
+					$('#locketsJalan_ei_btn_yes').on('click', function() {
+						var str = $('#locketsJalan_editer_insert_content').val();
+						//inlineのときはwindow
+						top.send_to_editor( '[LocketsJalan hotelno="' + str + '"]');
+						top.tb_remove(); 
+					});
+					$('#locketsJalan_ei_btn_no').on('click', function() {
+						top.tb_remove(); 
+					});
+					
+					//Enterキーが入力されたとき
+					$('#locketsJalan_editer_insert_content').on('keypress',function () {
+						if(event.which == 13) {
+							$('#locketsJalan_ei_btn_yes').trigger("click");
 						}
 						//Form内のエンター：サブミット回避
 						return event.which !== 13;
