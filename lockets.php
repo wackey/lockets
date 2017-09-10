@@ -4,7 +4,7 @@ Plugin Name: Lockets
 Plugin URI: http://lockets.jp/
 Description: A plug-in that gets information on spots such as shops and inns from various APIs and displays the latest information embedded in the blog.Also, This plugin will assist you such as creating affiliate links. お店や旅館などスポットに関する情報を各種APIから取得し、ブログ内に最新の情報を埋め込んで表示するプラグイン。また、アフィリエイトリンク作成支援を行います。
 Author: wackey
-Version: 0.23
+Version: 0.24
 Author URI: http://musilog.net/
 License: GPL2
 */
@@ -143,26 +143,23 @@ extract(shortcode_atts(array(
 
 // リクエストURL
 $jalanurl="http://jws.jalan.net/APIAdvance/HotelSearch/V1/?key=$jalan_webservice_key&h_id=$hotelno";
-echo $jalanurl;//■テスト用
+
 // キャッシュ有無確認
-$Buff = get_transient( $hotelno );
+$Buff = get_transient($jalanurl);
 if ( $Buff === false ) {
-$options['ssl']['verify_peer']=false;
-$options['ssl']['verify_peer_name']=false;
-$Buff = file_get_contents($rwsurl,false, stream_context_create($options));
-set_transient( $hotelno, $Buff, 3600 * 24 );
+    $Buff = file_get_contents($jalanurl);
+    set_transient($jalanurl, $Buff, 3600 * 24 );
 }
 
-$xml = simplexml_load_string($Buff);
+$xml = @simplexml_load_string($Buff);//warning防止
 $jalanhotel = $xml->Hotel;
-print_r($xml);
 
 //デフォルトテンプレートの登録
 if ($lockets_jalan_template=="") {
 $lockets_jalan_template= <<<EOT
 <p><strong>【宿名漢字】</strong></p>
-<p><a href="【宿詳細ページURL】" rel="nofollow"><img src="【施設画像サムネイルURL】"></a></p>
-<p>【施設特色】<br>
+<p><a href="【宿詳細ページURL】" rel="nofollow"><img src="【宿画像URL】"></a></p>
+<p>【宿画像キャプション】<br>
 【郵便番号】<br>
 【住所】</p>
 <p>【じぇらんクレジットA】</p>

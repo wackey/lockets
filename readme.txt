@@ -4,7 +4,7 @@ Donate link:
 Tags: AD,affiliate,Web API,location
 Requires at least: 4.8
 Tested up to: 4.8.1
-Stable tag: 0.23
+Stable tag: 0.24
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -19,11 +19,11 @@ and,ability to convert links to affiliate links with "valuecommerce Auto MyLink 
 A plug-in that gets information on spots such as shops and inns from various APIs and displays the latest information embedded in the blog.Also, This plugin will assist you such as creating affiliate links.
 
 *HOTEL Search
- -Rakuten Travel Search API(Hotel)
- 　楽天トラベルに対応しています
+ -Rakuten Travel Search API,Jalan Web Service(Hotel search)
+ 　楽天トラベルとじゃらんWebサービスに対応しています
 
 *Restaurant search
- -HOTPEPPER,Gurunavi 
+ -HOTPEPPER,Gurunavi (Restaurant search)
  　ホットペッパー、ぐるなびに対応しています
 
 *Affiliate
@@ -47,6 +47,9 @@ A plug-in that gets information on spots such as shops and inns from various API
 *Gurunavi Web Service(Restaurant search)  http://api.gnavi.co.jp/api/manual/restsearch/
 　ぐるなびWebサービスのレストラン検索APIを使用して飲食店情報を取得し、WordPressで作成したブログ上にその情報を表示します。
 
+*Jalan Web Service(Hotel search)  http://www.jalan.net/jw/jwp0000/jww0001.do
+　じゃらんWebサービスじゃらん宿表示API（アドバンス）を使用してホテルや旅館の施設情報を取得し、WordPressで作成したブログ上にその情報を表示します。
+
 *with Google Maps embed.(Map) https://www.google.co.jp/maps
 　Google Mapsの地図埋め込み機能を使い、WordPressで作成したブログ上に地図を表示します。
 
@@ -67,6 +70,8 @@ none.
 An answer to that question.
 
 == Changelog ==
+= 0.24 =
+* Jalan Hotel Search add.
 = 0.22 =
 * Gurunavi Web service,Gurunavi shop search.
 = 0.21 =
