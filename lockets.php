@@ -4,7 +4,7 @@ Plugin Name: Lockets
 Plugin URI: http://lockets.jp/
 Description: A plug-in that gets information on spots such as shops and inns from various APIs and displays the latest information embedded in the blog.Also, This plugin will assist you such as creating affiliate links. お店や旅館などスポットに関する情報を各種APIから取得し、ブログ内に最新の情報を埋め込んで表示するプラグイン。また、アフィリエイトリンク作成支援を行います。
 Author: wackey
-Version: 0.34
+Version: 0.35
 Author URI: htp://musilog.net/
 License: GPL2
 */
@@ -463,20 +463,78 @@ function lockets_menu() {
 function lockets_options() {
     $rakutentoken= get_option('rakuten_search_token');
     $rakutenaffid= get_option('rakuten_affiliate_id');
+    $jalan_webservice_key= get_option('jalan_webservice_key');
     $recruit_webservice_key= get_option('recruit_webservice_key');
+    $gnavi_webservice_key= get_option('gnavi_webservice_key');
+    $valuecommerce_pid= get_option('valuecommerce_pid');
 ?>
+
+<div class="wrap">
 
 <h2>Lockets設定画面</h2>
 
-<h3>使い方</h3>
+<h2>使い方</h2>
 <p>例えばショートコード<strong>[LocketsRakutenTravel hotelno="xxxxxxx"]</strong>のような感じでホテル番号を指定したらホテルの情報を外部から取得しブログ記事内で表示させます。<br>
-これらのショートコードは投稿画面の「Lockets」ボタンを押して表示されるパネルにホテル番号やお店IDなどを入れることで簡単に記事中に挿入できます。</p>
+これらのショートコードは投稿画面の「Lockets」ボタンを押して表示されるパネルにホテル番号やお店IDなどを入れることで簡単に記事中に挿入できます。<br>
+それぞれの情報提供元となるサイトのAPIから取り出せる情報の表示にはほぼ対応しており（対応する方向であり）、表示の仕方と表示する項目についてはHTMLテンプレートをそれぞれの管理画面で自由に登録出来ます。</p>
 <p>こちらのページでは設定状況や使える機能の確認が出来ます。</p>
 
+<h2>埋め込める情報一覧</h2>
 
-<h4>楽天ウェブサービス(RAKUTEN WEBSERVICE)</h4>
+<h3>旅行・ホテル情報系</h3>
+<ul>
+<li><?php
+if ($rakutentoken=="" and $rakutenaffid=="") {echo '<span style="color:#AA0000;font-weight:bold;">[NG]</span>';} else {echo '<span style="color:#00AA00;:font-weight:bold;">[OK]</span>';}
+echo "楽天トラベル（楽天アフィリエイト）"
+?> </li>
+<li><?php
+if ($jalan_webservice_key=="") {echo '<span style="color:#AA0000;font-weight:bold;">[NG]</span>';} else {echo '<span style="color:#00AA00;:font-weight:bold;">[OK]</span>';}
+echo "じゃらん　※オートMyLink機能でバリューコマースアフィリエイト使用可"
+?> </li> 
+</ul>
+
+<h3>飲食店情報系</h3>
+<ul>
+<li><?php
+if ($recruit_webservice_key=="") {echo '<span style="color:#AA0000;font-weight:bold;">[NG]</span>';} else {echo '<span style="color:#00AA00;:font-weight:bold;">[OK]</span>';}
+echo "HOT PEPPER　※オートMyLink機能でバリューコマースアフィリエイト使用可"
+?> </li> 
+<li><?php
+if ($gnavi_webservice_key=="") {echo '<span style="color:#AA0000;font-weight:bold;">[NG]</span>';} else {echo '<span style="color:#00AA00;:font-weight:bold;">[OK]</span>';}
+echo "ぐるなび"
+?> </li> 
+</ul>
+
+<h3>商品情報系※準備中</h3>
+<ul>
+<li><?php
+if ($rakutentoken=="" and $rakutenaffid=="") {echo '<span style="color:#AA0000;font-weight:bold;">[NG]</span>';} else {echo '<span style="color:#00AA00;:font-weight:bold;">[OK]</span>';}
+echo "楽天市場（楽天アフィリエイト）"
+?> </li>
+</ul>
+
+<h3>地図</h3>
+<ul>
+<li><span style="color:#00AA00;:font-weight:bold;">[OK]</span>Google Maps</li>
+</ul>
+
+
+<h3>その他アフィリエイト機能</h3>
+<ul>
+<li><?php
+if ($valuecommerce_pid=="") {echo '<span style="color:#AA0000;font-weight:bold;">[NG]</span>';} else {echo '<span style="color:#00AA00;:font-weight:bold;">[OK]</span>';}
+echo "バリューコマース オートMyLink<br>オートMyLinkに必要なJavaScriptを自動的に挿入します。<br>HOTPEPPERやじゃらんなど対応ECサイトと提携していると上記リンクが自動的にバリューマースのアフィリエイトリンクに置き換わります。"
+?> </li>
+    
+</ul>
+
+<hr>
+
+<h2>Webサービス別機能確認</h2>
+
+<h3>楽天ウェブサービス(RAKUTEN WEBSERVICE)</h3>
 <p><?php
-if ($rakutentoken=="" and $rakutenaffid=="") {echo '<span style="color:red:font-weight:bold;">[NG]</span>楽天ウェブサービス(RAKUTEN WEBSERVICE)の設定がされていません。';} else {echo '<span style="color:#00AA00;:font-weight:bold;">[OK]</span>楽天ウェブサービス(RAKUTEN WEBSERVICE)の設定がされています。';}
+if ($rakutentoken=="" and $rakutenaffid=="") {echo '<span style="color:#AA0000;font-weight:bold;">[NG]</span>楽天ウェブサービス(RAKUTEN WEBSERVICE)の設定がされていません。';} else {echo '<span style="color:#00AA00;:font-weight:bold;">[OK]</span>楽天ウェブサービス(RAKUTEN WEBSERVICE)の設定がされています。';}
 ?> 
 </p>
 <p>楽天ウェブサービス(RAKUTEN WEBSERVICE)の設定をすると以下の機能が使用出来ます。</p>
@@ -485,10 +543,21 @@ if ($rakutentoken=="" and $rakutenaffid=="") {echo '<span style="color:red:font-
     楽天トラベルの施設（ホテル・旅館等）詳細情報表示ができます。</li>
 </ul>
 
-
-<h4>リクルート WEBサービス</h4>
+<h3>じゃらんWebサービス</h3>
 <p><?php
-if ($recruit_webservice_key=="") {echo '<span style="color:red:font-weight:bold;">[NG]</span>リクルート WEBサービスの設定がされていません。';} else {echo '<span style="color:#00AA00;:font-weight:bold;">[OK]</span>リクルート WEBサービスの設定がされています。';}
+if ($jalan_webservice_key=="") {echo '<span style="color:#AA0000;font-weight:bold;">[NG]</span>じゃらんWebサービスの設定がされていません。';} else {echo '<span style="color:#00AA00;:font-weight:bold;">[OK]</span>じゃらんWebサービスの設定がされています。';}
+?> 
+</p>
+<p>じゃらんWebサービスの設定をすると以下の機能が使用出来ます。</p>
+<ul>
+    <li>[LocketsJalan hotelno="xxxxxxx"]<br>
+    じゃらんの宿詳細情報表示ができます。</li>
+</ul>
+
+
+<h3>リクルート WEBサービス</h3>
+<p><?php
+if ($recruit_webservice_key=="") {echo '<span style="color:#AA0000;font-weight:bold;">[NG]</span>リクルート WEBサービスの設定がされていません。';} else {echo '<span style="color:#00AA00;:font-weight:bold;">[OK]</span>リクルート WEBサービスの設定がされています。';}
 ?> 
 </p>
 <p>リクルート WEBサービスの設定をすると以下の機能が使用出来ます。</p>
@@ -497,17 +566,20 @@ if ($recruit_webservice_key=="") {echo '<span style="color:red:font-weight:bold;
     ホットペッパー（HOT PEPPER）の飲食店詳細情報表示ができます。</li>
 </ul>
 
-
-<h4>じゃらんWebサービス</h4>
+<h3>ぐるなびWebサービス</h3>
 <p><?php
-if ($jalan_webservice_key=="") {echo '<span style="color:red:font-weight:bold;">[NG]</span>じゃらんWebサービスの設定がされていません。';} else {echo '<span style="color:#00AA00;:font-weight:bold;">[OK]</span>じゃらんWebサービスの設定がされています。';}
+if ($gnavi_webservice_key=="") {echo '<span style="color:red:font-weight:bold;">[NG]</span>ぐるなびWebサービスの設定がされていません。';} else {echo '<span style="color:#00AA00;:font-weight:bold;">[OK]</span>ぐるなびWebサービスの設定がされています。';}
 ?> 
 </p>
-<p>じゃらんWebサービスの設定をすると以下の機能が使用出来ます。</p>
+<p>ぐるなびWebサービスの設定をすると以下の機能が使用出来ます。</p>
 <ul>
-    <li>[LocketsJalan hotelno="xxxxxxx"]<br>
-    じゃらんの宿詳細情報表示ができます。</li>
+    <li>[LocketsGurunavi shopid="xxxxxxx"]<br>
+    ぐるなびの飲食店詳細情報表示ができます。</li>
 </ul>
+
+
+</div>
+
 <?php
 }
 

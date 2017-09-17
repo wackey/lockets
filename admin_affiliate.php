@@ -15,7 +15,7 @@ $valuecommerce_pid = get_option('valuecommerce_pid');
 <div class="wrap">
 <h2>Locketsプラグインその他アフィリエイト設定</h2>
 <p>その他アフィリエイト設定するための設定です。</p>
-<p>バリューコマースpidを入力するとMyLink機能が有効になります。</p>
+<p>バリューコマースpidを入力するとオートMyLink機能が有効になります。</p>
 <form name="form" method="post" action="">
 <input type="hidden" name="action" value="update" />
 <?php wp_nonce_field('lockets-options'); ?>

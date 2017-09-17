@@ -18,7 +18,9 @@ if (isset($_POST['update_option'])) {
 
 <div class="wrap">
 <h2>Google Maps表示設定</h2>
-<p>Google Mapsの幅や高さ、ズームのデフォルト値をこちらで設定します。※個別に設定することも可能です。</p>
+<p>Google Mapsの幅や高さ、ズームのデフォルト値をこちらで設定します。<br>
+※投稿ごとに個別に設定することも可能です。<br>
+※未入力の場合はデフォルト設定のままでご使用いただけます。</p>
 <form name="form" method="post" action="">
 <input type="hidden" name="action" value="update" />
 <?php wp_nonce_field('lockets-options'); ?>

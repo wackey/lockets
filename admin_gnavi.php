@@ -32,7 +32,7 @@ echo attribute_escape($gnavi_webservice_key); ?>" /></td>
     
 <tr>
 <th><label for="lockets_gnavi_template"><?php
-_e('表示テンプレート（HTMLで記述）', 'lockets_gnavi_template'); ?></label></th> <td>
+_e('ぐるなび情報<br>表示テンプレート<br>（HTMLと置換文字列で記述）<br>※未入力の場合はデフォルトテンプレートで表示', 'lockets_gnavi_template'); ?></label></th> <td>
 <textarea cols="80" rows="20" name="lockets_gnavi_template" id="lockets_gnavi_template">
 <?php echo str_replace('\\','',$lockets_gnavi_template); ?>
 </textarea> <br />
@@ -78,11 +78,6 @@ _e('表示テンプレート（HTMLで記述）', 'lockets_gnavi_template'); ?><
 【ぐるなびクレジットA】※画像形式　155px × 20px<br>
 【ぐるなびクレジットB】※画像形式　90px × 35px<br>
 【ぐるなびクレジットC】※テキスト形式<br>
-    
-<br />
-<br />
-例：<br />
-
 </td>
 </tr>
 

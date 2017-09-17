@@ -32,7 +32,7 @@ echo attribute_escape($recruit_webservice_key); ?>" /></td>
     
 <tr>
 <th><label for="lockets_hotpepper_template"><?php
-_e('表示テンプレート（HTMLで記述）', 'lockets_hotpepper_template'); ?></label></th> <td>
+_e('HOT PEPPER<br>表示テンプレート<br>（HTMLと置換文字列で記述）<br>※未入力の場合はデフォルトテンプレートで表示', 'lockets_hotpepper_template'); ?></label></th> <td>
 <textarea cols="80" rows="20" name="lockets_hotpepper_template" id="lockets_hotpepper_template">
 <?php echo str_replace('\\','',$lockets_hotpepper_template); ?>
 </textarea> <br />
@@ -100,11 +100,6 @@ _e('表示テンプレート（HTMLで記述）', 'lockets_hotpepper_template');
 【HOT PEPPERクレジットA】※画像形式　小　135px × 17px<br>
 【HOT PEPPERクレジットB】※画像形式　中　88px × 35px<br>
 【HOT PEPPERクレジットC】※テキスト形式<br>
-    
-<br />
-<br />
-例：<br />
-
 </td>
 </tr>
 

@@ -18,7 +18,7 @@ $lockets_rakuten_travel_template= get_option('lockets_rakuten_travel_template');
 
 <div class="wrap">
 <h2>Locketsプラグイン楽天ウェブサービス関連設定</h2>
-<p>楽天トラベルなど楽天ウェブサービス利用するための設定です</p>
+<p>楽天トラベルや楽天市場商品検索など楽天ウェブサービス利用するための設定です</p>
 <form name="form" method="post" action="">
 <input type="hidden" name="action" value="update" />
 <?php wp_nonce_field('lockets-options'); ?>
@@ -41,7 +41,7 @@ echo attribute_escape($rakutentoken); ?>" /></td>
     
 <tr>
 <th><label for="lockets_rakuten_travel_template"><?php
-_e('表示テンプレート（HTMLで記述）', 'lockets_rakuten_travel_template'); ?></label></th> <td>
+_e('楽天トラベル<br>表示テンプレート<br>（HTMLと置換文字列で記述）<br>※未入力の場合はデフォルトテンプレートで表示）', 'lockets_rakuten_travel_template'); ?></label></th> <td>
 <textarea cols="80" rows="20" name="lockets_rakuten_travel_template" id="lockets_rakuten_travel_template">
 <?php echo str_replace('\\','',$lockets_rakuten_travel_template); ?>
 </textarea>
@@ -79,7 +79,7 @@ _e('表示テンプレート（HTMLで記述）', 'lockets_rakuten_travel_templa
 【お客さまの声（1件目）】
 【Google Maps埋め込み】
 
-    <h5>クレジット</h5>
+<h5>クレジット</h5>
 ※クレジットはいずれか必須<br>
 【楽天ウェブサービスクレジットA】※画像形式　Sサイズ（スクエア版）49px × 36px<br>
 【楽天ウェブサービスクレジットB】※画像形式　Lサイズ（スクエア版）70px × 52px<br>

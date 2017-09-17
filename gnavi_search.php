@@ -13,8 +13,8 @@ $gnavi_webservice_key= get_option('gnavi_webservice_key');
 ?>
 
 <div class="wrap">
-<h2>ぐるなび検索（暫定）</h2>
-<p>ぐるなびを検索結果を表示するための設定です</p>
+<h2>暫定ぐるなび検索</h2>
+<p>ぐるなびの店舗IDを調べるための検索画面です。</p>
 <form name="form" method="post" action="">
 <input type="hidden" name="action" value="update" />
 <?php wp_nonce_field('lockets-options'); ?>

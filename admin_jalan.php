@@ -32,7 +32,7 @@ echo attribute_escape($jalan_webservice_key); ?>" /></td>
     
 <tr>
 <th><label for="lockets_jalan_template"><?php
-_e('表示テンプレート（HTMLで記述）', 'lockets_jalan_template'); ?></label></th> <td>
+_e('じゃらん<br>表示テンプレート<br>（HTMLと置換文字列で記述）<br>※未入力の場合はデフォルトテンプレートで表示', 'lockets_jalan_template'); ?></label></th> <td>
 <textarea cols="80" rows="20" name="lockets_jalan_template" id="lockets_jalan_template">
 <?php echo str_replace('\\','',$lockets_jalan_template); ?>
 </textarea> <br />
