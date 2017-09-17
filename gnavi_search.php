@@ -53,13 +53,14 @@ set_transient( $gurunaviurl, $Buff, 3600 * 24 );
 
 $xml = simplexml_load_string($Buff);
 $shops = $xml->rest;
-
+echo "<table><tr><td>店名</td><td>ID</td></tr>";
 foreach ($shops as $shop) {
-echo locketsh($shop->name)."　";
-echo locketsh($shop->id);
-echo "<br>";
+echo "<tr>";
+echo "<td>".locketsh($shop->name)."</td>";
+echo "<td>".locketsh($shop->id)."</td>";
+echo "</tr>";
 }
-    
+echo "</table>" 
     ?>
     
 </p>    
