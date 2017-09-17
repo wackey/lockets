@@ -4,7 +4,7 @@ Plugin Name: Lockets
 Plugin URI: http://lockets.jp/
 Description: A plug-in that gets information on spots such as shops and inns from various APIs and displays the latest information embedded in the blog.Also, This plugin will assist you such as creating affiliate links. お店や旅館などスポットに関する情報を各種APIから取得し、ブログ内に最新の情報を埋め込んで表示するプラグイン。また、アフィリエイトリンク作成支援を行います。
 Author: wackey
-Version: 0.41
+Version: 0.42
 Author URI: htp://musilog.net/
 License: GPL2
 */
@@ -373,6 +373,7 @@ $lockets_gnavi_template=str_replace('【営業時間】',locketsh($shop->opentim
 $lockets_gnavi_template=str_replace('【休業日】',locketsh($shop->holiday),$lockets_gnavi_template);
 
 $lockets_gnavi_template=str_replace('【最寄駅名】',locketsh($shop->access->line).locketsh($shop->access->station),$lockets_gnavi_template);
+$lockets_gnavi_template=str_replace('【交通アクセス】',locketsh($shop->access->line).locketsh($shop->access->station).locketsh($shop->access->station_exit)."徒歩".locketsh($shop->access->walk)."分<br>".locketsh($shop->access->note),$lockets_gnavi_template);
 
 $lockets_gnavi_template=str_replace('【平均予算】',locketsh($shop->budget),$lockets_gnavi_template);
 $lockets_gnavi_template=str_replace('【宴会・パーティ平均予算】',locketsh($shop->party),$lockets_gnavi_template);
