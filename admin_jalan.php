@@ -15,7 +15,7 @@ $lockets_jalan_template= get_option('lockets_jalan_template');
 ?>
 
 <div class="wrap">
-<h2>LocketsプラグインリクルートWEBサービス関連設定</h2>
+<h2>LocketsプラグインじゃらんWebサービス関連設定</h2>
 <p>じゃらんを利用するための設定です</p>
 <form name="form" method="post" action="">
 <input type="hidden" name="action" value="update" />
@@ -57,13 +57,10 @@ _e('表示テンプレート（HTMLで記述）', 'lockets_jalan_template'); ?><
 
 <h5>クレジット</h5>
 ※クレジットはいずれか必須<br>
-【じぇらんクレジットA】※画像形式　ブルー　88px × 50px<br>
-【じぇらんクレジットB】※画像形式　グレー　88px × 50px<br>
-【じぇらんクレジットC】※テキスト形式<br>
+【じゃらんクレジットA】※画像形式　ブルー　88px × 50px<br>
+【じゃらんクレジットB】※画像形式　グレー　88px × 50px<br>
+【じゃらんクレジットC】※テキスト形式<br>
     
-<br />
-<br />
-例：<br />
 
 </td>
 </tr>

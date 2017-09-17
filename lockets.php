@@ -4,7 +4,7 @@ Plugin Name: Lockets
 Plugin URI: http://lockets.jp/
 Description: A plug-in that gets information on spots such as shops and inns from various APIs and displays the latest information embedded in the blog.Also, This plugin will assist you such as creating affiliate links. お店や旅館などスポットに関する情報を各種APIから取得し、ブログ内に最新の情報を埋め込んで表示するプラグイン。また、アフィリエイトリンク作成支援を行います。
 Author: wackey
-Version: 0.30
+Version: 0.33
 Author URI: htp://musilog.net/
 License: GPL2
 */
@@ -162,7 +162,7 @@ $lockets_jalan_template= <<<EOT
 <p>【宿画像キャプション】<br>
 【郵便番号】<br>
 【住所】</p>
-<p>【じぇらんクレジットA】</p>
+<p>【じゃらんクレジットA】</p>
 EOT;
 }
 $lockets_jalan_template=str_replace('\\','',$lockets_jalan_template);
@@ -182,9 +182,9 @@ $lockets_jalan_template=str_replace('【宿画像キャプション】',locketsh
 $lockets_jalan_template=str_replace('【参考料金】',locketsh($jalanhotel->SampleRateFrom),$lockets_jalan_template);
 
 
-$lockets_jalan_template=str_replace('【じぇらんクレジットA】','<a href="http://www.jalan.net/jw/jwp0000/jww0001.do"><img src="http://www.jalan.net/jalan/doc/jws/images/jws_88_50_blue.gif" alt="じゃらん Web サービス" title="じゃらん Web サービス" border="0"></a>',$lockets_jalan_template);
-$lockets_jalan_template=str_replace('【じぇらんクレジットB】','<a href="http://www.jalan.net/jw/jwp0000/jww0001.do"><img src="http://www.jalan.net/jalan/doc/jws/images/jws_88_50_gray.gif" alt="じゃらん Web サービス" title="じゃらん Web サービス" border="0"></a>',$lockets_jalan_template);
-$lockets_jalan_template=str_replace('【じぇらんクレジットC】','<a href="http://www.jalan.net/jw/jwp0000/jww0001.do">じゃらん Web サービス</a>',$lockets_jalan_template);
+$lockets_jalan_template=str_replace('【じゃらんクレジットA】','<a href="http://www.jalan.net/jw/jwp0000/jww0001.do"><img src="http://www.jalan.net/jalan/doc/jws/images/jws_88_50_blue.gif" alt="じゃらん Web サービス" title="じゃらん Web サービス" border="0"></a>',$lockets_jalan_template);
+$lockets_jalan_template=str_replace('【じゃらんクレジットB】','<a href="http://www.jalan.net/jw/jwp0000/jww0001.do"><img src="http://www.jalan.net/jalan/doc/jws/images/jws_88_50_gray.gif" alt="じゃらん Web サービス" title="じゃらん Web サービス" border="0"></a>',$lockets_jalan_template);
+$lockets_jalan_template=str_replace('【じゃらんクレジットC】','<a href="http://www.jalan.net/jw/jwp0000/jww0001.do">じゃらん Web サービス</a>',$lockets_jalan_template);
 
 //Google Mapsは緯度経度変換のロジックを載せてから対応する 
 //$gmap = lockets_gmap_draw(locketsh($hotelBasicInfo->hotelName),locketsh($hotelBasicInfo->latitude),locketsh($hotelBasicInfo->longitude),$zoom,$width,$height);
@@ -359,7 +359,7 @@ $lockets_gnavi_template=str_replace('【経度】',locketsh($shop->longitude),$l
 $lockets_gnavi_template=str_replace('【フリーワードカテゴリー】',locketsh($shop->category),$lockets_gnavi_template);
 
 $lockets_gnavi_template=str_replace('【店舗URL(PC)】',locketsh($shop->url),$lockets_gnavi_template);
-$lockets_gnavi_template=str_replace('【クーポンURL(PC)】',locketsh($shop->coupon_urls->pc),$lockets_gnavi_template);
+$lockets_gnavi_template=str_replace('【クーポンURL(PC)】',locketsh($shop->coupon_url->pc),$lockets_gnavi_template);
 
 $lockets_gnavi_template=str_replace('【店舗画像1のURL】',locketsh($shop->image_url->shop_image1),$lockets_gnavi_template);
 $lockets_gnavi_template=str_replace('【店舗画像2のURL】',locketsh($shop->image_url->shop_image2),$lockets_gnavi_template);
@@ -443,6 +443,7 @@ require_once("admin_gnavi.php");
 require_once("admin_jalan.php");
 require_once("admin_affiliate.php");
 require_once("admin_gmap.php");
+require_once("gnavi_search.php");
 
 
 // 管理画面メニュー作成関数
@@ -454,6 +455,7 @@ function lockets_menu() {
     add_submenu_page(__FILE__, 'じゃらんWebサービス', 'じゃらんWebサービス', 8, "admin_jalan_webservice", 'lockets_jalan_webservice');
     add_submenu_page(__FILE__, 'その他アフィリエイト', 'その他アフィリエイト', 8, "admin_affiliate", 'lockets_affiliate');
     add_submenu_page(__FILE__, 'Google Maps表示設定', 'Google Maps表示設定', 8, "admin_gmap", 'lockets_gmap');
+        add_submenu_page(__FILE__, '暫定ぐるなびID検索', '暫定ぐるなびID検索', 8, "gnavi_search", 'lockets_gnavi_searchbox');
 }
 
 
@@ -467,8 +469,11 @@ function lockets_options() {
 <h2>Lockets設定画面</h2>
 
 <h3>使い方</h3>
-<p>例えばショートコード<strong>[LocketsRakutenTravel hotelno="xxxxxxx"]</strong>のような感じでホテル番号を指定したらホテルの情報を外部から取得しブログ記事内で表示させます。</p>
+<p>例えばショートコード<strong>[LocketsRakutenTravel hotelno="xxxxxxx"]</strong>のような感じでホテル番号を指定したらホテルの情報を外部から取得しブログ記事内で表示させます。<br>
+これらのショートコードは投稿画面の「Lockets」ボタンを押して表示されるパネルにホテル番号やお店IDなどを入れることで簡単に記事中に挿入できます。</p>
 <p>こちらのページでは設定状況や使える機能の確認が出来ます。</p>
+
+
 <h4>楽天ウェブサービス(RAKUTEN WEBSERVICE)</h4>
 <p><?php
 if ($rakutentoken=="" and $rakutenaffid=="") {echo '<span style="color:red:font-weight:bold;">[NG]</span>楽天ウェブサービス(RAKUTEN WEBSERVICE)の設定がされていません。';} else {echo '<span style="color:#00AA00;:font-weight:bold;">[OK]</span>楽天ウェブサービス(RAKUTEN WEBSERVICE)の設定がされています。';}
@@ -480,6 +485,7 @@ if ($rakutentoken=="" and $rakutenaffid=="") {echo '<span style="color:red:font-
     楽天トラベルの施設（ホテル・旅館等）詳細情報表示ができます。</li>
 </ul>
 
+
 <h4>リクルート WEBサービス</h4>
 <p><?php
 if ($recruit_webservice_key=="") {echo '<span style="color:red:font-weight:bold;">[NG]</span>リクルート WEBサービスの設定がされていません。';} else {echo '<span style="color:#00AA00;:font-weight:bold;">[OK]</span>リクルート WEBサービスの設定がされています。';}
@@ -489,6 +495,18 @@ if ($recruit_webservice_key=="") {echo '<span style="color:red:font-weight:bold;
 <ul>
     <li>[LocketsHotpepper shopno="xxxxxxx"]<br>
     ホットペッパー（HOT PEPPER）の飲食店詳細情報表示ができます。</li>
+</ul>
+
+
+<h4>じゃらんWebサービス</h4>
+<p><?php
+if ($jalan_webservice_key=="") {echo '<span style="color:red:font-weight:bold;">[NG]</span>じゃらんWebサービスの設定がされていません。';} else {echo '<span style="color:#00AA00;:font-weight:bold;">[OK]</span>じゃらんWebサービスの設定がされています。';}
+?> 
+</p>
+<p>じゃらんWebサービスの設定をすると以下の機能が使用出来ます。</p>
+<ul>
+    <li>[LocketsJalan hotelno="xxxxxxx"]<br>
+    じゃらんの宿詳細情報表示ができます。</li>
 </ul>
 <?php
 }
@@ -616,7 +634,7 @@ echo <<< EOS
 				<h2>ぐるなび</h2>
 				<p>
 				<input type="text" id="locketsGurunavi_editer_insert_content" value="" /><br>
-                ぐるばびのお店URLに含まれている「yxxxxxx」（yはアルファベット小文字、xは数字）を入力してください。
+                Lockets管理画面「暫定ぐるなび検索」で表示された店舗IDを入力してください。
 				</p>
 				<input type="button" value="OK" id="locketsGurunavi_ei_btn_yes" class="button button-primary" /> 
 				<input type="button" value="キャンセル" id="locketsGurunavi_ei_btn_no"  class="button" />

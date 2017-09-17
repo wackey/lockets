@@ -4,7 +4,7 @@ Donate link:
 Tags: AD,affiliate,Web API,location
 Requires at least: 4.8
 Tested up to: 4.8.1
-Stable tag: 0.30
+Stable tag: 0.33
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -70,6 +70,8 @@ none.
 An answer to that question.
 
 == Changelog ==
+= 0.31 =
+* admin gnavi panel add.
 = 0.30 =
 * post interface Jalan add,typo modified.
 = 0.24 =
