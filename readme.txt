@@ -71,7 +71,7 @@ An answer to that question.
 
 == Changelog ==
 = 0.42 =
-* admin gnavi panel add.
+* Gurunabi access modified.
 = 0.31 =
 * admin gnavi panel add.
 = 0.30 =
