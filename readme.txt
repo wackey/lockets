@@ -34,7 +34,7 @@ A plug-in that gets information on spots such as shops and inns from various API
 
 * ---USE API---
 
-*Value Commerce Auto MyLink ex.HOT PEPPER ,Jaran's link, etc.
+*Value Commerce Auto MyLink ex.HOT PEPPER ,Jalan's link, etc.
 　https://www.valuecommerce.ne.jp/topics/auto_mylink
  　バリューコマースのオートMyLink機能を使ってホットペッパーやじゃらんのリンクをアフィリエイトリンクに変換する機能もあります。
 
@@ -52,6 +52,7 @@ A plug-in that gets information on spots such as shops and inns from various API
 
 *with Google Maps embed.(Map) https://www.google.co.jp/maps
 　Google Mapsの地図埋め込み機能を使い、WordPressで作成したブログ上に地図を表示します。
+ 上記楽天トラベル、ホットペッパー、ぐるなびの情報と連携して地図表示をします。
 
 
 == Installation ==
