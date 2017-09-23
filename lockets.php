@@ -4,7 +4,7 @@ Plugin Name: Lockets
 Plugin URI: http://lockets.jp/
 Description: A plug-in that gets information on spots such as shops and inns from various APIs and displays the latest information embedded in the blog.Also, This plugin will assist you such as creating affiliate links. お店や旅館などスポットに関する情報を各種APIから取得し、ブログ内に最新の情報を埋め込んで表示するプラグイン。また、アフィリエイトリンク作成支援を行います。
 Author: wackey
-Version: 0.42
+Version: 0.43
 Author URI: htp://musilog.net/
 License: GPL2
 */
@@ -648,46 +648,96 @@ function add_vc_automylink() {
 /* ボタン */
 //media_buttons_contextフィルターフック
 add_filter( "media_buttons_context", "lockets_media_buttons_context");
+add_filter( "media_buttons_context", "lockets_media_buttons_context2");
 
 //ボタン追加
 function lockets_media_buttons_context ( $context ) {
 
  $context .= <<<EOS
-    <a title='Lockets' href='media-upload.php?tab=locketsHotpepper&type=locketsType1&TB_iframe=true&width=600&height=550' class='thickbox button'>Lockets</a>
+    <a title='Lockets' href='media-upload.php?tab=locketsInterface&type=locketsInterface&TB_iframe=true&width=600&height=550' class='thickbox button'>Lockets</a>
 EOS;
  return $context;
 }
 
+function lockets_media_buttons_context2 ( $context ) {
+
+ $context .= <<<EOS
+    <a title='Search' href='media-upload.php?tab=locketsSearch&type=locketsSearch&TB_iframe=true&width=600&height=550' class='thickbox button'>Lockets Searchβ</a>
+EOS;
+ return $context;
+}
+
+
+
 /* コンテンツ */
 // ポップアップウインドウの作成
-add_action( 'media_upload_locketsType1',  'lockets1_wp_iframe' );
-add_action( "admin_head-media-upload-popup", 'lockets1_head');
+add_action( 'media_upload_locketsInterface',  'locketsInterface_wp_iframe' );
+add_action( 'media_upload_locketsSearch',  'locketsSearch_wp_iframe' );
+add_action( "admin_head-media-upload-popup", 'lockets_head');
 
-function lockets1_wp_iframe() {
+function locketsInterface_wp_iframe() {
         wp_iframe( media_upload_lockets1_form );
+}
+function locketsSearch_wp_iframe() {
+        wp_iframe( media_upload_lockets2_form );
 }
 
 //検索インタフェース用
 function media_upload_lockets2_form() {
-	add_filter( "media_upload_tabs", "lockets1_upload_tabs"  ,1000);
+	add_filter( "media_upload_tabs", "lockets_upload_tabs"  ,1000);
 	media_upload_header();
+
+$searchword = sanitize_text_field($_GET['searchword']);
     
 echo <<< EOS
 <div id="test">
-			<form action="">
-				<h2>検索窓</h2>
+			<form action="media-upload.php" method="get">
+				<h2>Lockets Search（検索β）</h2>
 				<p>
-				<input type="text" id= value="" /><br>
+				<input type="text" name="searchword" value="$searchword" /><br>
 				</p>
-				<input type="submit" value="OK" class="button button-primary" /> 
+                <input type="hidden" name="tab" value="locketsSearch">
+                <input type="hidden" name="type" value="locketsSearch">
+                <input type="hidden" name="TB_iframe" value="true">
+                <input type="hidden" name="width" value="600">
+                <input type="hidden" name="height" value="550">
+				<input type="submit" value="検索" class="button button-primary" /> 
 			</form>
 </div>
 EOS;
+
+echo "<div id='searchresult'>";
+if ($searchword !== "") {
+/*ぐるなび検索*/
+    $gnavi_webservice_key= get_option('gnavi_webservice_key');
+    // リクエストURL
+    $gurunaviurl="https://api.gnavi.co.jp/RestSearchAPI/20150630/?keyid=$gnavi_webservice_key&format=xml&name=$searchword&coordinates_mode=2";
+
+    // キャッシュ有無確認
+    $Buff = get_transient( $gurunaviurl );
+    if ( $Buff === false ) {
+    $Buff = file_get_contents($gurunaviurl);
+    set_transient( $gurunaviurl, $Buff, 3600 * 24 );
+    }
+
+    $xml = simplexml_load_string($Buff);
+    $shops = $xml->rest;
+        echo "<form action=''><ul>";
+    foreach ($shops as $shop) {
+
+    echo "<li><input type='button' id='".locketsh($shop->id)."' value='挿入'>".locketsh($shop->name)."（".locketsh($shop->id)."）</li>";
+
+    }
+       echo "</ul></form>";
+}
+
+echo "</div>";
+
 }
 
 //コンテンツ
 function media_upload_lockets1_form() {
-	add_filter( "media_upload_tabs", "lockets1_upload_tabs"  ,1000);
+	add_filter( "media_upload_tabs", "lockets_upload_tabs"  ,1000);
 	media_upload_header();
     
 echo <<< EOS
@@ -750,8 +800,19 @@ EOS;
 }
 
 // jQuery
-function lockets1_head(){
+function lockets_head(){
 		echo <<< EOS
+			<script type="text/javascript">
+			jQuery(function($) {
+            $(document).ready(function() {
+                $('#searchresult input').on('click', function() {
+                top.send_to_editor( '[LocketsGurunavi shopid="' + this.id + '"]');
+                top.tb_remove(); 
+                });
+
+                });
+            })
+            </script>
 			<script type="text/javascript">
 			jQuery(function($) {
 		
@@ -882,10 +943,11 @@ EOS;
 
 
 //　タブ
-function lockets1_upload_tabs( $tabs )
+function lockets_upload_tabs( $tabs )
 {
 	$tabs=array();
-	$tabs[ "locketsHotpepper" ] = "Lockets" ;
+    $tabs[ "locketsInterface" ] = "Lockets" ;
+    $tabs[ "locketsSearch" ] = "検索β" ;
 	return $tabs;
 }
 
