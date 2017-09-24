@@ -4,7 +4,7 @@ Donate link:
 Tags: AD,affiliate,Web API,location
 Requires at least: 4.8
 Tested up to: 4.8.1
-Stable tag: 0.43
+Stable tag: 0.44
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -71,6 +71,9 @@ none.
 An answer to that question.
 
 == Changelog ==
+= 0.44 =
+* We added a function to search for restaurants and hotels from the Lockets button on the submission screen and insert short codes there.
+　投稿画面のLocketsボタンから飲食店やホテルを検索し、そこからショートコードを挿入する機能を追加しました。
 = 0.42 =
 * Gurunabi access modified.
 = 0.31 =
@@ -97,12 +100,5 @@ An answer to that question.
 * HTML template sanitize changed.
 = 0.12 =
 * Function name change.remove_script_tag -> lockets_remove_script_tag
-= 0.08 =
-* Rakuten Travel Search API,and HOTPEPPER Search API.
-= 0.02 =
-* Delete Yahoo! kanren search.
-= 0.01 =
-* Rakuten Travel Search,hotelno.
-
 
 

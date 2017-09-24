@@ -4,7 +4,7 @@ Plugin Name: Lockets
 Plugin URI: http://lockets.jp/
 Description: A plug-in that gets information on spots such as shops and inns from various APIs and displays the latest information embedded in the blog.Also, This plugin will assist you such as creating affiliate links. お店や旅館などスポットに関する情報を各種APIから取得し、ブログ内に最新の情報を埋め込んで表示するプラグイン。また、アフィリエイトリンク作成支援を行います。
 Author: wackey
-Version: 0.43
+Version: 0.44
 Author URI: htp://musilog.net/
 License: GPL2
 */
@@ -50,14 +50,14 @@ extract(shortcode_atts(array(
 
 // リクエストURL
 $rwsurl="https://app.rakuten.co.jp/services/api/Travel/HotelDetailSearch/20170426?applicationId=$rakutentoken&affiliateId=$rakutenaffid&format=xml&hotelNo=$hotelno&datumType=1";
-//echo $rwsurl;//■テスト用
+
 // キャッシュ有無確認
-$Buff = get_transient( $hotelno );
+$Buff = get_transient( $rwsurl );
 if ( $Buff === false ) {
 $options['ssl']['verify_peer']=false;
 $options['ssl']['verify_peer_name']=false;
 $Buff = file_get_contents($rwsurl,false, stream_context_create($options));
-set_transient( $hotelno, $Buff, 3600 * 24 );
+set_transient( $rwsurl, $Buff, 3600 * 24 );
 }
 
 $xml = simplexml_load_string($Buff);
@@ -217,7 +217,7 @@ $recruiturl="http://webservice.recruit.co.jp/hotpepper/gourmet/v1/?key=$recruit_
 //echo $recruiturl;//■テスト用
 
 // キャッシュ有無確認
-$Buff = get_transient( $shopid );
+$Buff = get_transient( $recruiturl );
 if ( $Buff === false ) {
 $Buff = file_get_contents($recruiturl);
 set_transient( $shopid, $Buff, 3600 * 24 );
@@ -688,50 +688,125 @@ function media_upload_lockets2_form() {
 	media_upload_header();
 
 $searchword = sanitize_text_field($_GET['searchword']);
-    
+$useapi = sanitize_text_field($_GET['usuapi']);
+
 echo <<< EOS
 <div id="test">
-			<form action="media-upload.php" method="get">
-				<h2>Lockets Search（検索β）</h2>
-				<p>
-				<input type="text" name="searchword" value="$searchword" /><br>
-				</p>
-                <input type="hidden" name="tab" value="locketsSearch">
-                <input type="hidden" name="type" value="locketsSearch">
-                <input type="hidden" name="TB_iframe" value="true">
-                <input type="hidden" name="width" value="600">
-                <input type="hidden" name="height" value="550">
-				<input type="submit" value="検索" class="button button-primary" /> 
-			</form>
+    <form action="media-upload.php" method="get">
+        <h2>Lockets Search（検索β）</h2>
+        <p>
+        <input type="text" name="searchword" value="$searchword" /><br>
+        <input type="radio" name="usuapi" value="ホットペッパー" checked> ホットペッパー　
+        <input type="radio" name="usuapi" value="ぐるなび"> ぐるなび　
+        <input type="radio" name="usuapi" value="楽天トラベル"> 楽天トラベル　
+        <input type="radio" name="usuapi" value="じゃらん"> じゃらん　
+        </p>
+        <input type="hidden" name="tab" value="locketsSearch">
+        <input type="hidden" name="type" value="locketsSearch">
+        <input type="hidden" name="TB_iframe" value="true">
+        <input type="hidden" name="width" value="600">
+        <input type="hidden" name="height" value="550">
+        <input type="submit" value="検索" class="button button-primary" /> 
+    </form>
 </div>
 EOS;
 
-echo "<div id='searchresult'>";
+
+
 if ($searchword !== "") {
-/*ぐるなび検索*/
-    $gnavi_webservice_key= get_option('gnavi_webservice_key');
-    // リクエストURL
-    $gurunaviurl="https://api.gnavi.co.jp/RestSearchAPI/20150630/?keyid=$gnavi_webservice_key&format=xml&name=$searchword&coordinates_mode=2";
 
-    // キャッシュ有無確認
-    $Buff = get_transient( $gurunaviurl );
-    if ( $Buff === false ) {
-    $Buff = file_get_contents($gurunaviurl);
-    set_transient( $gurunaviurl, $Buff, 3600 * 24 );
-    }
 
-    $xml = simplexml_load_string($Buff);
-    $shops = $xml->rest;
-        echo "<form action=''><ul>";
-    foreach ($shops as $shop) {
+switch ($useapi) {
+    case 'ホットペッパー':
+        $recruit_webservice_key= get_option('recruit_webservice_key');
+        $recruiturl="http://webservice.recruit.co.jp/hotpepper/gourmet/v1/?key=$recruit_webservice_key&name=$searchword&datum=world";
+        
+        // キャッシュ有無確認
+        $Buff = get_transient( $recruiturl );
+        if ( $Buff === false ) {
+            $Buff = file_get_contents($recruiturl);
+            set_transient( $shopid, $Buff, 3600 * 24 );
+        }
+        
+        $xml = simplexml_load_string($Buff);
+        $shops = $xml->shop;
+        echo "<form action='' id='hotpepperresult'><ul>";
+        foreach ($shops as $shop) {
+            echo "<li><input type='button' id='".locketsh($shop->id)."' value='挿入'>".locketsh($shop->name)."（".locketsh($shop->id)."）</li>";
+        }
+        echo "</ul></form>";
+    break;
 
-    echo "<li><input type='button' id='".locketsh($shop->id)."' value='挿入'>".locketsh($shop->name)."（".locketsh($shop->id)."）</li>";
+    case 'ぐるなび':
+        $gnavi_webservice_key= get_option('gnavi_webservice_key');
+        $gurunaviurl="https://api.gnavi.co.jp/RestSearchAPI/20150630/?keyid=$gnavi_webservice_key&format=xml&name=$searchword&coordinates_mode=2";
 
-    }
-       echo "</ul></form>";
+        // キャッシュ有無確認
+        $Buff = get_transient( $gurunaviurl );
+        if ( $Buff === false ) {
+            $Buff = file_get_contents($gurunaviurl);
+            set_transient( $gurunaviurl, $Buff, 3600 * 24 );
+        }
+
+        $xml = simplexml_load_string($Buff);
+        $shops = $xml->rest;
+        echo "<form action='' id='gurunaviresult'><ul>";
+        foreach ($shops as $shop) {
+            echo "<li><input type='button' id='".locketsh($shop->id)."' value='挿入'>".locketsh($shop->name)."（".locketsh($shop->id)."）</li>";
+        }
+        echo "</ul></form>";
+    break;
+
+    case '楽天トラベル':
+        $rakutentoken= get_option('rakuten_search_token');
+        $rakutenaffid= get_option('rakuten_affiliate_id');
+        $rwsurl="https://app.rakuten.co.jp/services/api/Travel/KeywordHotelSearch/20170426?applicationId=$rakutentoken&affiliateId=$rakutenaffid&format=xml&keyword=$searchword&datumType=1";
+
+        // キャッシュ有無確認
+        $Buff = get_transient( $rwsurl );
+        if ( $Buff === false ) {
+            $options['ssl']['verify_peer']=false;
+            $options['ssl']['verify_peer_name']=false;
+            $Buff = file_get_contents($rwsurl,false, stream_context_create($options));
+            set_transient( $rwsurl, $Buff, 3600 * 24 );
+        }
+
+        $xml = simplexml_load_string($Buff);
+        $hotels = $xml->hotels->hotel;
+
+        echo "<form action='' id='rakutentravelresult'><ul>";
+        foreach ($hotels as $hotel) {
+            echo "<li><input type='button' id='".locketsh($hotel->hotelBasicInfo->hotelNo)."' value='挿入'>".locketsh($hotel->hotelBasicInfo->hotelName)."（".locketsh($hotel->hotelBasicInfo->hotelNo)."）</li>";
+        }
+        echo "</ul></form>";
+
+    break;
+
+    case 'じゃらん':
+        $jalan_webservice_key= get_option('jalan_webservice_key');
+        $jalanurl="http://jws.jalan.net/APIAdvance/HotelSearch/V1/?key=$jalan_webservice_key&h_name=$searchword";
+
+        // キャッシュ有無確認
+        $Buff = get_transient($jalanurl);
+        if ( $Buff === false ) {
+            $Buff = file_get_contents($jalanurl);
+            set_transient($jalanurl, $Buff, 3600 * 24 );
+        }
+
+        $xml = @simplexml_load_string($Buff);//warning防止
+        $jalanhotel = $xml->Hotel;
+
+        echo "<form action='' id='jalanresult'><ul>";
+        foreach ($jalanhotel as $hotel) {
+            echo "<li><input type='button' id='".locketsh($hotel->HotelID)."' value='挿入'>".locketsh($hotel->HotelName)."（".locketsh($hotel->HotelID)."）</li>";
+        }
+        echo "</ul></form>";
+
+    break;
 }
 
-echo "</div>";
+
+}
 
 }
 
@@ -805,9 +880,21 @@ function lockets_head(){
 			<script type="text/javascript">
 			jQuery(function($) {
             $(document).ready(function() {
-                $('#searchresult input').on('click', function() {
-                top.send_to_editor( '[LocketsGurunavi shopid="' + this.id + '"]');
-                top.tb_remove(); 
+                $('#gurunaviresult input').on('click', function() {
+                    top.send_to_editor( '[LocketsGurunavi shopid="' + this.id + '"]');
+                    top.tb_remove(); 
+                });
+                $('#hotpepperresult input').on('click', function() {
+                    top.send_to_editor( '[LocketsHotpepper shopid="' + this.id + '"]');
+                    top.tb_remove(); 
+                });
+                $('#rakutentravelresult input').on('click', function() {
+                    top.send_to_editor( '[LocketsRakutenTravel hotelno="' + this.id + '"]');
+                    top.tb_remove(); 
+                });
+                $('#jalanresult input').on('click', function() {
+                    top.send_to_editor( '[LocketsJalan hotelno="' + this.id + '"]');
+                    top.tb_remove(); 
                 });
 
                 });
