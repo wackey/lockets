@@ -4,7 +4,7 @@ Plugin Name: Lockets
 Plugin URI: http://lockets.jp/
 Description: A plug-in that gets information on spots such as shops and inns from various APIs and displays the latest information embedded in the blog.Also, This plugin will assist you such as creating affiliate links. お店や旅館などスポットに関する情報を各種APIから取得し、ブログ内に最新の情報を埋め込んで表示するプラグイン。また、アフィリエイトリンク作成支援を行います。
 Author: wackey
-Version: 0.44
+Version: 0.45
 Author URI: htp://musilog.net/
 License: GPL2
 */
@@ -687,7 +687,7 @@ function media_upload_lockets2_form() {
 	add_filter( "media_upload_tabs", "lockets_upload_tabs"  ,1000);
 	media_upload_header();
 
-$searchword = sanitize_text_field($_GET['searchword']);
+$searchword =sanitize_text_field($_GET['searchword']);
 $useapi = sanitize_text_field($_GET['usuapi']);
 
 echo <<< EOS
@@ -715,11 +715,12 @@ EOS;
 
 if ($searchword !== "") {
 
+$url4searchword=urlencode($searchword);
 
 switch ($useapi) {
     case 'ホットペッパー':
         $recruit_webservice_key= get_option('recruit_webservice_key');
-        $recruiturl="http://webservice.recruit.co.jp/hotpepper/gourmet/v1/?key=$recruit_webservice_key&name=$searchword&datum=world";
+        $recruiturl="http://webservice.recruit.co.jp/hotpepper/gourmet/v1/?key=$recruit_webservice_key&name=$url4searchword&datum=world";
         
         // キャッシュ有無確認
         $Buff = get_transient( $recruiturl );
@@ -739,7 +740,7 @@ switch ($useapi) {
 
     case 'ぐるなび':
         $gnavi_webservice_key= get_option('gnavi_webservice_key');
-        $gurunaviurl="https://api.gnavi.co.jp/RestSearchAPI/20150630/?keyid=$gnavi_webservice_key&format=xml&name=$searchword&coordinates_mode=2";
+        $gurunaviurl="https://api.gnavi.co.jp/RestSearchAPI/20150630/?keyid=$gnavi_webservice_key&format=xml&name=$url4searchword&coordinates_mode=2";
 
         // キャッシュ有無確認
         $Buff = get_transient( $gurunaviurl );
@@ -760,31 +761,36 @@ switch ($useapi) {
     case '楽天トラベル':
         $rakutentoken= get_option('rakuten_search_token');
         $rakutenaffid= get_option('rakuten_affiliate_id');
-        $rwsurl="https://app.rakuten.co.jp/services/api/Travel/KeywordHotelSearch/20170426?applicationId=$rakutentoken&affiliateId=$rakutenaffid&format=xml&keyword=$searchword&datumType=1";
+        $rwsurl="https://app.rakuten.co.jp/services/api/Travel/KeywordHotelSearch/20170426?applicationId=$rakutentoken&affiliateId=$rakutenaffid&format=xml&keyword=$url4searchword&datumType=1";
 
         // キャッシュ有無確認
         $Buff = get_transient( $rwsurl );
         if ( $Buff === false ) {
             $options['ssl']['verify_peer']=false;
             $options['ssl']['verify_peer_name']=false;
-            $Buff = file_get_contents($rwsurl,false, stream_context_create($options));
+            if ($Buff = @file_get_contents($rwsurl,false, stream_context_create($options))) {
+                $rakutentravelerror = "1";
             set_transient( $rwsurl, $Buff, 3600 * 24 );
+            }
         }
 
         $xml = simplexml_load_string($Buff);
         $hotels = $xml->hotels->hotel;
-
-        echo "<form action='' id='rakutentravelresult'><ul>";
-        foreach ($hotels as $hotel) {
-            echo "<li><input type='button' id='".locketsh($hotel->hotelBasicInfo->hotelNo)."' value='挿入'>".locketsh($hotel->hotelBasicInfo->hotelName)."（".locketsh($hotel->hotelBasicInfo->hotelNo)."）</li>";
+        
+        if ($rakutentravelerror == "1") {
+            echo "<form action='' id='rakutentravelresult'><ul>";
+            foreach ($hotels as $hotel) {
+                echo "<li><input type='button' id='".locketsh($hotel->hotelBasicInfo->hotelNo)."' value='挿入'>".locketsh($hotel->hotelBasicInfo->hotelName)."（".locketsh($hotel->hotelBasicInfo->hotelNo)."）</li>";
+            }
+            echo "</ul></form>";
+        } else {
+            echo "<p>検索結果はありませんでした。</p>";
         }
-        echo "</ul></form>";
-
     break;
 
     case 'じゃらん':
         $jalan_webservice_key= get_option('jalan_webservice_key');
-        $jalanurl="http://jws.jalan.net/APIAdvance/HotelSearch/V1/?key=$jalan_webservice_key&h_name=$searchword";
+        $jalanurl="http://jws.jalan.net/APIAdvance/HotelSearch/V1/?key=$jalan_webservice_key&h_name=$url4searchword";
 
         // キャッシュ有無確認
         $Buff = get_transient($jalanurl);

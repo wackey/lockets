@@ -45,11 +45,7 @@ _e('楽天トラベル<br>表示テンプレート<br>（HTMLと置換文字列�
 <textarea cols="80" rows="20" name="lockets_rakuten_travel_template" id="lockets_rakuten_travel_template">
 <?php echo str_replace('\\','',$lockets_rakuten_travel_template); ?>
 </textarea>
-</td>
-</tr>
-
-</tbody></table>
-
+    
 <h4>置き換え用の文字列は下記のとおり</h4>
 【施設番号】
 【施設名称】
@@ -85,6 +81,12 @@ _e('楽天トラベル<br>表示テンプレート<br>（HTMLと置換文字列�
 【楽天ウェブサービスクレジットB】※画像形式　Lサイズ（スクエア版）70px × 52px<br>
 【楽天ウェブサービスクレジットC】※画像形式　Sサイズ（バナー版）221px × 21px<br>
 【楽天ウェブサービスクレジットD】※テキスト形式<br>
+</td>
+</tr>
+
+</tbody></table>
+
+
 <p class="submit">
 <input type="submit" name="update_option" class="button-primary" value="<?php _e('Save Changes'); ?>" />
 </p>

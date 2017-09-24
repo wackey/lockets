@@ -4,7 +4,7 @@ Donate link:
 Tags: AD,affiliate,Web API,location
 Requires at least: 4.8
 Tested up to: 4.8.1
-Stable tag: 0.44
+Stable tag: 0.45
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -71,7 +71,7 @@ none.
 An answer to that question.
 
 == Changelog ==
-= 0.44 =
+= 0.45 =
 * We added a function to search for restaurants and hotels from the Lockets button on the submission screen and insert short codes there.
 　投稿画面のLocketsボタンから飲食店やホテルを検索し、そこからショートコードを挿入する機能を追加しました。
 = 0.42 =
