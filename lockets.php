@@ -4,7 +4,7 @@ Plugin Name: Lockets
 Plugin URI: http://lockets.jp/
 Description: A plug-in that gets information on spots such as shops and inns from various APIs and displays the latest information embedded in the blog.Also, This plugin will assist you such as creating affiliate links. お店や旅館などスポットに関する情報を各種APIから取得し、ブログ内に最新の情報を埋め込んで表示するプラグイン。また、アフィリエイトリンク作成支援を行います。
 Author: wackey
-Version: 0.45
+Version: 0.46
 Author URI: htp://musilog.net/
 License: GPL2
 */
@@ -733,8 +733,9 @@ switch ($useapi) {
         $shops = $xml->shop;
         echo "<form action='' id='hotpepperresult'><ul>";
         foreach ($shops as $shop) {
-            echo "<li><input type='button' id='".locketsh($shop->id)."' value='挿入'>".locketsh($shop->name)."（".locketsh($shop->id)."）</li>";
+            echo "<li><input type='button' id='".locketsh($shop->id)."' value='挿入' class='button'>　".locketsh($shop->name)."（".locketsh($shop->id)."）</li>";
         }
+        echo '<li>Powered by <a href="http://webservice.recruit.co.jp/">ホットペッパー Webサービス</a></li>';
         echo "</ul></form>";
     break;
 
@@ -753,8 +754,9 @@ switch ($useapi) {
         $shops = $xml->rest;
         echo "<form action='' id='gurunaviresult'><ul>";
         foreach ($shops as $shop) {
-            echo "<li><input type='button' id='".locketsh($shop->id)."' value='挿入'>".locketsh($shop->name)."（".locketsh($shop->id)."）</li>";
+            echo "<li><input type='button' id='".locketsh($shop->id)."' value='挿入' class='button'>　".locketsh($shop->name)."（".locketsh($shop->id)."）</li>";
         }
+        echo '<li>Supported by <a href="http://api.gnavi.co.jp/api/scope/" target="_blank">ぐるなびWebService</a></li>';
         echo "</ul></form>";
     break;
 
@@ -780,8 +782,11 @@ switch ($useapi) {
         if ($rakutentravelerror == "1") {
             echo "<form action='' id='rakutentravelresult'><ul>";
             foreach ($hotels as $hotel) {
-                echo "<li><input type='button' id='".locketsh($hotel->hotelBasicInfo->hotelNo)."' value='挿入'>".locketsh($hotel->hotelBasicInfo->hotelName)."（".locketsh($hotel->hotelBasicInfo->hotelNo)."）</li>";
+                echo "<li><input type='button' id='".locketsh($hotel->hotelBasicInfo->hotelNo)."' value='挿入' class='button'>　".locketsh($hotel->hotelBasicInfo->hotelName)."（".locketsh($hotel->hotelBasicInfo->hotelNo)."）</li>";
             }
+            echo '<li><!-- Rakuten Web Services Attribution Snippet FROM HERE -->
+<a href="https://webservice.rakuten.co.jp/" target="_blank">Supported by 楽天ウェブサービス</a>
+<!-- Rakuten Web Services Attribution Snippet TO HERE --></li>';
             echo "</ul></form>";
         } else {
             echo "<p>検索結果はありませんでした。</p>";
@@ -804,8 +809,9 @@ switch ($useapi) {
 
         echo "<form action='' id='jalanresult'><ul>";
         foreach ($jalanhotel as $hotel) {
-            echo "<li><input type='button' id='".locketsh($hotel->HotelID)."' value='挿入'>".locketsh($hotel->HotelName)."（".locketsh($hotel->HotelID)."）</li>";
+            echo "<li><input type='button' id='".locketsh($hotel->HotelID)."' value='挿入' class='button'>　".locketsh($hotel->HotelName)."（".locketsh($hotel->HotelID)."）</li>";
         }
+        echo '<li><a href="http://www.jalan.net/jw/jwp0000/jww0001.do">じゃらん Web サービス</a></li>';
         echo "</ul></form>";
 
     break;
