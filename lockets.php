@@ -177,7 +177,7 @@ $lockets_jalan_template=str_replace('【キャッチ】',locketsh($jalanhotel->H
 $lockets_jalan_template=str_replace('【コピー】',locketsh($jalanhotel->HotelCaption),$lockets_jalan_template);
 
 $lockets_jakan_yadogazo=str_replace ("http://","https://",locketsh($jalanhotel->PictureURL));
-$lockets_jalan_template=str_replace('【宿画像URL】',locketsh($jalanhotel->PictureURL),$lockets_jalan_template);
+$lockets_jalan_template=str_replace('【宿画像URL】',$lockets_jakan_yadogazo,$lockets_jalan_template);
 $lockets_jalan_template=str_replace('【宿画像キャプション】',locketsh($jalanhotel->PictureCaption),$lockets_jalan_template);
 
 $lockets_jalan_template=str_replace('【参考料金】',locketsh($jalanhotel->SampleRateFrom),$lockets_jalan_template);
