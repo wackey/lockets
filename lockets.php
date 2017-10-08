@@ -4,7 +4,7 @@ Plugin Name: Lockets
 Plugin URI: http://lockets.jp/
 Description: A plug-in that gets information on spots such as shops and inns from various APIs and displays the latest information embedded in the blog.Also, This plugin will assist you such as creating affiliate links. お店や旅館などスポットに関する情報を各種APIから取得し、ブログ内に最新の情報を埋め込んで表示するプラグイン。また、アフィリエイトリンク作成支援を行います。
 Author: wackey
-Version: 0.46
+Version: 0.47
 Author URI: htp://musilog.net/
 License: GPL2
 */
@@ -176,14 +176,15 @@ $lockets_jalan_template=str_replace('【宿詳細ページURL】',locketsh($jala
 $lockets_jalan_template=str_replace('【キャッチ】',locketsh($jalanhotel->HotelCatchCopy),$lockets_jalan_template);
 $lockets_jalan_template=str_replace('【コピー】',locketsh($jalanhotel->HotelCaption),$lockets_jalan_template);
 
+$lockets_jakan_yadogazo=str_replace ("http://","https://",locketsh($jalanhotel->PictureURL));
 $lockets_jalan_template=str_replace('【宿画像URL】',locketsh($jalanhotel->PictureURL),$lockets_jalan_template);
 $lockets_jalan_template=str_replace('【宿画像キャプション】',locketsh($jalanhotel->PictureCaption),$lockets_jalan_template);
 
 $lockets_jalan_template=str_replace('【参考料金】',locketsh($jalanhotel->SampleRateFrom),$lockets_jalan_template);
 
 
-$lockets_jalan_template=str_replace('【じゃらんクレジットA】','<a href="http://www.jalan.net/jw/jwp0000/jww0001.do"><img src="http://www.jalan.net/jalan/doc/jws/images/jws_88_50_blue.gif" alt="じゃらん Web サービス" title="じゃらん Web サービス" border="0"></a>',$lockets_jalan_template);
-$lockets_jalan_template=str_replace('【じゃらんクレジットB】','<a href="http://www.jalan.net/jw/jwp0000/jww0001.do"><img src="http://www.jalan.net/jalan/doc/jws/images/jws_88_50_gray.gif" alt="じゃらん Web サービス" title="じゃらん Web サービス" border="0"></a>',$lockets_jalan_template);
+$lockets_jalan_template=str_replace('【じゃらんクレジットA】','<a href="http://www.jalan.net/jw/jwp0000/jww0001.do"><img src="https://www.jalan.net/jalan/doc/jws/images/jws_88_50_blue.gif" alt="じゃらん Web サービス" title="じゃらん Web サービス" border="0"></a>',$lockets_jalan_template);
+$lockets_jalan_template=str_replace('【じゃらんクレジットB】','<a href="http://www.jalan.net/jw/jwp0000/jww0001.do"><img src="https://www.jalan.net/jalan/doc/jws/images/jws_88_50_gray.gif" alt="じゃらん Web サービス" title="じゃらん Web サービス" border="0"></a>',$lockets_jalan_template);
 $lockets_jalan_template=str_replace('【じゃらんクレジットC】','<a href="http://www.jalan.net/jw/jwp0000/jww0001.do">じゃらん Web サービス</a>',$lockets_jalan_template);
 
 //Google Mapsは緯度経度変換のロジックを載せてから対応する 
