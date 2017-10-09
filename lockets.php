@@ -385,8 +385,8 @@ $lockets_gnavi_template=str_replace('【PR文（短:最大50文字）】',locket
 $lockets_gnavi_template=str_replace('【PR文（長:最大200文字）】',locketsh($shop->pr->pr_long),$lockets_gnavi_template);
 
 
-$lockets_gnavi_template=str_replace('【ぐるなびクレジットA】','<a href="http://api.gnavi.co.jp/api/scope/" target="_blank"><img src="http://api.gnavi.co.jp/api/img/credit/api_155_20.gif" width="155" height="20" border="0" alt="グルメ情報検索サイト　ぐるなび"></a>',$lockets_gnavi_template);
-$lockets_gnavi_template=str_replace('【ぐるなびクレジットB】','<a href="http://api.gnavi.co.jp/api/scope/" target="_blank"><img src="http://api.gnavi.co.jp/api/img/credit/api_90_35.gif" width="90" height="35" border="0" alt="グルメ情報検索サイト　ぐるなび"></a>',$lockets_gnavi_template);
+$lockets_gnavi_template=str_replace('【ぐるなびクレジットA】','<a href="http://api.gnavi.co.jp/api/scope/" target="_blank"><img src="https://api.gnavi.co.jp/api/img/credit/api_155_20.gif" width="155" height="20" border="0" alt="グルメ情報検索サイト　ぐるなび"></a>',$lockets_gnavi_template);
+$lockets_gnavi_template=str_replace('【ぐるなびクレジットB】','<a href="http://api.gnavi.co.jp/api/scope/" target="_blank"><img src="https://api.gnavi.co.jp/api/img/credit/api_90_35.gif" width="90" height="35" border="0" alt="グルメ情報検索サイト　ぐるなび"></a>',$lockets_gnavi_template);
 $lockets_gnavi_template=str_replace('【ぐるなびクレジットC】','Supported by <a href="http://api.gnavi.co.jp/api/scope/" target="_blank">ぐるなびWebService</a>',$lockets_gnavi_template);
 $gmap = lockets_gmap_draw(locketsh($shop->name),locketsh($shop->latitude),locketsh($shop->longitude),$zoom,$width,$height);
 $lockets_gnavi_template=str_replace('【Google Maps埋め込み】',$gmap,$lockets_gnavi_template);
