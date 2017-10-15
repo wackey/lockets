@@ -4,7 +4,7 @@ Donate link:
 Tags: AD,affiliate,Web API,location
 Requires at least: 4.8
 Tested up to: 4.8.1
-Stable tag: 0.47
+Stable tag: 0.48
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -71,6 +71,8 @@ none.
 An answer to that question.
 
 == Changelog ==
+= 0.48 =
+* 各種クレジットバナーのSSL対応（各社に確認済み）
 = 0.47 =
 * jalan picture http:// -> https://
 　じゃらんのAPIから呼び出した画像が常時SSLのURLではないので、常時SSL対応になるように書き換えを行った（じゃらんに問い合わせ確認済み）

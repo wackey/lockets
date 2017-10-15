@@ -4,7 +4,7 @@ Plugin Name: Lockets
 Plugin URI: http://lockets.jp/
 Description: A plug-in that gets information on spots such as shops and inns from various APIs and displays the latest information embedded in the blog.Also, This plugin will assist you such as creating affiliate links. お店や旅館などスポットに関する情報を各種APIから取得し、ブログ内に最新の情報を埋め込んで表示するプラグイン。また、アフィリエイトリンク作成支援を行います。
 Author: wackey
-Version: 0.47
+Version: 0.48
 Author URI: https://musilog.net/
 License: GPL2
 */
@@ -162,6 +162,7 @@ $lockets_jalan_template= <<<EOT
 <p>【宿画像キャプション】<br>
 【郵便番号】<br>
 【住所】</p>
+
 <p>【じゃらんクレジットA】</p>
 EOT;
 }
@@ -445,7 +446,7 @@ require_once("admin_gnavi.php");
 require_once("admin_jalan.php");
 require_once("admin_affiliate.php");
 require_once("admin_gmap.php");
-require_once("gnavi_search.php");
+
 
 
 // 管理画面メニュー作成関数
@@ -456,8 +457,6 @@ function lockets_menu() {
     add_submenu_page(__FILE__, 'ぐるなびWebサービス', 'ぐるなびWebサービス', 8, "admin_gnavi_webservice", 'lockets_gnavi_webservice');
     add_submenu_page(__FILE__, 'じゃらんWebサービス', 'じゃらんWebサービス', 8, "admin_jalan_webservice", 'lockets_jalan_webservice');
     add_submenu_page(__FILE__, 'その他アフィリエイト', 'その他アフィリエイト', 8, "admin_affiliate", 'lockets_affiliate');
-    add_submenu_page(__FILE__, 'Google Maps表示設定', 'Google Maps表示設定', 8, "admin_gmap", 'lockets_gmap');
-        add_submenu_page(__FILE__, '暫定ぐるなびID検索', '暫定ぐるなびID検索', 8, "gnavi_search", 'lockets_gnavi_searchbox');
 }
 
 
@@ -476,10 +475,15 @@ function lockets_options() {
 <h2>Lockets設定画面</h2>
 
 <h2>使い方</h2>
-<p>例えばショートコード<strong>[LocketsRakutenTravel hotelno="xxxxxxx"]</strong>のような感じでホテル番号を指定したらホテルの情報を外部から取得しブログ記事内で表示させます。<br>
-これらのショートコードは投稿画面の「Lockets」ボタンを押して表示されるパネルにホテル番号やお店IDなどを入れることで簡単に記事中に挿入できます。<br>
-それぞれの情報提供元となるサイトのAPIから取り出せる情報の表示にはほぼ対応しており（対応する方向であり）、表示の仕方と表示する項目についてはHTMLテンプレートをそれぞれの管理画面で自由に登録出来ます。</p>
-<p>こちらのページでは設定状況や使える機能の確認が出来ます。</p>
+    <p>投稿画面で“Lockets”ボタンを押して、表示させたいコンテンツをキーワード検索し“挿入”ボタンを押すことで記事中にそのコンテンツを表示するショートコードを挿入します。</p>
+
+<p>ショートコードとは次のような形で、ブログ記事中にその情報を呼び出して表示する印のようなものです。<br>
+    <strong>[LocketsRakutenTravel hotelno="xxxxxxx"]</strong></p>
+
+<p>ブログ記事を表示する度に最新の情報をそれぞれのサービスから取得し、最新の情報を表示します。<br>
+    つまり、それぞれのサービス上で価格や営業時間などの情報が更新されればその最新の情報を元にコンテンツを表示します。</p>
+
+    <p>また、表示するテンプレートはHTMLで自由にカスタマイズすることが可能です。そのカスタマイズで表示させたい項目を自由にアレンジ出来ます</p>
 
 <h2>埋め込める情報一覧</h2>
 
@@ -487,11 +491,11 @@ function lockets_options() {
 <ul>
 <li><?php
 if ($rakutentoken=="" and $rakutenaffid=="") {echo '<span style="color:#AA0000;font-weight:bold;">[NG]</span>';} else {echo '<span style="color:#00AA00;:font-weight:bold;">[OK]</span>';}
-echo "楽天トラベル（楽天アフィリエイト）"
+echo "楽天トラベル（楽天アフィリエイト使用）"
 ?> </li>
 <li><?php
 if ($jalan_webservice_key=="") {echo '<span style="color:#AA0000;font-weight:bold;">[NG]</span>';} else {echo '<span style="color:#00AA00;:font-weight:bold;">[OK]</span>';}
-echo "じゃらん　※オートMyLink機能でバリューコマースアフィリエイト使用可"
+echo "じゃらん　※オートMyLinkでバリューコマースアフィリエイト使用可"
 ?> </li> 
 </ul>
 
@@ -499,7 +503,7 @@ echo "じゃらん　※オートMyLink機能でバリューコマースアフ�
 <ul>
 <li><?php
 if ($recruit_webservice_key=="") {echo '<span style="color:#AA0000;font-weight:bold;">[NG]</span>';} else {echo '<span style="color:#00AA00;:font-weight:bold;">[OK]</span>';}
-echo "HOT PEPPER　※オートMyLink機能でバリューコマースアフィリエイト使用可"
+echo "HOT PEPPER　※オートMyLinkでバリューコマースアフィリエイト使用可"
 ?> </li> 
 <li><?php
 if ($gnavi_webservice_key=="") {echo '<span style="color:#AA0000;font-weight:bold;">[NG]</span>';} else {echo '<span style="color:#00AA00;:font-weight:bold;">[OK]</span>';}
@@ -530,54 +534,6 @@ echo "バリューコマース オートMyLink<br>オートMyLinkに必要なJav
     
 </ul>
 
-<hr>
-
-<h2>Webサービス別機能確認</h2>
-
-<h3>楽天ウェブサービス(RAKUTEN WEBSERVICE)</h3>
-<p><?php
-if ($rakutentoken=="" and $rakutenaffid=="") {echo '<span style="color:#AA0000;font-weight:bold;">[NG]</span>楽天ウェブサービス(RAKUTEN WEBSERVICE)の設定がされていません。';} else {echo '<span style="color:#00AA00;:font-weight:bold;">[OK]</span>楽天ウェブサービス(RAKUTEN WEBSERVICE)の設定がされています。';}
-?> 
-</p>
-<p>楽天ウェブサービス(RAKUTEN WEBSERVICE)の設定をすると以下の機能が使用出来ます。</p>
-<ul>
-    <li>[LocketsRakutenTravel hotelno="xxxxxxx"]<br>
-    楽天トラベルの施設（ホテル・旅館等）詳細情報表示ができます。</li>
-</ul>
-
-<h3>じゃらんWebサービス</h3>
-<p><?php
-if ($jalan_webservice_key=="") {echo '<span style="color:#AA0000;font-weight:bold;">[NG]</span>じゃらんWebサービスの設定がされていません。';} else {echo '<span style="color:#00AA00;:font-weight:bold;">[OK]</span>じゃらんWebサービスの設定がされています。';}
-?> 
-</p>
-<p>じゃらんWebサービスの設定をすると以下の機能が使用出来ます。</p>
-<ul>
-    <li>[LocketsJalan hotelno="xxxxxxx"]<br>
-    じゃらんの宿詳細情報表示ができます。</li>
-</ul>
-
-
-<h3>リクルート WEBサービス</h3>
-<p><?php
-if ($recruit_webservice_key=="") {echo '<span style="color:#AA0000;font-weight:bold;">[NG]</span>リクルート WEBサービスの設定がされていません。';} else {echo '<span style="color:#00AA00;:font-weight:bold;">[OK]</span>リクルート WEBサービスの設定がされています。';}
-?> 
-</p>
-<p>リクルート WEBサービスの設定をすると以下の機能が使用出来ます。</p>
-<ul>
-    <li>[LocketsHotpepper shopno="xxxxxxx"]<br>
-    ホットペッパー（HOT PEPPER）の飲食店詳細情報表示ができます。</li>
-</ul>
-
-<h3>ぐるなびWebサービス</h3>
-<p><?php
-if ($gnavi_webservice_key=="") {echo '<span style="color:red:font-weight:bold;">[NG]</span>ぐるなびWebサービスの設定がされていません。';} else {echo '<span style="color:#00AA00;:font-weight:bold;">[OK]</span>ぐるなびWebサービスの設定がされています。';}
-?> 
-</p>
-<p>ぐるなびWebサービスの設定をすると以下の機能が使用出来ます。</p>
-<ul>
-    <li>[LocketsGurunavi shopid="xxxxxxx"]<br>
-    ぐるなびの飲食店詳細情報表示ができます。</li>
-</ul>
 
 
 </div>
@@ -648,22 +604,14 @@ function add_vc_automylink() {
 ------------------------------------------***/
 /* ボタン */
 //media_buttons_contextフィルターフック
-add_filter( "media_buttons_context", "lockets_media_buttons_context");
 add_filter( "media_buttons_context", "lockets_media_buttons_context2");
 
 //ボタン追加
-function lockets_media_buttons_context ( $context ) {
-
- $context .= <<<EOS
-    <a title='Lockets' href='media-upload.php?tab=locketsInterface&type=locketsInterface&TB_iframe=true&width=600&height=550' class='thickbox button'>Lockets</a>
-EOS;
- return $context;
-}
 
 function lockets_media_buttons_context2 ( $context ) {
 
  $context .= <<<EOS
-    <a title='Search' href='media-upload.php?tab=locketsSearch&type=locketsSearch&TB_iframe=true&width=600&height=550' class='thickbox button'>Lockets Searchβ</a>
+    <a title='Lockets' href='media-upload.php?tab=locketsSearch&type=locketsSearch&TB_iframe=true&width=600&height=550' class='thickbox button'>Lockets</a>
 EOS;
  return $context;
 }
@@ -672,13 +620,10 @@ EOS;
 
 /* コンテンツ */
 // ポップアップウインドウの作成
-add_action( 'media_upload_locketsInterface',  'locketsInterface_wp_iframe' );
+
 add_action( 'media_upload_locketsSearch',  'locketsSearch_wp_iframe' );
 add_action( "admin_head-media-upload-popup", 'lockets_head');
 
-function locketsInterface_wp_iframe() {
-        wp_iframe( media_upload_lockets1_form );
-}
 function locketsSearch_wp_iframe() {
         wp_iframe( media_upload_lockets2_form );
 }
@@ -694,7 +639,8 @@ $useapi = sanitize_text_field($_GET['usuapi']);
 echo <<< EOS
 <div id="test">
     <form action="media-upload.php" method="get">
-        <h2>Lockets Search（検索β）</h2>
+        <h2>Lockets Search</h2>
+        <p>お店やホテル、商品などを検索して挿入ボタンを押すと記事中にその情報表示用ショートコードを挿入します。</p>
         <p>
         <input type="text" name="searchword" value="$searchword" /><br>
         <input type="radio" name="usuapi" value="ホットペッパー" checked> ホットペッパー　
@@ -823,70 +769,6 @@ switch ($useapi) {
 
 }
 
-//コンテンツ
-function media_upload_lockets1_form() {
-	add_filter( "media_upload_tabs", "lockets_upload_tabs"  ,1000);
-	media_upload_header();
-    
-echo <<< EOS
-<div id="locketsHotpepper">
-			<form  action="">
-				<h2>HOT PEPPER</h2>
-				<p>
-				<input type="text" id="locketsHotpepper_editer_insert_content" value="" /><br>
-                ホットペッパーのお店URLに含まれている「strJxxxxxxxxx」のうち「Jxxxxxxxxx」（xは数字）を入力してください。
-				</p>
-				<input type="button" value="OK" id="locketsHotpepper_ei_btn_yes" class="button button-primary" /> 
-				<input type="button" value="キャンセル" id="locketsHotpepper_ei_btn_no"  class="button" />
-			</form>
-</div>
-<div id="locketsGurunavi">
-			<form  action="">
-				<h2>ぐるなび</h2>
-				<p>
-				<input type="text" id="locketsGurunavi_editer_insert_content" value="" /><br>
-                Lockets管理画面「暫定ぐるなび検索」で表示された店舗IDを入力してください。
-				</p>
-				<input type="button" value="OK" id="locketsGurunavi_ei_btn_yes" class="button button-primary" /> 
-				<input type="button" value="キャンセル" id="locketsGurunavi_ei_btn_no"  class="button" />
-			</form>
-</div>
-<div id="locketsRakutenTravel">
-			<form  action="">
-				<h2>楽天トラベル</h2>
-				<p>
-				<input type="text" id="locketsRakutenTravel_editer_insert_content" value="" /><br>
-                楽天トラベルのホテルURLに含まれている「https://travel.rakuten.co.jp/HOTEL/xxxxx/」のうち「xxxxx」（xは数字）を入力してください。
-				</p>
-				<input type="button" value="OK" id="locketsRakutenTravel_ei_btn_yes" class="button button-primary" /> 
-				<input type="button" value="キャンセル" id="locketsRakutenTravel_ei_btn_no"  class="button" />
-			</form>
-</div>
-<div id="locketsJalan">
-			<form  action="">
-				<h2>じゃらん</h2>
-				<p>
-				<input type="text" id="locketsJalan_editer_insert_content" value="" /><br>
-                じゃらんのホテルURLに含まれている「http://www.jalan.net/yadxxxxxx/」のうち「xxxxxx」（xは数字）を入力してください。
-				</p>
-				<input type="button" value="OK" id="locketsJalan_ei_btn_yes" class="button button-primary" /> 
-				<input type="button" value="キャンセル" id="locketsJalan_ei_btn_no"  class="button" />
-			</form>
-</div>
-<div id="locketsGMaps">
-			<form  action="">
-				<h2>Google Maps</h2>
-				<p>
-				<input type="text" id="locketsGMaps_editer_insert_content" value="" /><br>
-                Google Mapsに存在するスポット名称を入れて下さい。
-				</p>
-				<input type="button" value="OK" id="locketsGMaps_ei_btn_yes" class="button button-primary" /> 
-				<input type="button" value="キャンセル" id="locketsGMaps_ei_btn_no"  class="button" />
-			</form>
-</div>
-EOS;
-}
-
 // jQuery
 function lockets_head(){
 		echo <<< EOS
@@ -913,131 +795,6 @@ function lockets_head(){
                 });
             })
             </script>
-			<script type="text/javascript">
-			jQuery(function($) {
-		
-				$(document).ready(function() {
-					$('#locketsHotpepper_ei_btn_yes').on('click', function() {
-						var str = $('#locketsHotpepper_editer_insert_content').val();
-						//inlineのときはwindow
-						top.send_to_editor( '[LocketsHotpepper shopid="' + str + '"]');
-						top.tb_remove(); 
-					});
-					$('#lockets_ei_btn_no').on('click', function() {
-						top.tb_remove(); 
-					});
-					
-					//Enterキーが入力されたとき
-					$('#locketsHotpepper_editer_insert_content').on('keypress',function () {
-						if(event.which == 13) {
-							$('#locketsHotpepper_ei_btn_yes').trigger("click");
-						}
-						//Form内のエンター：サブミット回避
-						return event.which !== 13;
-					});
-				});
-			})
-			</script>
-			<script type="text/javascript">
-			jQuery(function($) {
-		
-				$(document).ready(function() {
-					$('#locketsGurunavi_ei_btn_yes').on('click', function() {
-						var str = $('#locketsGurunavi_editer_insert_content').val();
-						//inlineのときはwindow
-						top.send_to_editor( '[LocketsGurunavi shopid="' + str + '"]');
-						top.tb_remove(); 
-					});
-					$('#lockets_ei_btn_no').on('click', function() {
-						top.tb_remove(); 
-					});
-					
-					//Enterキーが入力されたとき
-					$('#locketsGurunavi_editer_insert_content').on('keypress',function () {
-						if(event.which == 13) {
-							$('#locketsGurunavi_ei_btn_yes').trigger("click");
-						}
-						//Form内のエンター：サブミット回避
-						return event.which !== 13;
-					});
-				});
-			})
-			</script>
-            			<script type="text/javascript">
-			jQuery(function($) {
-		
-				$(document).ready(function() {
-					$('#locketsRakutenTravel_ei_btn_yes').on('click', function() {
-						var str = $('#locketsRakutenTravel_editer_insert_content').val();
-						//inlineのときはwindow
-						top.send_to_editor( '[LocketsRakutenTravel hotelno="' + str + '"]');
-						top.tb_remove(); 
-					});
-					$('#locketsRakutenTravel_ei_btn_no').on('click', function() {
-						top.tb_remove(); 
-					});
-					
-					//Enterキーが入力されたとき
-					$('#locketsRakutenTravel_editer_insert_content').on('keypress',function () {
-						if(event.which == 13) {
-							$('#locketsRakutenTravel_ei_btn_yes').trigger("click");
-						}
-						//Form内のエンター：サブミット回避
-						return event.which !== 13;
-					});
-				});
-			})
-			</script>
-            			<script type="text/javascript">
-			jQuery(function($) {
-		
-				$(document).ready(function() {
-					$('#locketsGMaps_ei_btn_yes').on('click', function() {
-						var str = $('#locketsGMaps_editer_insert_content').val();
-						//inlineのときはwindow
-						top.send_to_editor( '[LocketsGMaps keyword="' + str + '"]');
-						top.tb_remove(); 
-					});
-					$('#locketsGMaps_ei_btn_no').on('click', function() {
-						top.tb_remove(); 
-					});
-					
-					//Enterキーが入力されたとき
-					$('#locketsGMaps_editer_insert_content').on('keypress',function () {
-						if(event.which == 13) {
-							$('#locketsGMaps_ei_btn_yes').trigger("click");
-						}
-						//Form内のエンター：サブミット回避
-						return event.which !== 13;
-					});
-				});
-			})
-			</script>
-            <script type="text/javascript">
-			jQuery(function($) {
-		
-				$(document).ready(function() {
-					$('#locketsJalan_ei_btn_yes').on('click', function() {
-						var str = $('#locketsJalan_editer_insert_content').val();
-						//inlineのときはwindow
-						top.send_to_editor( '[LocketsJalan hotelno="' + str + '"]');
-						top.tb_remove(); 
-					});
-					$('#locketsJalan_ei_btn_no').on('click', function() {
-						top.tb_remove(); 
-					});
-					
-					//Enterキーが入力されたとき
-					$('#locketsJalan_editer_insert_content').on('keypress',function () {
-						if(event.which == 13) {
-							$('#locketsJalan_ei_btn_yes').trigger("click");
-						}
-						//Form内のエンター：サブミット回避
-						return event.which !== 13;
-					});
-				});
-			})
-			</script>
 EOS;
 		}
 
@@ -1046,8 +803,7 @@ EOS;
 function lockets_upload_tabs( $tabs )
 {
 	$tabs=array();
-    $tabs[ "locketsInterface" ] = "Lockets" ;
-    $tabs[ "locketsSearch" ] = "検索β" ;
+    $tabs[ "locketsSearch" ] = "検索と記事への挿入" ;
 	return $tabs;
 }
 
