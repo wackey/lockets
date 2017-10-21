@@ -4,7 +4,7 @@ Plugin Name: Lockets
 Plugin URI: http://lockets.jp/
 Description: A plug-in that gets information on spots such as shops and inns from various APIs and displays the latest information embedded in the blog.Also, This plugin will assist you such as creating affiliate links. お店や旅館などスポットに関する情報を各種APIから取得し、ブログ内に最新の情報を埋め込んで表示するプラグイン。また、アフィリエイトリンク作成支援を行います。
 Author: wackey
-Version: 0.48
+Version: 0.49
 Author URI: https://musilog.net/
 License: GPL2
 */
@@ -410,9 +410,32 @@ function lockets_gmaps_func ( $atts, $content = null ) {
         'lng' => null,
         'zoom' => null,
         'width' => null,
-        'height' => null,), $atts));
+        'height' => null,
+        'placeid' => null,), $atts));
+if (!$placeid == null) {
+        $lockets_gmap_apikey= get_option('lockets_gmap_apikey');
+        $gmapurl="https://maps.googleapis.com/maps/api/place/details/xml?key=$lockets_gmap_apikey&placeid=$placeid&language=ja";
 
+        // キャッシュ有無確認
+        $Buff = get_transient($gmapurl);
+        if ( $Buff === false ) {
+            $Buff = file_get_contents($gmapurl);
+            set_transient($gmapurl, $Buff, 3600 * 24 );
+        }
+
+        $xml = simplexml_load_string($Buff);
+        $gmapplaces = $xml->result;
+        $keyword = locketsh($gmapplaces->name);
+        $lat = locketsh($gmapplaces->geometry->location->lat);
+        $lng = locketsh($gmapplaces->geometry->location->lng);
+    
+    $ret = "<h2>$keyword</h2>";
+    $ret.= lockets_gmap_draw($keyword,$lat,$lng,$zoom,$width,$height);
+} else {
     $ret= lockets_gmap_draw($keyword,$lat,$lng,$zoom,$width,$height);
+}
+
+   
     return $ret;
 }
 
@@ -641,13 +664,14 @@ echo <<< EOS
 <div id="test">
     <form action="media-upload.php" method="get">
         <h2>Lockets Search</h2>
-        <p>お店やホテル、商品などを検索して挿入ボタンを押すと記事中にその情報表示用ショートコードを挿入します。</p>
+        <p>お店やホテルやスポット、商品などを検索して挿入ボタンを押すと記事中にその情報表示用ショートコードを挿入します。</p>
         <p>
         <input type="text" name="searchword" value="$searchword" /><br>
         <input type="radio" name="usuapi" value="ホットペッパー" checked> ホットペッパー　
         <input type="radio" name="usuapi" value="ぐるなび"> ぐるなび　
         <input type="radio" name="usuapi" value="楽天トラベル"> 楽天トラベル　
         <input type="radio" name="usuapi" value="じゃらん"> じゃらん　
+        <input type="radio" name="usuapi" value="Googleプレイス（Google Maps）"> Googleプレイス（Google Maps）
         </p>
         <input type="hidden" name="tab" value="locketsSearch">
         <input type="hidden" name="type" value="locketsSearch">
@@ -763,6 +787,29 @@ switch ($useapi) {
         echo "</ul></form>";
 
     break;
+        
+    case 'Googleプレイス（Google Maps）':
+        $lockets_gmap_apikey= get_option('lockets_gmap_apikey');
+        $gmapurl="https://maps.googleapis.com/maps/api/place/textsearch/xml?key=$lockets_gmap_apikey&query=$url4searchword&language=ja";
+
+        // キャッシュ有無確認
+        $Buff = get_transient($gmapurl);
+        if ( $Buff === false ) {
+            $Buff = file_get_contents($gmapurl);
+            set_transient($gmapurl, $Buff, 3600 * 24 );
+        }
+
+        $xml = simplexml_load_string($Buff);
+        $gmapplaces = $xml->result;
+
+        echo "<form action='' id='gmapplaceresult'><ul>";
+        foreach ($gmapplaces as $place) {
+            echo "<li><input type='button' value='挿入' class='button' id='".locketsh($place->place_id)."'>　".locketsh($place->name)."（".locketsh($place->id)."）</li>";
+        }
+        echo '<li><a href="https://developers.google.com/places/web-service/?hl=ja">Places API Web Service</a></li>';
+        echo "</ul></form>";
+
+    break;
 }
 
 
@@ -790,6 +837,10 @@ function lockets_head(){
                 });
                 $('#jalanresult input').on('click', function() {
                     top.send_to_editor( '[LocketsJalan hotelno="' + this.id + '"]');
+                    top.tb_remove(); 
+                });
+                $('#gmapplaceresult input').on('click', function() {
+                    top.send_to_editor( '[LocketsGMaps placeid="' + this.id + '"]');
                     top.tb_remove(); 
                 });
 

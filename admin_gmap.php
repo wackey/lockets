@@ -4,6 +4,7 @@ function lockets_gmap() {
 // ポストされた値の入力チェックと書き込み
 if (isset($_POST['update_option'])) {
     check_admin_referer('lockets-options');
+    update_option('lockets_gmap_apikey', sanitize_text_field($_POST['lockets_gmap_apikey']));
     update_option('lockets_gmap_zoom', sanitize_text_field($_POST['lockets_gmap_zoom']));
     update_option('lockets_gmap_width', sanitize_text_field($_POST['lockets_gmap_width']));
     update_option('lockets_gmap_height', sanitize_text_field($_POST['lockets_gmap_height']));
@@ -11,6 +12,7 @@ if (isset($_POST['update_option'])) {
 <div class="updated fade"><p><strong><?php _e('Options saved.'); ?></strong></p>
 </div>
 <?php }
+    $lockets_gmap_apikey= get_option('lockets_gmap_apikey');
     $lockets_gmap_zoom= get_option('lockets_gmap_zoom');
     $lockets_gmap_width= get_option('lockets_gmap_width');
     $lockets_gmap_height= get_option('lockets_gmap_height');
@@ -26,6 +28,13 @@ if (isset($_POST['update_option'])) {
 <?php wp_nonce_field('lockets-options'); ?>
 
 <table class="form-table"><tbody>
+    
+<tr>
+<th><label for="lockets_gmap_apikey"><?php
+_e('Google Maps APIキー', 'loclets_gmap_apikey'); ?></label></th> <td><input size="36" type="text" name="lockets_gmap_apikey"
+id="lockets_gmap_apikey" value="<?php
+echo attribute_escape($lockets_gmap_apikey); ?>" /></td>
+</tr>
 
 <tr>
 <th><label for="lockets_gmap_zoom"><?php
