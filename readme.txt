@@ -4,14 +4,14 @@ Donate link:
 Tags: AD,affiliate,Web API,location
 Requires at least: 4.8
 Tested up to: 4.8.1
-Stable tag: 0.49
+Stable tag: 0.50
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 A plug-in that gets information on spots such as shops and inns from various APIs and displays the latest information embedded in the blog.
 Use API and output information shops,hotels,etc.
 
-and,ability to convert links to affiliate links with "valuecommerce Auto MyLink Service(JavaScript)".
+and,ability to convert links to affiliate links with "Valuecommerce LinkSwitch Service(JavaScript)".
 
 == Description ==
 <a href="http://lockets.jp/plugin/">日本語の説明を読む</a>
@@ -26,17 +26,21 @@ A plug-in that gets information on spots such as shops and inns from various API
  -HOTPEPPER,Gurunavi (Restaurant search)
  　ホットペッパーAPI、ぐるなびWebサービスに対応しています
 
+*Place Search
+ -Google Places API
+  GoogleプレイスAPIに対応しています。
+
 *Affiliate
  -Rakuten Affiliate
  　楽天トラベルでの施設へのリンクなどをアフィリエイトリンクとしして出力します
- -Value Commerce Auto MyLink ex.HOT PEPPER ,Jalan's link, etc.
-  バリューコマースオートMyLink機能に対応しています（ホットペッパーやじゃらんへのリンクをバリューコマースのアフィリエイトリンクに自動変換します。アフィリエイトの提携作業が必要です）
+ -Value Commerce LinkSwitch ex.HOT PEPPER ,Jalan's link, etc.
+  バリューコマースLinkSwitch機能に対応しています（ホットペッパーやじゃらんなどへのリンクをバリューコマースのアフィリエイトリンクに自動変換します。アフィリエイトの提携作業が必要です）
 
 * ---USE API---
 
 *Value Commerce Auto MyLink ex.HOT PEPPER ,Jalan's link, etc.
 　https://www.valuecommerce.ne.jp/topics/auto_mylink
- 　バリューコマースのオートMyLink機能を使ってホットペッパーやじゃらんのリンクをアフィリエイトリンクに変換する機能もあります。
+ 　バリューコマースのLinkSwitch機能を使ってホットペッパーやじゃらんへのリンクをアフィリエイトリンクに変換する機能もあります。
 
 *Rakuten Travel Search API(Hotel) https://webservice.rakuten.co.jp/api/hoteldetailsearch/
  楽天トラベル施設情報APIを使用して楽天トラベルのホテルや旅館の施設情報を取得し、WordPressで作成したブログ上にその情報を表示します。
@@ -49,6 +53,9 @@ A plug-in that gets information on spots such as shops and inns from various API
 
 *Jalan Web Service(Hotel search)  http://www.jalan.net/jw/jwp0000/jww0001.do
 　じゃらんWebサービスじゃらん宿表示API（アドバンス）を使用してホテルや旅館の施設情報を取得し、WordPressで作成したブログ上にその情報を表示します。
+
+* Google Places API https://developers.google.com/places/?hl=ja
+　Gooleプレイス検索APIを使用してスポットを検索し、スポットの地図を表示します。
 
 *with Google Maps embed.(Map) https://www.google.co.jp/maps
 　Google Mapsの地図埋め込み機能を使い、WordPressで作成したブログ上に地図を表示します。
@@ -71,6 +78,9 @@ none.
 An answer to that question.
 
 == Changelog ==
+= 0.50 =
+* Google Places API is now available.rename Auto Mylink -> LinkSwitch.
+　GoogleプレイスAPI検索に対応（プレイス検索とその場所への地図表示のみ）。またバリューコマースのオートMyLinkの名称変更に伴う修正を行った。
 = 0.48 =
 * 各種クレジットバナーのSSL対応（各社に確認済み）
 = 0.47 =

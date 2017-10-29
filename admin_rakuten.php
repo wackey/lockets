@@ -17,7 +17,7 @@ $lockets_rakuten_travel_template= get_option('lockets_rakuten_travel_template');
 ?>
 
 <div class="wrap">
-<h2>Locketsプラグイン楽天ウェブサービス関連設定</h2>
+<h2>Locketsプラグイン：楽天ウェブサービス関連設定</h2>
 <p>楽天トラベルや楽天市場商品検索など楽天ウェブサービス利用するための設定です</p>
 <form name="form" method="post" action="">
 <input type="hidden" name="action" value="update" />

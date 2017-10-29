@@ -15,7 +15,7 @@ $lockets_hotpepper_template= get_option('lockets_hotpepper_template');
 ?>
 
 <div class="wrap">
-<h2>LocketsプラグインリクルートWEBサービス関連設定</h2>
+<h2>Locketsプラグイン：リクルートWEBサービス関連設定</h2>
 <p>HOT PEPPERを利用するための設定です</p>
 <form name="form" method="post" action="">
 <input type="hidden" name="action" value="update" />

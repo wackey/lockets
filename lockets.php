@@ -4,7 +4,7 @@ Plugin Name: Lockets
 Plugin URI: http://lockets.jp/
 Description: A plug-in that gets information on spots such as shops and inns from various APIs and displays the latest information embedded in the blog.Also, This plugin will assist you such as creating affiliate links. お店や旅館などスポットに関する情報を各種APIから取得し、ブログ内に最新の情報を埋め込んで表示するプラグイン。また、アフィリエイトリンク作成支援を行います。
 Author: wackey
-Version: 0.49
+Version: 0.50
 Author URI: https://musilog.net/
 License: GPL2
 */
@@ -54,10 +54,10 @@ $rwsurl="https://app.rakuten.co.jp/services/api/Travel/HotelDetailSearch/2017042
 // キャッシュ有無確認
 $Buff = get_transient( $rwsurl );
 if ( $Buff === false ) {
-$options['ssl']['verify_peer']=false;
-$options['ssl']['verify_peer_name']=false;
-$Buff = file_get_contents($rwsurl,false, stream_context_create($options));
-set_transient( $rwsurl, $Buff, 3600 * 24 );
+    $options['ssl']['verify_peer']=false;
+    $options['ssl']['verify_peer_name']=false;
+    $Buff = file_get_contents($rwsurl,false, stream_context_create($options));
+    set_transient( $rwsurl, $Buff, 3600 * 24 );
 }
 
 $xml = simplexml_load_string($Buff);
@@ -209,10 +209,10 @@ $lockets_hotpepper_template= get_option('lockets_hotpepper_template');
 
 // [LocketsHotpepper]属性情報取得
 extract(shortcode_atts(array(
-'shopid' => null,
-'zoom' => null,
-'width' => null,
-'height' => null,), $atts));
+    'shopid' => null,
+    'zoom' => null,
+    'width' => null,
+    'height' => null,), $atts));
 
 // リクエストURL
 $recruiturl="http://webservice.recruit.co.jp/hotpepper/gourmet/v1/?key=$recruit_webservice_key&id=$shopid&datum=world";
@@ -221,8 +221,8 @@ $recruiturl="http://webservice.recruit.co.jp/hotpepper/gourmet/v1/?key=$recruit_
 // キャッシュ有無確認
 $Buff = get_transient( $recruiturl );
 if ( $Buff === false ) {
-$Buff = file_get_contents($recruiturl);
-set_transient( $shopid, $Buff, 3600 * 24 );
+    $Buff = file_get_contents($recruiturl);
+    set_transient( $shopid, $Buff, 3600 * 24 );
 }
 
 $xml = simplexml_load_string($Buff);
@@ -315,19 +315,19 @@ $lockets_gnavi_template= get_option('lockets_gnavi_template');
 
 // [LocketsGurunavi]属性情報取得
 extract(shortcode_atts(array(
-'shopid' => null,
-'zoom' => null,
-'width' => null,
-'height' => null,), $atts));
+    'shopid' => null,
+    'zoom' => null,
+    'width' => null,
+    'height' => null,), $atts));
 
 // リクエストURL
 $gurunaviurl="https://api.gnavi.co.jp/RestSearchAPI/20150630/?keyid=$gnavi_webservice_key&format=xml&id=$shopid&coordinates_mode=2";
 
 // キャッシュ有無確認
 $Buff = get_transient( $shopid );
-if ( $Buff === false ) {
-$Buff = file_get_contents($gurunaviurl);
-set_transient( $shopid, $Buff, 3600 * 24 );
+    if ( $Buff === false ) {
+    $Buff = file_get_contents($gurunaviurl);
+    set_transient( $shopid, $Buff, 3600 * 24 );
 }
 
 $xml = simplexml_load_string($Buff);
@@ -398,7 +398,7 @@ return $lockets_gnavi_template;
 
                                     
 /***------------------------------------------
-　Google Maps表示機能
+　Google プレイス API ＆　Google Maps表示機能
 ------------------------------------------***/
 // ショートコード呼び出し
 function lockets_gmaps_func ( $atts, $content = null ) {
@@ -413,29 +413,36 @@ function lockets_gmaps_func ( $atts, $content = null ) {
         'height' => null,
         'placeid' => null,), $atts));
 if (!$placeid == null) {
+    //プレイスAPIを使う処理
         $lockets_gmap_apikey= get_option('lockets_gmap_apikey');
+        $lockets_googleplace_template= get_option('lockets_googleplace_template');
         $gmapurl="https://maps.googleapis.com/maps/api/place/details/xml?key=$lockets_gmap_apikey&placeid=$placeid&language=ja";
-
-        // キャッシュ有無確認
-        $Buff = get_transient($gmapurl);
-        if ( $Buff === false ) {
-            $Buff = file_get_contents($gmapurl);
-            set_transient($gmapurl, $Buff, 3600 * 24 );
-        }
-
+        $Buff = file_get_contents($gmapurl);//キャッシュ使用しない
         $xml = simplexml_load_string($Buff);
         $gmapplaces = $xml->result;
         $keyword = locketsh($gmapplaces->name);
         $lat = locketsh($gmapplaces->geometry->location->lat);
         $lng = locketsh($gmapplaces->geometry->location->lng);
-    
-    $ret = "<h2>$keyword</h2>";
-    $ret.= lockets_gmap_draw($keyword,$lat,$lng,$zoom,$width,$height);
+
+        //デフォルトテンプレートの登録
+        if ($lockets_googleplace_template=="") {
+        $lockets_googleplace_template =  <<<EOT
+【Google Maps埋め込み】
+EOT;
+}
+    $lockets_googleplace_template=str_replace('【スポット名】',$keyword,$lockets_googleplace_template);
+    $gmap = lockets_gmap_draw($keyword,$lat,$lng,$zoom,$width,$height);
+    $lockets_googleplace_template=str_replace('【Google Maps埋め込み】',$gmap,$lockets_googleplace_template);
+    $lockets_googleplace_template=str_replace('【住所】',locketsh($gmapplaces->formatted_address),$lockets_googleplace_template);
+    $lockets_googleplace_template=str_replace('【電話番号】',locketsh($gmapplaces->formatted_phone_number),$lockets_googleplace_template);
+    $textlink = '<a href="'.locketsh($gmapplaces->website).'" target="_blank">'.$keyword.'</a>';
+    $lockets_googleplace_template=str_replace('【Webサイトテキストリンク】',$textlink,$lockets_googleplace_template);
+    $lockets_googleplace_template=str_replace('【GoogleクレジットA】','<img src="'.WP_PLUGIN_URL.'/lockets/images/powered_by_google_on_white.png">',$lockets_googleplace_template);
+    $lockets_googleplace_template=str_replace('【GoogleクレジットB】','<img src="'.WP_PLUGIN_URL.'/lockets/images/powered_by_google_on_non_white.png">',$lockets_googleplace_template);
+    $ret= $lockets_googleplace_template."<br>".$gmapurl;
 } else {
     $ret= lockets_gmap_draw($keyword,$lat,$lng,$zoom,$width,$height);
 }
-
-   
     return $ret;
 }
 
@@ -479,8 +486,9 @@ function lockets_menu() {
     add_submenu_page(__FILE__, 'リクルートWEBサービス', 'リクルートWEBサービス', 8, "admin_recruit_webservice", 'lockets_recruit_webservice');
     add_submenu_page(__FILE__, 'ぐるなびWebサービス', 'ぐるなびWebサービス', 8, "admin_gnavi_webservice", 'lockets_gnavi_webservice');
     add_submenu_page(__FILE__, 'じゃらんWebサービス', 'じゃらんWebサービス', 8, "admin_jalan_webservice", 'lockets_jalan_webservice');
+    add_submenu_page(__FILE__, 'Google プレイス', 'Google プレイス', 8, "admin_gmap", 'lockets_gmap');
     add_submenu_page(__FILE__, 'その他アフィリエイト', 'その他アフィリエイト', 8, "admin_affiliate", 'lockets_affiliate');
-    add_submenu_page(__FILE__, 'Google Maps表示設定', 'Google Maps表示設定', 8, "admin_gmap", 'lockets_gmap');
+
 }
 
 
@@ -519,7 +527,7 @@ echo "楽天トラベル（楽天アフィリエイト使用）"
 ?> </li>
 <li><?php
 if ($jalan_webservice_key=="") {echo '<span style="color:#AA0000;font-weight:bold;">[NG]</span>';} else {echo '<span style="color:#00AA00;:font-weight:bold;">[OK]</span>';}
-echo "じゃらん　※オートMyLinkでバリューコマースアフィリエイト使用可"
+echo "じゃらん　※LinkSwitchでバリューコマースアフィリエイト使用可"
 ?> </li> 
 </ul>
 
@@ -527,7 +535,7 @@ echo "じゃらん　※オートMyLinkでバリューコマースアフィリ�
 <ul>
 <li><?php
 if ($recruit_webservice_key=="") {echo '<span style="color:#AA0000;font-weight:bold;">[NG]</span>';} else {echo '<span style="color:#00AA00;:font-weight:bold;">[OK]</span>';}
-echo "HOT PEPPER　※オートMyLinkでバリューコマースアフィリエイト使用可"
+echo "HOT PEPPER　※LinkSwitchでバリューコマースアフィリエイト使用可"
 ?> </li> 
 <li><?php
 if ($gnavi_webservice_key=="") {echo '<span style="color:#AA0000;font-weight:bold;">[NG]</span>';} else {echo '<span style="color:#00AA00;:font-weight:bold;">[OK]</span>';}
@@ -553,7 +561,7 @@ echo "楽天市場（楽天アフィリエイト）"
 <ul>
 <li><?php
 if ($valuecommerce_pid=="") {echo '<span style="color:#AA0000;font-weight:bold;">[NG]</span>';} else {echo '<span style="color:#00AA00;:font-weight:bold;">[OK]</span>';}
-echo "バリューコマース オートMyLink<br>オートMyLinkに必要なJavaScriptを自動的に挿入します。<br>HOTPEPPERやじゃらんなど対応ECサイトと提携していると上記リンクが自動的にバリューマースのアフィリエイトリンクに置き換わります。"
+echo "バリューコマース LinkSwitch<br>LinkSwitchに必要なJavaScriptを自動的に挿入します。<br>HOTPEPPERやじゃらんなど対応ECサイトと提携していると上記リンクが自動的にバリューマースのアフィリエイトリンクに置き換わります。"
 ?> </li>
     
 </ul>
@@ -610,7 +618,7 @@ function remove_lockets()
 }
 
 /***------------------------------------------
-　オートMylink追加
+　LinkSwitch追加
 ------------------------------------------***/
 function add_vc_automylink() {
     $vc_pid= get_option('valuecommerce_pid');
