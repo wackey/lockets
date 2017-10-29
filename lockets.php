@@ -439,7 +439,7 @@ EOT;
     $lockets_googleplace_template=str_replace('【Webサイトテキストリンク】',$textlink,$lockets_googleplace_template);
     $lockets_googleplace_template=str_replace('【GoogleクレジットA】','<img src="'.WP_PLUGIN_URL.'/lockets/images/powered_by_google_on_white.png">',$lockets_googleplace_template);
     $lockets_googleplace_template=str_replace('【GoogleクレジットB】','<img src="'.WP_PLUGIN_URL.'/lockets/images/powered_by_google_on_non_white.png">',$lockets_googleplace_template);
-    $ret= $lockets_googleplace_template."<br>".$gmapurl;
+    $ret= $lockets_googleplace_template;
 } else {
     $ret= lockets_gmap_draw($keyword,$lat,$lng,$zoom,$width,$height);
 }
@@ -800,13 +800,7 @@ switch ($useapi) {
         $lockets_gmap_apikey= get_option('lockets_gmap_apikey');
         $gmapurl="https://maps.googleapis.com/maps/api/place/textsearch/xml?key=$lockets_gmap_apikey&query=$url4searchword&language=ja";
 
-        // キャッシュ有無確認
-        $Buff = get_transient($gmapurl);
-        if ( $Buff === false ) {
-            $Buff = file_get_contents($gmapurl);
-            set_transient($gmapurl, $Buff, 3600 * 24 );
-        }
-
+        $Buff = file_get_contents($gmapurl);//キャッシュ使わない
         $xml = simplexml_load_string($Buff);
         $gmapplaces = $xml->result;
 
