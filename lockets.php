@@ -4,7 +4,7 @@ Plugin Name: Lockets
 Plugin URI: http://lockets.jp/
 Description: A plug-in that gets information on spots such as shops and inns from various APIs and displays the latest information embedded in the blog.Also, This plugin will assist you such as creating affiliate links. お店や旅館などスポットに関する情報を各種APIから取得し、ブログ内に最新の情報を埋め込んで表示するプラグイン。また、アフィリエイトリンク作成支援を行います。
 Author: wackey
-Version: 0.50
+Version: 0.51
 Author URI: https://musilog.net/
 License: GPL2
 */
@@ -435,8 +435,13 @@ EOT;
     $lockets_googleplace_template=str_replace('【Google Maps埋め込み】',$gmap,$lockets_googleplace_template);
     $lockets_googleplace_template=str_replace('【住所】',locketsh($gmapplaces->formatted_address),$lockets_googleplace_template);
     $lockets_googleplace_template=str_replace('【電話番号】',locketsh($gmapplaces->formatted_phone_number),$lockets_googleplace_template);
+    if ($gmapplaces->website) {
     $textlink = '<a href="'.locketsh($gmapplaces->website).'" target="_blank">'.$keyword.'</a>';
+
     $lockets_googleplace_template=str_replace('【Webサイトテキストリンク】',$textlink,$lockets_googleplace_template);
+    } else {
+        $lockets_googleplace_template=str_replace('【Webサイトテキストリンク】',"-",$lockets_googleplace_template);
+    }
     $lockets_googleplace_template=str_replace('【GoogleクレジットA】','<img src="'.WP_PLUGIN_URL.'/lockets/images/powered_by_google_on_white.png">',$lockets_googleplace_template);
     $lockets_googleplace_template=str_replace('【GoogleクレジットB】','<img src="'.WP_PLUGIN_URL.'/lockets/images/powered_by_google_on_non_white.png">',$lockets_googleplace_template);
     $ret= $lockets_googleplace_template;
@@ -808,7 +813,7 @@ switch ($useapi) {
         foreach ($gmapplaces as $place) {
             echo "<li><input type='button' value='挿入' class='button' id='".locketsh($place->place_id)."'>　".locketsh($place->name)."（".locketsh($place->id)."）</li>";
         }
-        echo '<li><a href="https://developers.google.com/places/web-service/?hl=ja">Places API Web Service</a></li>';
+        echo '<li><a href="https://developers.google.com/places/web-service/?hl=ja">Places API Web Service</a></li><li><img src="'.WP_PLUGIN_URL.'/lockets/images/powered_by_google_on_white.png"></li>';
         echo "</ul></form>";
 
     break;
