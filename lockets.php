@@ -4,7 +4,7 @@ Plugin Name: Lockets
 Plugin URI: http://lockets.jp/
 Description: A plug-in that gets information on spots such as shops and inns from various APIs and displays the latest information embedded in the blog.Also, This plugin will assist you such as creating affiliate links. お店や旅館などスポットに関する情報を各種APIから取得し、ブログ内に最新の情報を埋め込んで表示するプラグイン。また、アフィリエイトリンク作成支援を行います。
 Author: wackey
-Version: 0.51
+Version: 0.52
 Author URI: https://musilog.net/
 License: GPL2
 */
@@ -56,8 +56,10 @@ $Buff = get_transient( $rwsurl );
 if ( $Buff === false ) {
     $options['ssl']['verify_peer']=false;
     $options['ssl']['verify_peer_name']=false;
-    $Buff = file_get_contents($rwsurl,false, stream_context_create($options));
-    set_transient( $rwsurl, $Buff, 3600 * 24 );
+    if ($Buff = @file_get_contents($rwsurl,false, stream_context_create($options))) {
+        $rakutentravelerror = "1";
+        set_transient( $rwsurl, $Buff, 3600 * 24 );
+    }
 }
 
 $xml = simplexml_load_string($Buff);
@@ -412,7 +414,8 @@ function lockets_gmaps_func ( $atts, $content = null ) {
         'width' => null,
         'height' => null,
         'placeid' => null,), $atts));
-if (!$placeid == null) {
+
+    if (!$placeid == null) {
     //プレイスAPIを使う処理
         $lockets_gmap_apikey= get_option('lockets_gmap_apikey');
         $lockets_googleplace_template= get_option('lockets_googleplace_template');
@@ -469,6 +472,79 @@ function lockets_gmap_draw($keyword,$lat,$lng,$zoom,$width,$height) {
     return $ret;
 }
 
+
+/***------------------------------------------
+　楽天商品検索結果表示（タグID検索は追って実装）
+------------------------------------------***/
+function lockets_rekuten_item_func( $atts, $content = null ) {
+
+$rakutentoken= get_option('rakuten_search_token');
+$rakutenaffid= get_option('rakuten_affiliate_id');
+//$lockets_rakuten_travel_template=get_option('lockets_rakuten_item_template');
+
+// [LocketsRakutenItem]属性情報取得
+extract(shortcode_atts(array(
+    'itemcode' => null,
+    'tagid' => null,), $atts));
+
+// 商品ID検索（タグID検索は追って実装）
+$rwsurl="https://app.rakuten.co.jp/services/api/IchibaItem/Search/20170706?applicationId=$rakutentoken&affiliateId=$rakutenaffid&itemCode=$itemcode&tagid=$tagid&format=xml";
+
+// キャッシュ有無確認
+$Buff = get_transient( $rwsurl );
+if ( $Buff === false ) {
+    $options['ssl']['verify_peer']=false;
+    $options['ssl']['verify_peer_name']=false;
+    if ($Buff = @file_get_contents($rwsurl,false, stream_context_create($options))) {
+        $rakutentravelerror = "1";
+        set_transient( $rwsurl, $Buff, 3600 * 24 );
+    }
+}
+
+$xml = simplexml_load_string($Buff);
+$resultcount = $xml->count;
+$items = $xml->Items->Item;
+    
+//デフォルトテンプレートの登録
+if ($lockets_rakuten_item_template=="") {
+$lockets_rakuten_item_template= <<<EOT
+<p><a href="【商品URL】" rel="nofollow" target="_blank"><img src="【商品画像128x128URL】"></a><br>
+<p><a href="【商品URL】" rel="nofollow" target="_blank"><strong>【商品名】</strong></a></p><br>
+（<a href="【店舗URL】" rel="nofollow" target="_blank">【店舗名】</a>）</p>
+
+<p>【楽天ウェブサービスクレジットA】</p>
+EOT;
+}
+
+    $contents="";
+if ($items) {
+    foreach ($items as $item) {
+        $lockets_rakuten_item_template=str_replace('【商品名】',locketsh($item->itemName),$lockets_rakuten_item_template);
+        $lockets_rakuten_item_template=str_replace('【商品URL】',locketsh($item->itemUrl),$lockets_rakuten_item_template);
+        //$pictures128 = $item->mediumImageUrls->imageUrl;
+        $lockets_rakuten_item_template=str_replace('【商品画像128x128URL】',locketsh($item->mediumImageUrls->imageUrl[0]),$lockets_rakuten_item_template);
+        $lockets_rakuten_item_template=str_replace('【店舗URL】',locketsh($item->shopUrl),$lockets_rakuten_item_template);
+        $lockets_rakuten_item_template=str_replace('【店舗名】',locketsh($item->shopName),$lockets_rakuten_item_template);
+        $lockets_rakuten_item_template=str_replace('【楽天ウェブサービスクレジットA】','<!-- Rakuten Web Services Attribution Snippet FROM HERE -->
+        <a href="https://webservice.rakuten.co.jp/" target="_blank"><img src="https://webservice.rakuten.co.jp/img/credit/200709/credit_4936.gif" border="0" alt="楽天ウェブサービスセンター" title="楽天ウェブサービスセンター" width="49" height="36"/></a>
+        <!-- Rakuten Web Services Attribution Snippet TO HERE -->',$lockets_rakuten_item_template);
+        $lockets_rakuten_item_template=str_replace('【楽天ウェブサービスクレジットB】','<!-- Rakuten Web Services Attribution Snippet FROM HERE -->
+        <a href="https://webservice.rakuten.co.jp/" target="_blank"><img src="https://webservice.rakuten.co.jp/img/credit/200709/credit_7052.gif" border="0" alt="楽天ウェブサービスセンター" title="楽天ウェブサービスセンター" width="70" height="52"/></a>
+        <!-- Rakuten Web Services Attribution Snippet TO HERE -->',$lockets_rakuten_item_template);
+        $lockets_rakuten_item_template=str_replace('【楽天ウェブサービスクレジットC】','<!-- Rakuten Web Services Attribution Snippet FROM HERE -->
+        <a href="https://webservice.rakuten.co.jp/" target="_blank"><img src="https://webservice.rakuten.co.jp/img/credit/200709/credit_22121.gif" border="0" alt="楽天ウェブサービスセンター" title="楽天ウェブサービスセンター" width="221" height="21"/></a>
+        <!-- Rakuten Web Services Attribution Snippet TO HERE -->',$lockets_rakuten_item_template);
+        $lockets_rakuten_item_template=str_replace('【楽天ウェブサービスクレジットD】','<!-- Rakuten Web Services Attribution Snippet FROM HERE -->
+        <a href="https://webservice.rakuten.co.jp/" target="_blank">Supported by 楽天ウェブサービス</a>
+        <!-- Rakuten Web Services Attribution Snippet TO HERE -->',$lockets_rakuten_item_template);
+        $contents.=$lockets_rakuten_item_template;
+    }
+    return $contents;
+}
+    
+
+
+}
 
 /***------------------------------------------
 　管理画面
@@ -548,7 +624,7 @@ echo "ぐるなび"
 ?> </li> 
 </ul>
 
-<h3>商品情報系※準備中</h3>
+<h3>商品情報系</h3>
 <ul>
 <li><?php
 if ($rakutentoken=="" and $rakutenaffid=="") {echo '<span style="color:#AA0000;font-weight:bold;">[NG]</span>';} else {echo '<span style="color:#00AA00;:font-weight:bold;">[OK]</span>';}
@@ -589,6 +665,7 @@ add_shortcode( 'LocketsJalan', 'lockets_jalan_func' );
 add_shortcode( 'LocketsHotpepper', 'lockets_hotpepper_func' );
 add_shortcode( 'LocketsGurunavi', 'lockets_gurunavi_func' );
 add_shortcode( 'LocketsGMaps', 'lockets_gmaps_func' );
+add_shortcode( 'LocketsRakutenItem', 'lockets_rekuten_item_func' );
 
 //管理画面登録
 add_action('admin_menu', 'lockets_menu');
@@ -665,7 +742,7 @@ function locketsSearch_wp_iframe() {
         wp_iframe( media_upload_lockets2_form );
 }
 
-//検索インタフェース用
+// 検索インタフェース用
 function media_upload_lockets2_form() {
 	add_filter( "media_upload_tabs", "lockets_upload_tabs"  ,1000);
 	media_upload_header();
@@ -678,14 +755,98 @@ echo <<< EOS
     <form action="media-upload.php" method="get">
         <h2>Lockets Search</h2>
         <p>お店やホテルやスポット、商品などを検索して挿入ボタンを押すと記事中にその情報表示用ショートコードを挿入します。</p>
-        <p>
-        <input type="text" name="searchword" value="$searchword" /><br>
+
+        検索キーワード：<input type="text" name="searchword" value="$searchword" />
+        <h4>検索対象</h4>
+EOS;
+switch ($useapi) {
+        case '':
+        case 'ホットペッパー':
+        echo <<< EOS
         <input type="radio" name="usuapi" value="ホットペッパー" checked> ホットペッパー　
         <input type="radio" name="usuapi" value="ぐるなび"> ぐるなび　
         <input type="radio" name="usuapi" value="楽天トラベル"> 楽天トラベル　
         <input type="radio" name="usuapi" value="じゃらん"> じゃらん　
         <input type="radio" name="usuapi" value="Googleプレイス（Google Maps）"> Googleプレイス（Google Maps）
-        </p>
+        <br>
+        <input type="radio" name="usuapi" value="楽天市場"> 楽天市場タグ検索商品表示（β）
+EOS;
+        break;
+        
+        case 'ぐるなび':
+        echo <<< EOS
+        <input type="radio" name="usuapi" value="ホットペッパー" > ホットペッパー　
+        <input type="radio" name="usuapi" value="ぐるなび" checked> ぐるなび　
+        <input type="radio" name="usuapi" value="楽天トラベル"> 楽天トラベル　
+        <input type="radio" name="usuapi" value="じゃらん"> じゃらん　
+        <input type="radio" name="usuapi" value="Googleプレイス（Google Maps）"> Googleプレイス（Google Maps）
+                <br>
+        <input type="radio" name="usuapi" value="楽天市場"> 楽天市場タグ検索商品表示（β）
+EOS;
+        break;
+
+        case '楽天トラベル':
+        echo <<< EOS
+        <input type="radio" name="usuapi" value="ホットペッパー" > ホットペッパー　
+        <input type="radio" name="usuapi" value="ぐるなび"> ぐるなび　
+        <input type="radio" name="usuapi" value="楽天トラベル" checked> 楽天トラベル　
+        <input type="radio" name="usuapi" value="じゃらん"> じゃらん　
+        <input type="radio" name="usuapi" value="Googleプレイス（Google Maps）"> Googleプレイス（Google Maps）
+                <br>
+        <input type="radio" name="usuapi" value="楽天市場"> 楽天市場タグ検索商品表示（β）
+EOS;
+        break;
+
+        case 'じゃらん':
+        echo <<< EOS
+        <input type="radio" name="usuapi" value="ホットペッパー" > ホットペッパー　
+        <input type="radio" name="usuapi" value="ぐるなび"> ぐるなび　
+        <input type="radio" name="usuapi" value="楽天トラベル"> 楽天トラベル　
+        <input type="radio" name="usuapi" value="じゃらん" checked> じゃらん　
+        <input type="radio" name="usuapi" value="Googleプレイス（Google Maps）"> Googleプレイス（Google Maps）
+                <br>
+        <input type="radio" name="usuapi" value="楽天市場"> 楽天市場タグ検索商品表示（β）
+EOS;
+        break;
+        case 'じゃらん':
+        echo <<< EOS
+        <input type="radio" name="usuapi" value="ホットペッパー" > ホットペッパー　
+        <input type="radio" name="usuapi" value="ぐるなび"> ぐるなび　
+        <input type="radio" name="usuapi" value="楽天トラベル"> 楽天トラベル　
+        <input type="radio" name="usuapi" value="じゃらん" checked> じゃらん　
+        <input type="radio" name="usuapi" value="Googleプレイス（Google Maps）"> Googleプレイス（Google Maps）
+                <br>
+        <input type="radio" name="usuapi" value="楽天市場"> 楽天市場タグ検索商品表示（β）
+EOS;
+        break;
+
+        case 'Googleプレイス（Google Maps）':
+        echo <<< EOS
+        <input type="radio" name="usuapi" value="ホットペッパー" > ホットペッパー　
+        <input type="radio" name="usuapi" value="ぐるなび"> ぐるなび　
+        <input type="radio" name="usuapi" value="楽天トラベル"> 楽天トラベル　
+        <input type="radio" name="usuapi" value="じゃらん"> じゃらん　
+        <input type="radio" name="usuapi" value="Googleプレイス（Google Maps）" checked> Googleプレイス（Google Maps）
+                <br>
+        <input type="radio" name="usuapi" value="楽天市場"> 楽天市場タグ検索商品表示（β）
+EOS;
+        break;
+
+        case '楽天市場':
+        echo <<< EOS
+        <input type="radio" name="usuapi" value="ホットペッパー" > ホットペッパー　
+        <input type="radio" name="usuapi" value="ぐるなび"> ぐるなび　
+        <input type="radio" name="usuapi" value="楽天トラベル"> 楽天トラベル　
+        <input type="radio" name="usuapi" value="じゃらん"> じゃらん　
+        <input type="radio" name="usuapi" value="Googleプレイス（Google Maps）"> Googleプレイス（Google Maps）
+                <br>
+        <input type="radio" name="usuapi" value="楽天市場" checked> 楽天市場タグ検索商品表示（β）
+EOS;
+        break;
+}
+
+echo <<< EOS
+        <br>
         <input type="hidden" name="tab" value="locketsSearch">
         <input type="hidden" name="type" value="locketsSearch">
         <input type="hidden" name="TB_iframe" value="true">
@@ -696,8 +857,6 @@ echo <<< EOS
 </div>
 EOS;
 
-
-
 if ($searchword !== "") {
 
 $url4searchword=urlencode($searchword);
@@ -707,7 +866,6 @@ switch ($useapi) {
         $recruit_webservice_key= get_option('recruit_webservice_key');
         $recruiturl="http://webservice.recruit.co.jp/hotpepper/gourmet/v1/?key=$recruit_webservice_key&name=$url4searchword&datum=world";
         
-        // キャッシュ有無確認
         $Buff = get_transient( $recruiturl );
         if ( $Buff === false ) {
             $Buff = file_get_contents($recruiturl);
@@ -716,19 +874,22 @@ switch ($useapi) {
         
         $xml = simplexml_load_string($Buff);
         $shops = $xml->shop;
+        if ($shops) {
         echo "<form action='' id='hotpepperresult'><ul>";
         foreach ($shops as $shop) {
             echo "<li><input type='button' id='".locketsh($shop->id)."' value='挿入' class='button'>　".locketsh($shop->name)."（".locketsh($shop->id)."）</li>";
         }
         echo '<li>Powered by <a href="http://webservice.recruit.co.jp/">ホットペッパー Webサービス</a></li>';
         echo "</ul></form>";
+             } else {
+            echo "<form id='noresult'><p>検索結果はありませんでした。キーワードもしくは検索対象を切り替えて試してみてください。</p></form>";
+        }
     break;
 
     case 'ぐるなび':
         $gnavi_webservice_key= get_option('gnavi_webservice_key');
         $gurunaviurl="https://api.gnavi.co.jp/RestSearchAPI/20150630/?keyid=$gnavi_webservice_key&format=xml&name=$url4searchword&coordinates_mode=2";
 
-        // キャッシュ有無確認
         $Buff = get_transient( $gurunaviurl );
         if ( $Buff === false ) {
             $Buff = file_get_contents($gurunaviurl);
@@ -737,12 +898,16 @@ switch ($useapi) {
 
         $xml = simplexml_load_string($Buff);
         $shops = $xml->rest;
+        if ($shops) {
         echo "<form action='' id='gurunaviresult'><ul>";
         foreach ($shops as $shop) {
             echo "<li><input type='button' id='".locketsh($shop->id)."' value='挿入' class='button'>　".locketsh($shop->name)."（".locketsh($shop->id)."）</li>";
         }
         echo '<li>Supported by <a href="http://api.gnavi.co.jp/api/scope/" target="_blank">ぐるなびWebService</a></li>';
         echo "</ul></form>";
+            } else {
+            echo "<form id='noresult'><p>検索結果はありませんでした。キーワードもしくは検索対象を切り替えて試してみてください。</p></form>";
+        }
     break;
 
     case '楽天トラベル':
@@ -750,21 +915,21 @@ switch ($useapi) {
         $rakutenaffid= get_option('rakuten_affiliate_id');
         $rwsurl="https://app.rakuten.co.jp/services/api/Travel/KeywordHotelSearch/20170426?applicationId=$rakutentoken&affiliateId=$rakutenaffid&format=xml&keyword=$url4searchword&datumType=1";
 
-        // キャッシュ有無確認
         $Buff = get_transient( $rwsurl );
         if ( $Buff === false ) {
             $options['ssl']['verify_peer']=false;
             $options['ssl']['verify_peer_name']=false;
             if ($Buff = @file_get_contents($rwsurl,false, stream_context_create($options))) {
                 $rakutentravelerror = "1";
-            set_transient( $rwsurl, $Buff, 3600 * 24 );
+                set_transient( $rwsurl, $Buff, 3600 * 24 );
             }
         }
 
         $xml = simplexml_load_string($Buff);
         $hotels = $xml->hotels->hotel;
+        $resultcount = $xml->pagingInfo->recordCount;
         
-        if ($rakutentravelerror == "1") {
+        if ($hotels) {
             echo "<form action='' id='rakutentravelresult'><ul>";
             foreach ($hotels as $hotel) {
                 echo "<li><input type='button' id='".locketsh($hotel->hotelBasicInfo->hotelNo)."' value='挿入' class='button'>　".locketsh($hotel->hotelBasicInfo->hotelName)."（".locketsh($hotel->hotelBasicInfo->hotelNo)."）</li>";
@@ -774,7 +939,7 @@ switch ($useapi) {
 <!-- Rakuten Web Services Attribution Snippet TO HERE --></li>';
             echo "</ul></form>";
         } else {
-            echo "<p>検索結果はありませんでした。</p>";
+            echo "<form id='noresult'><p>検索結果はありませんでした。キーワードもしくは検索対象を切り替えて試してみてください。</p></form>";
         }
     break;
 
@@ -792,12 +957,16 @@ switch ($useapi) {
         $xml = @simplexml_load_string($Buff);//warning防止
         $jalanhotel = $xml->Hotel;
 
+        if ($jalanhotel) {
         echo "<form action='' id='jalanresult'><ul>";
         foreach ($jalanhotel as $hotel) {
             echo "<li><input type='button' id='".locketsh($hotel->HotelID)."' value='挿入' class='button'>　".locketsh($hotel->HotelName)."（".locketsh($hotel->HotelID)."）</li>";
         }
         echo '<li><a href="http://www.jalan.net/jw/jwp0000/jww0001.do">じゃらん Web サービス</a></li>';
         echo "</ul></form>";
+            } else {
+            echo "<form id='noresult'><p>検索結果はありませんでした。キーワードもしくは検索対象を切り替えて試してみてください。</p></form>";
+        }
 
     break;
         
@@ -809,12 +978,50 @@ switch ($useapi) {
         $xml = simplexml_load_string($Buff);
         $gmapplaces = $xml->result;
 
+        if ($gmapplaces) {
         echo "<form action='' id='gmapplaceresult'><ul>";
         foreach ($gmapplaces as $place) {
             echo "<li><input type='button' value='挿入' class='button' id='".locketsh($place->place_id)."'>　".locketsh($place->name)."（".locketsh($place->id)."）</li>";
         }
         echo '<li><a href="https://developers.google.com/places/web-service/?hl=ja">Places API Web Service</a></li><li><img src="'.WP_PLUGIN_URL.'/lockets/images/powered_by_google_on_white.png"></li>';
         echo "</ul></form>";
+            } else {
+            echo "<form id='noresult'><p>検索結果はありませんでした。キーワードもしくは検索対象を切り替えて試してみてください。</p></form>";
+        }
+
+    break;
+        
+    case '楽天市場':
+        $rakutentoken= get_option('rakuten_search_token');
+        $rakutenaffid= get_option('rakuten_affiliate_id');
+        $rwsurl="https://app.rakuten.co.jp/services/api/IchibaItem/Search/20170706?applicationId=$rakutentoken&affiliateId=$rakutenaffid&format=xml&keyword=$url4searchword";
+
+        $Buff = get_transient( $rwsurl );
+        if ( $Buff === false ) {
+            $options['ssl']['verify_peer']=false;
+            $options['ssl']['verify_peer_name']=false;
+            if ($Buff = @file_get_contents($rwsurl,false, stream_context_create($options))) {
+                $rakutenitemerror = "1";
+                set_transient( $rwsurl, $Buff, 3600 * 24 );
+            }
+        }
+
+        $xml = simplexml_load_string($Buff);
+        $items = $xml->Items->Item;
+        $resultcount = $xml->count;
+
+        if ($items) {
+        echo "<form action='' id='rakutenitemresult'><ul>";
+        foreach ($items as $item) {
+            echo "<li id='".locketsh($item->itemCode)."'><input type='button' value='挿入' class='button'>　".locketsh($item->itemName)."<br>（商品ID：".locketsh($item->itemCode)."　タグ：<span>".locketsh($item->tagIds->value)."</span>）</li>";
+        }
+        echo '<li><!-- Rakuten Web Services Attribution Snippet FROM HERE -->
+<a href="https://webservice.rakuten.co.jp/" target="_blank">Supported by 楽天ウェブサービス</a>
+<!-- Rakuten Web Services Attribution Snippet TO HERE --></li>';
+        echo "</ul></form>";
+            } else {
+            echo "<form id='noresult'><p>検索結果はありませんでした。キーワードもしくは検索対象を切り替えて試してみてください。</p></form>";
+        }
 
     break;
 }
@@ -848,6 +1055,12 @@ function lockets_head(){
                 });
                 $('#gmapplaceresult input').on('click', function() {
                     top.send_to_editor( '[LocketsGMaps placeid="' + this.id + '"]');
+                    top.tb_remove(); 
+                });
+                $('#rakutenitemresult input').on('click', function() {
+                var itemid = $(this).parent('li').attr('id');
+                var tagid = $(this).parent('li').children('span').text();
+                    top.send_to_editor( '[LocketsRakutenItem itemcode="' + itemid + '" tagid="'+ tagid +'"]');
                     top.tb_remove(); 
                 });
 

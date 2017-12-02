@@ -3,8 +3,8 @@ Contributors: wackey
 Donate link: 
 Tags: AD,affiliate,Web API,location
 Requires at least: 4.8
-Tested up to: 4.8.1
-Stable tag: 0.51
+Tested up to: 4.9.1
+Stable tag: 0.52
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -78,6 +78,9 @@ none.
 An answer to that question.
 
 == Changelog ==
+= 0.52 =
+* Rakuten Item search is now available.Bug fix.
+　楽天市場商品検索と埋め込みに対応した。商品検索結果が0の時の処理を追加。
 = 0.50 =
 * Google Places API is now available.rename Auto Mylink -> LinkSwitch.
 　GoogleプレイスAPI検索に対応（プレイス検索とその場所への地図表示のみ）。またバリューコマースのオートMyLinkの名称変更に伴う修正を行った。
