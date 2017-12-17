@@ -5,11 +5,15 @@ function lockets_affiliate() {
 if (isset($_POST['update_option'])) {
 check_admin_referer('lockets-options');
 update_option('valuecommerce_pid', sanitize_text_field($_POST['valuecommerce_pid']));
+update_option('lockets_valuecommerce_token', sanitize_text_field($_POST['lockets_valuecommerce_token']));
+update_option('lockets_linkshare_token', sanitize_text_field($_POST['lockets_linkshare_token']));
 ?>
 <div class="updated fade"><p><strong><?php _e('Options saved.'); ?></strong></p>
 </div>
 <?php }
 $valuecommerce_pid = get_option('valuecommerce_pid');
+$lockets_valuecommerce_token = get_option('lockets_valuecommerce_token');
+$lockets_linkshare_token = get_option('lockets_linkshare_token');
 ?>
 
 <div class="wrap">
@@ -27,6 +31,18 @@ $valuecommerce_pid = get_option('valuecommerce_pid');
 _e('バリューコマース pid', 'valuecommerce_pid'); ?></label></th> <td><input size="36" type="text" name="valuecommerce_pid"
 id="valuecommerce_pid" value="<?php
 echo attribute_escape($valuecommerce_pid); ?>" /></td>
+</tr>
+<tr>
+<th><label for="lockets_valuecommerce_token"><?php
+_e('バリューコマーストークン（token）', 'lockets_valuecommerce_token'); ?></label></th> <td><input size="36" type="text" name="lockets_valuecommerce_token"
+id="lockets_valuecommerce_token" value="<?php
+echo attribute_escape($lockets_valuecommerce_token); ?>" /></td>
+</tr>
+<tr>
+<th><label for="lockets_linkshare_token"><?php
+_e('リンクシェアトークン（token）', 'lockets_linkshare_token'); ?></label></th> <td><input size="36" type="text" name="lockets_linkshare_token"
+id="lockets_linkshare_token" value="<?php
+echo attribute_escape($lockets_linkshare_token); ?>" /></td>
 </tr>
 </tbody></table>
 

@@ -4,7 +4,7 @@ Plugin Name: Lockets
 Plugin URI: http://lockets.jp/
 Description: A plug-in that gets information on spots such as shops and inns from various APIs and displays the latest information embedded in the blog.Also, This plugin will assist you such as creating affiliate links. お店や旅館などスポットに関する情報を各種APIから取得し、ブログ内に最新の情報を埋め込んで表示するプラグイン。また、アフィリエイトリンク作成支援を行います。
 Author: wackey
-Version: 0.52
+Version: 0.53
 Author URI: https://musilog.net/
 License: GPL2
 */
@@ -508,8 +508,8 @@ $items = $xml->Items->Item;
 //デフォルトテンプレートの登録
 if ($lockets_rakuten_item_template=="") {
 $lockets_rakuten_item_template= <<<EOT
-<p><a href="【商品URL】" rel="nofollow" target="_blank"><img src="【商品画像128x128URL】"></a><br>
-<p><a href="【商品URL】" rel="nofollow" target="_blank"><strong>【商品名】</strong></a></p><br>
+<p><a href="【商品URL】" rel="nofollow" target="_blank"><img src="【商品画像128x128URL】"></a></p>
+<p><a href="【商品URL】" rel="nofollow" target="_blank"><strong>【商品名】</strong></a><br>
 （<a href="【店舗URL】" rel="nofollow" target="_blank">【店舗名】</a>）</p>
 
 <p>【楽天ウェブサービスクレジットA】</p>
@@ -541,10 +541,83 @@ if ($items) {
     }
     return $contents;
 }
-    
-
-
 }
+
+/***------------------------------------------
+　バリューコマース商品検索結果表示（JANコード検索は追って実装）
+------------------------------------------***/
+function lockets_valuecommerce_item_func( $atts, $content = null ) {
+
+        $lockets_valuecommerce_token = get_option('lockets_valuecommerce_token');
+
+// [LocketsRakutenItem]属性情報取得
+extract(shortcode_atts(array(
+    'itemcode' => null,
+    'jancode' => null,), $atts));
+
+        $vcurl = "http://webservice.valuecommerce.ne.jp/productdb/search?token=$lockets_valuecommerce_token&product_id=$itemcode";
+//echo $vcurl;
+        $Buff = get_transient( $vcurl );
+        if ( $Buff === false ) {
+            $options['ssl']['verify_peer']=false;
+            $options['ssl']['verify_peer_name']=false;
+            if ($Buff = @file_get_contents($vcurl,false, stream_context_create($options))) {
+                $rakutenitemerror = "1";
+                set_transient( $vcurl, $Buff, 3600 * 24 );
+            }
+        }
+
+        $Buff = str_replace('vc:', 'vc', $Buff);
+        $Buff = str_replace('&', '&amp;', $Buff);
+        $xml = simplexml_load_string($Buff);
+        $items = $xml->channel->item;
+        $resultcount = locketsh($xml->channel->vcresultcount);
+        $totalpage = locketsh($xml->channel->vcpagecount);
+
+//デフォルトテンプレートの登録
+if ($lockets_valuecommerce_item_template=="") {
+$lockets_valuecommerce_item_template= <<<EOT
+<p><a href="【商品URL】" rel="nofollow" target="_blank"><img src="【商品画像】"></a></p>
+<p><a href="【商品URL】" rel="nofollow" target="_blank"><strong>【商品名】</strong></a><br>
+（【店舗名】）</p>
+
+EOT;
+}
+
+    $contents="";
+        if ($items) {
+            foreach ($items as $item) {
+        $lockets_valuecommerce_item_template=str_replace('【商品名】',locketsh($item->title),$lockets_valuecommerce_item_template);
+            // 画像URL取り出し
+                
+            $img = array();
+            foreach($item->vcimage as $vcimg) {
+                $img[]=$vcimg["url"];
+            }
+
+            if (strlen($img[1])) {
+                $imgurl = locketsh($img[1]);
+            } else {
+                if (strlen($img[2])) {
+                    $imgurl = locketsh($img[2]);
+                } else {
+                $imgurl = WP_PLUGIN_URL."/vc_search/c_img/noimage.gif";
+                }
+            }
+            
+        $lockets_valuecommerce_item_template=str_replace('【商品URL】',locketsh($item->link),$lockets_valuecommerce_item_template);
+        //$pictures128 = $item->mediumImageUrls->imageUrl;
+        $lockets_valuecommerce_item_template=str_replace('【商品画像】',locketsh( $imgurl),$lockets_valuecommerce_item_template);
+        $lockets_valuecommerce_item_template=str_replace('【店舗名】',locketsh($item->vcmerchantName ),$lockets_valuecommerce_item_template);
+                $contents.=$lockets_valuecommerce_item_template;
+            }
+       return $contents;
+}
+}
+
+
+
+
 
 /***------------------------------------------
 　管理画面
@@ -666,7 +739,9 @@ add_shortcode( 'LocketsHotpepper', 'lockets_hotpepper_func' );
 add_shortcode( 'LocketsGurunavi', 'lockets_gurunavi_func' );
 add_shortcode( 'LocketsGMaps', 'lockets_gmaps_func' );
 add_shortcode( 'LocketsRakutenItem', 'lockets_rekuten_item_func' );
+add_shortcode( 'LocketsValuecommerceItem', 'lockets_valuecommerce_item_func' );
 
+    
 //管理画面登録
 add_action('admin_menu', 'lockets_menu');
 
@@ -770,6 +845,7 @@ switch ($useapi) {
         <input type="radio" name="usuapi" value="Googleプレイス（Google Maps）"> Googleプレイス（Google Maps）
         <br>
         <input type="radio" name="usuapi" value="楽天市場"> 楽天市場タグ検索商品表示（β）
+        <input type="radio" name="usuapi" value="バリューコマース"> バリューコマース検索商品表示（β）
 EOS;
         break;
         
@@ -782,6 +858,7 @@ EOS;
         <input type="radio" name="usuapi" value="Googleプレイス（Google Maps）"> Googleプレイス（Google Maps）
                 <br>
         <input type="radio" name="usuapi" value="楽天市場"> 楽天市場タグ検索商品表示（β）
+        <input type="radio" name="usuapi" value="バリューコマース"> バリューコマース検索商品表示（β）
 EOS;
         break;
 
@@ -794,6 +871,7 @@ EOS;
         <input type="radio" name="usuapi" value="Googleプレイス（Google Maps）"> Googleプレイス（Google Maps）
                 <br>
         <input type="radio" name="usuapi" value="楽天市場"> 楽天市場タグ検索商品表示（β）
+        <input type="radio" name="usuapi" value="バリューコマース"> バリューコマース検索商品表示（β）
 EOS;
         break;
 
@@ -806,6 +884,7 @@ EOS;
         <input type="radio" name="usuapi" value="Googleプレイス（Google Maps）"> Googleプレイス（Google Maps）
                 <br>
         <input type="radio" name="usuapi" value="楽天市場"> 楽天市場タグ検索商品表示（β）
+        <input type="radio" name="usuapi" value="バリューコマース"> バリューコマース検索商品表示（β）
 EOS;
         break;
         case 'じゃらん':
@@ -817,6 +896,7 @@ EOS;
         <input type="radio" name="usuapi" value="Googleプレイス（Google Maps）"> Googleプレイス（Google Maps）
                 <br>
         <input type="radio" name="usuapi" value="楽天市場"> 楽天市場タグ検索商品表示（β）
+        <input type="radio" name="usuapi" value="バリューコマース"> バリューコマース検索商品表示（β）
 EOS;
         break;
 
@@ -829,6 +909,7 @@ EOS;
         <input type="radio" name="usuapi" value="Googleプレイス（Google Maps）" checked> Googleプレイス（Google Maps）
                 <br>
         <input type="radio" name="usuapi" value="楽天市場"> 楽天市場タグ検索商品表示（β）
+        <input type="radio" name="usuapi" value="バリューコマース"> バリューコマース検索商品表示（β）
 EOS;
         break;
 
@@ -841,6 +922,20 @@ EOS;
         <input type="radio" name="usuapi" value="Googleプレイス（Google Maps）"> Googleプレイス（Google Maps）
                 <br>
         <input type="radio" name="usuapi" value="楽天市場" checked> 楽天市場タグ検索商品表示（β）
+        <input type="radio" name="usuapi" value="バリューコマース"> バリューコマース検索商品表示（β）
+EOS;
+        break;
+
+        case 'バリューコマース':
+        echo <<< EOS
+        <input type="radio" name="usuapi" value="ホットペッパー" > ホットペッパー　
+        <input type="radio" name="usuapi" value="ぐるなび"> ぐるなび　
+        <input type="radio" name="usuapi" value="楽天トラベル"> 楽天トラベル　
+        <input type="radio" name="usuapi" value="じゃらん"> じゃらん　
+        <input type="radio" name="usuapi" value="Googleプレイス（Google Maps）"> Googleプレイス（Google Maps）
+                <br>
+        <input type="radio" name="usuapi" value="楽天市場"> 楽天市場タグ検索商品表示（β）
+        <input type="radio" name="usuapi" value="バリューコマース" checked> バリューコマース検索商品表示（β）
 EOS;
         break;
 }
@@ -1024,6 +1119,42 @@ switch ($useapi) {
         }
 
     break;
+
+    case 'バリューコマース':
+        $lockets_valuecommerce_token = get_option('lockets_valuecommerce_token');
+        $vcurl = "http://webservice.valuecommerce.ne.jp/productdb/search?token=$lockets_valuecommerce_token&keyword=$url4searchword";
+//echo $vcurl;
+        $Buff = get_transient( $vcurl );
+        if ( $Buff === false ) {
+            $options['ssl']['verify_peer']=false;
+            $options['ssl']['verify_peer_name']=false;
+            if ($Buff = @file_get_contents($vcurl,false, stream_context_create($options))) {
+                $rakutenitemerror = "1";
+                set_transient( $vcurl, $Buff, 3600 * 24 );
+            }
+        }
+
+        $Buff = str_replace('vc:', 'vc', $Buff);
+        $Buff = str_replace('&', '&amp;', $Buff);
+        $xml = simplexml_load_string($Buff);
+        $items = $xml->channel->item;
+        $resultcount = locketsh($xml->channel->vcresultcount);
+        $totalpage = locketsh($xml->channel->vcpagecount);
+
+        if ($items) {
+        echo "<form action='' id='valuecommerceitemresult'><ul>";
+        foreach ($items as $item) {
+            echo "<li id='".locketsh($item->vcproductCode)."'><input type='button' value='挿入' class='button'>　".locketsh($item->title)."<br>（商品ID：".locketsh($item->vcproductCode)."　JANコード：<span>".locketsh($item->vcjanCode)."</span>）</li>";
+        }
+        echo '<li><!-- Rakuten Web Services Attribution Snippet FROM HERE -->
+<a href="https://webservice.rakuten.co.jp/" target="_blank">Supported by 楽天ウェブサービス</a>
+<!-- Rakuten Web Services Attribution Snippet TO HERE --></li>';
+        echo "</ul></form>";
+            } else {
+            echo "<form id='noresult'><p>検索結果はありませんでした。キーワードもしくは検索対象を切り替えて試してみてください。</p></form>";
+        }
+
+    break;
 }
 
 
@@ -1061,6 +1192,12 @@ function lockets_head(){
                 var itemid = $(this).parent('li').attr('id');
                 var tagid = $(this).parent('li').children('span').text();
                     top.send_to_editor( '[LocketsRakutenItem itemcode="' + itemid + '" tagid="'+ tagid +'"]');
+                    top.tb_remove(); 
+                });
+                 $('#valuecommerceitemresult input').on('click', function() {
+                var itemid = $(this).parent('li').attr('id');
+                var tagid = $(this).parent('li').children('span').text();
+                    top.send_to_editor( '[LocketsValuecommerceItem itemcode="' + itemid + '" jancode="'+ tagid +'"]');
                     top.tb_remove(); 
                 });
 

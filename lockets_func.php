@@ -7,6 +7,7 @@ function locketsh($str)
 	$str=str_replace("&amp;lt;!--","<!--",$str);
 	$str=str_replace("--&amp;gt; ","-->",$str);
     $str=str_replace("&lt;BR&gt;","<br>",$str);
+    $str=str_replace("&amp;","&",$str);
 	return $str;
 }
 
