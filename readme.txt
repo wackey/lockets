@@ -4,7 +4,7 @@ Donate link:
 Tags: AD,affiliate,Web API,location
 Requires at least: 4.8
 Tested up to: 4.9.1
-Stable tag: 0.53
+Stable tag: 0.54
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -27,8 +27,8 @@ A plug-in that gets information on spots such as shops and inns from various API
  　ホットペッパーAPI、ぐるなびWebサービスに対応しています
 
 *Place Search
- -Google Places API
-  GoogleプレイスAPIに対応しています。
+ -Google Places API,Maps Embed API
+  GoogleプレイスAPI、Google Maps Embed APIに対応しています。
 
 *Affiliate
  -Rakuten Affiliate
@@ -37,6 +37,8 @@ A plug-in that gets information on spots such as shops and inns from various API
   バリューコマースLinkSwitch機能に対応しています（ホットペッパーやじゃらんなどへのリンクをバリューコマースのアフィリエイトリンクに自動変換します。アフィリエイトの提携作業が必要です）
  -Value Commerce Item search API
 　バリューコマースの商品検索APIを使用し、バリューコマースアフィリエイト可能な商品をアフィリエイトリンクで紹介できるようにします。
+ -Amazon Product Advertising API
+ 　Amazon Product Advertising APIによりAmazonアソシエイトリンクの生成を行います。
 
 * ---USE API---
 
@@ -59,12 +61,15 @@ A plug-in that gets information on spots such as shops and inns from various API
 *Google Places API https://developers.google.com/places/?hl=ja
 　Gooleプレイス検索APIを使用してスポットを検索し、スポットの地図を表示します。
 
-*with Google Maps embed.(Map) https://www.google.co.jp/maps
+*with Google Maps embed.(Map) https://www.google.co.jp/maps https://developers.google.com/maps/documentation/embed/?hl=ja
 　Google Mapsの地図埋め込み機能を使い、WordPressで作成したブログ上に地図を表示します。
  上記楽天トラベル、ホットペッパー、ぐるなびの情報と連携して地図表示をします。
 
 *Value Commerce Item Search API（Item search） https://www.valuecommerce.ne.jp/feature/webservice.html
  バリューコマースの商品検索APIを使用し、アフィリエイトリンク可能な商品の表示を行います。
+
+*Amazon Product Advertising API（Item search） https://affiliate.amazon.co.jp/home
+　Amazon.co.jpにおける商品検索に対応
 
 == Installation ==
 1. Unzip the plugin archive and put lockets folder into your plugins directory (wp-content/plugins/) of the server.
@@ -82,6 +87,9 @@ none.
 An answer to that question.
 
 == Changelog ==
+= 0.54 =
+* Amazon Product Advertising API.and Lockets Search Interface is easy to use.
+　Amazon Product Advertising APIによる商品検索とAmazonアソシエイトのリンク生成に対応した。また、同時にLockets Searchインターフェースにそれぞれの検索結果へのリンクを設置し使いやすくした。
 = 0.53 =
 * Valuecommerce Item search is now available.
 　バリューコマース商品検索APIと商品表示ならびにアフィリエイトリンク埋め込みに対応した。楽天商品検索結果表示のタグの間違いを修正

@@ -7,6 +7,9 @@ check_admin_referer('lockets-options');
 update_option('valuecommerce_pid', sanitize_text_field($_POST['valuecommerce_pid']));
 update_option('lockets_valuecommerce_token', sanitize_text_field($_POST['lockets_valuecommerce_token']));
 update_option('lockets_linkshare_token', sanitize_text_field($_POST['lockets_linkshare_token']));
+update_option('lockets_amzacckey', $_POST['lockets_amzacckey']);
+update_option('lockets_amzseckey', $_POST['lockets_amzseckey']);
+update_option('lockets_amzassid', $_POST['lockets_amzassid']);
 ?>
 <div class="updated fade"><p><strong><?php _e('Options saved.'); ?></strong></p>
 </div>
@@ -14,6 +17,9 @@ update_option('lockets_linkshare_token', sanitize_text_field($_POST['lockets_lin
 $valuecommerce_pid = get_option('valuecommerce_pid');
 $lockets_valuecommerce_token = get_option('lockets_valuecommerce_token');
 $lockets_linkshare_token = get_option('lockets_linkshare_token');
+$lockets_amzacckey=get_option('lockets_amzacckey');
+$lockets_amzseckey=get_option('lockets_amzseckey');
+$lockets_amzassid=get_option('lockets_amzassid');
 ?>
 
 <div class="wrap">
@@ -44,6 +50,27 @@ _e('リンクシェアトークン（token）', 'lockets_linkshare_token'); ?></
 id="lockets_linkshare_token" value="<?php
 echo attribute_escape($lockets_linkshare_token); ?>" /></td>
 </tr>
+<tr>
+<th><label for="lockets_amzacckey"><?php
+_e('Amazon Access Key ID', 'lockets_amzacckey'); ?></label></th> <td><input type="text" name="lockets_amzacckey"
+id="lockets_amzacckey" value="<?php
+echo attribute_escape($lockets_amzacckey); ?>" /></td>
+</tr>
+
+<tr>
+<th><label for="lockets_amzseckey"><?php
+_e('Amazon Secret Access Key','lockets_amzseckey'); ?></label></th> <td><input type="text" name="lockets_amzseckey"
+id="lockets_amzseckey" value="<?php
+echo attribute_escape($lockets_amzseckey); ?>" /></td>
+</tr>
+
+<tr>
+<th><label for="lockets_amzassid"><?php
+_e('Amazon　アソシエイトトラッキングID', 'lockets_amzassid'); ?></label></th> <td><input type="text" name="lockets_amzassid"
+id="lockets_amzassid" value="<?php
+echo attribute_escape($lockets_amzassid); ?>" /></td>
+</tr>
+
 </tbody></table>
 
 <p class="submit">

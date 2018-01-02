@@ -398,44 +398,102 @@ function DrawSelectMenu2($name, $source_arr, $select_value) {
 
 
 // 商品キーワード検索リクエストURL組み立て関数ItemSearch
-function awsrequesturl($v_category,$v_keyword,$v_sort_order,$v_page) {
-$amzacckey=get_option('amzacckey');
-if ($amzacckey==="") {$amzacckey==AMZACCKEY;}
-$amzseckey=get_option('amzseckey');
-if ($amzacckey==="") {$amzacckey==AMZSECKEY;}
-$amzassid=get_option('amzassid');
-if ($amzassid==="") {$amzassid==AMZASSID;}
+function awsrequesturl($v_keyword) {
+        $lockets_amzacckey=get_option('lockets_amzacckey');
+        $lockets_amzseckey=get_option('lockets_amzseckey');
+        $lockets_amzassid=get_option('lockets_amzassid');
 
-$baseurl = 'http://ecs.amazonaws.jp/onca/xml';
-$params = array();
-$params['Service']        = 'AWSECommerceService';
-$params['AWSAccessKeyId'] = $amzacckey;
-$params['Version']        = '2009-10-01';
-$params['Operation']      = 'ItemSearch';
-$params['SearchIndex']    = $v_category;
-//$params['asin']       = $asin;
-$params['Keywords']       = $v_keyword;
-if (!$v_category=="All") {
-$params['Sort']       = $v_sort_order;
+// The region you are interested in
+$endpoint = "webservices.amazon.co.jp";
+
+$uri = "/onca/xml";
+
+$params = array(
+    "Service" => "AWSECommerceService",
+    "Operation" => "ItemSearch",
+    "AWSAccessKeyId" => $lockets_amzacckey,
+    "AssociateTag" => $lockets_amzassid,
+    "SearchIndex" => "All",
+    "Keywords" => $v_keyword,
+    "ResponseGroup" => "Images,ItemAttributes,Offers"
+);
+
+// Set current timestamp if not set
+if (!isset($params["Timestamp"])) {
+    $params["Timestamp"] = gmdate('Y-m-d\TH:i:s\Z');
 }
-$params['AssociateTag']   = $amzassid;
-$params['ContentType']   = 'text/xml';
-$params['ResponseGroup']   = 'Medium,Reviews,OfferSummary';
-$params['ItemPage']   = $v_page;
-$params['Timestamp'] = gmdate('Y-m-d\TH:i:s\Z');
-// パラメータの順序を昇順に並び替えます
+
+// Sort the parameters by key
 ksort($params);
-$canonical_string = '';
-foreach ($params as $k => $v) {
-    $canonical_string .= '&'.urlencode_rfc3986($k).'='.urlencode_rfc3986($v);
-}
-$canonical_string = substr($canonical_string, 1);
 
-$parsed_url = parse_url($baseurl);
-$string_to_sign = "GET\n{$parsed_url['host']}\n{$parsed_url['path']}\n{$canonical_string}";
-$signature = base64_encode(hash_hmac('sha256', $string_to_sign, $amzseckey, true));
-$awsurl = $baseurl.'?'.$canonical_string.'&Signature='.urlencode_rfc3986($signature);
-return $awsurl;
+$pairs = array();
+
+foreach ($params as $key => $value) {
+    array_push($pairs, rawurlencode($key)."=".rawurlencode($value));
+}
+
+// Generate the canonical query
+$canonical_query_string = join("&", $pairs);
+
+// Generate the string to be signed
+$string_to_sign = "GET\n".$endpoint."\n".$uri."\n".$canonical_query_string;
+
+// Generate the signature required by the Product Advertising API
+$signature = base64_encode(hash_hmac("sha256", $string_to_sign, $lockets_amzseckey, true));
+
+// Generate the signed URL
+$request_url = 'http://'.$endpoint.$uri.'?'.$canonical_query_string.'&Signature='.rawurlencode($signature);
+
+return $request_url;
+}
+    
+// ASINから詳細商品検索
+function awsasinrequesturl($asin) {
+        $lockets_amzacckey=get_option('lockets_amzacckey');
+        $lockets_amzseckey=get_option('lockets_amzseckey');
+        $lockets_amzassid=get_option('lockets_amzassid');
+
+// The region you are interested in
+$endpoint = "webservices.amazon.co.jp";
+
+$uri = "/onca/xml";
+
+$params = array(
+    "Service" => "AWSECommerceService",
+    "Operation" => "ItemLookup",
+    "AWSAccessKeyId" => $lockets_amzacckey,
+    "AssociateTag" => $lockets_amzassid,
+    "ItemId" => $asin,
+    "ResponseGroup" => "Images,ItemAttributes,Offers"
+);
+
+// Set current timestamp if not set
+if (!isset($params["Timestamp"])) {
+    $params["Timestamp"] = gmdate('Y-m-d\TH:i:s\Z');
+}
+
+// Sort the parameters by key
+ksort($params);
+
+$pairs = array();
+
+foreach ($params as $key => $value) {
+    array_push($pairs, rawurlencode($key)."=".rawurlencode($value));
+}
+
+// Generate the canonical query
+$canonical_query_string = join("&", $pairs);
+
+// Generate the string to be signed
+$string_to_sign = "GET\n".$endpoint."\n".$uri."\n".$canonical_query_string;
+
+// Generate the signature required by the Product Advertising API
+$signature = base64_encode(hash_hmac("sha256", $string_to_sign, $lockets_amzseckey, true));
+
+// Generate the signed URL
+$request_url = 'http://'.$endpoint.$uri.'?'.$canonical_query_string.'&Signature='.rawurlencode($signature);
+
+return $request_url;
 }
 
 

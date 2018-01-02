@@ -616,7 +616,55 @@ EOT;
 }
 
 
+/***------------------------------------------
+　Amazon商品検索結果表示（JANコード検索は追って実装）
+------------------------------------------***/
+function lockets_amazon_item_func( $atts, $content = null ) {
 
+// [LocketsAmazonItem]属性情報取得
+extract(shortcode_atts(array(
+    'asin' => null,
+    'jancode' => null,), $atts));
+
+        $cacheid = "amazon".$asin;
+        $Buff = get_transient($cacheid);
+
+        if ( $Buff === false ) {
+            $lockets_Amazonitemsearchtapi= new lockets_Amazonitemsearchtapi();
+            $awsurl = $lockets_Amazonitemsearchtapi->awsasinrequesturl($asin);
+
+            if ($Buff = file_get_contents($awsurl,false, stream_context_create($options))) {
+                $rakutenitemerror = "1";
+                set_transient( $cacheid, $Buff, 3600 * 24 );
+            }
+        }
+
+        $xml = simplexml_load_string($Buff);
+        $items = $xml->Items->Item;
+        $resultcount = locketsh($xml->Items->TotalResults);
+        $totalpage = locketsh($xml->Items->TotalPages);
+
+//デフォルトテンプレートの登録
+if ($lockets_amazon_item_template=="") {
+$lockets_amazon_item_template= <<<EOT
+<p><a href="【商品URL】" rel="nofollow" target="_blank"><img src="【商品画像】"></a><br>
+<a href="【商品URL】" rel="nofollow" target="_blank"><strong>【商品名】</strong></a></p>
+
+EOT;
+}
+
+    $contents="";
+        if ($items) {
+            foreach ($items as $item) {
+                $lockets_amazon_item_template=str_replace('【商品名】',locketsh($item->ItemAttributes->Title),$lockets_amazon_item_template);
+                $lockets_amazon_item_template=str_replace('【商品URL】',locketsh($item->DetailPageURL),$lockets_amazon_item_template);
+                //$pictures128 = $item->mediumImageUrls->imageUrl;
+                $lockets_amazon_item_template=str_replace('【商品画像】',locketsh($item->MediumImage->URL),$lockets_amazon_item_template);
+                $contents.=$lockets_amazon_item_template;
+            }
+       return $contents;
+}
+}
 
 
 /***------------------------------------------
@@ -654,6 +702,9 @@ function lockets_options() {
     $recruit_webservice_key= get_option('recruit_webservice_key');
     $gnavi_webservice_key= get_option('gnavi_webservice_key');
     $valuecommerce_pid= get_option('valuecommerce_pid');
+    $lockets_amzacckey=get_option('lockets_amzacckey');
+    $lockets_amzseckey=get_option('lockets_amzseckey');
+    $lockets_amzassid=get_option('lockets_amzassid');
 ?>
 
 <div class="wrap">
@@ -703,6 +754,10 @@ echo "ぐるなび"
 if ($rakutentoken=="" and $rakutenaffid=="") {echo '<span style="color:#AA0000;font-weight:bold;">[NG]</span>';} else {echo '<span style="color:#00AA00;:font-weight:bold;">[OK]</span>';}
 echo "楽天市場（楽天アフィリエイト）"
 ?> </li>
+<li><?php
+if ($lockets_amzacckey=="" and $lockets_amzseckey=="" and $lockets_amzassid=="") {echo '<span style="color:#AA0000;font-weight:bold;">[NG]</span>';} else {echo '<span style="color:#00AA00;:font-weight:bold;">[OK]</span>';}
+echo "Amazonアソシエイト"
+?> </li>
 </ul>
 
 <h3>地図</h3>
@@ -717,6 +772,7 @@ echo "楽天市場（楽天アフィリエイト）"
 if ($valuecommerce_pid=="") {echo '<span style="color:#AA0000;font-weight:bold;">[NG]</span>';} else {echo '<span style="color:#00AA00;:font-weight:bold;">[OK]</span>';}
 echo "バリューコマース LinkSwitch<br>LinkSwitchに必要なJavaScriptを自動的に挿入します。<br>HOTPEPPERやじゃらんなど対応ECサイトと提携していると上記リンクが自動的にバリューマースのアフィリエイトリンクに置き換わります。"
 ?> </li>
+
     
 </ul>
 
@@ -740,6 +796,7 @@ add_shortcode( 'LocketsGurunavi', 'lockets_gurunavi_func' );
 add_shortcode( 'LocketsGMaps', 'lockets_gmaps_func' );
 add_shortcode( 'LocketsRakutenItem', 'lockets_rekuten_item_func' );
 add_shortcode( 'LocketsValuecommerceItem', 'lockets_valuecommerce_item_func' );
+add_shortcode( 'LocketsAmazonItem', 'lockets_amazon_item_func' );
 
     
 //管理画面登録
@@ -766,12 +823,19 @@ function remove_lockets()
     delete_option('lockets_jalan_template');
     
     delete_option('valuecommerce_pid');
+    delete_option('lockets_valuecommerce_token');
+    delete_option('lockets_linkshare_token');
+    delete_option('lockets_amzacckey');
+    delete_option('lockets_amzseckey');
+    delete_option('lockets_amzassid');
     
     delete_option('recruit_webservice_key');
     delete_option('lockets_hotpepper_template');
     
     delete_option('gnavi_webservice_key');
     delete_option('lockets_gnavi_template');
+    
+    
 }
 
 /***------------------------------------------
@@ -846,6 +910,7 @@ switch ($useapi) {
         <br>
         <input type="radio" name="usuapi" value="楽天市場"> 楽天市場タグ検索商品表示（β）
         <input type="radio" name="usuapi" value="バリューコマース"> バリューコマース検索商品表示（β）
+        <input type="radio" name="usuapi" value="Amazon.co.jp"> Amazon.co.jp検索商品表示（β）
 EOS;
         break;
         
@@ -859,6 +924,7 @@ EOS;
                 <br>
         <input type="radio" name="usuapi" value="楽天市場"> 楽天市場タグ検索商品表示（β）
         <input type="radio" name="usuapi" value="バリューコマース"> バリューコマース検索商品表示（β）
+        <input type="radio" name="usuapi" value="Amazon.co.jp"> Amazon.co.jp検索商品表示（β）
 EOS;
         break;
 
@@ -872,6 +938,7 @@ EOS;
                 <br>
         <input type="radio" name="usuapi" value="楽天市場"> 楽天市場タグ検索商品表示（β）
         <input type="radio" name="usuapi" value="バリューコマース"> バリューコマース検索商品表示（β）
+        <input type="radio" name="usuapi" value="Amazon.co.jp"> Amazon.co.jp検索商品表示（β）
 EOS;
         break;
 
@@ -885,6 +952,7 @@ EOS;
                 <br>
         <input type="radio" name="usuapi" value="楽天市場"> 楽天市場タグ検索商品表示（β）
         <input type="radio" name="usuapi" value="バリューコマース"> バリューコマース検索商品表示（β）
+        <input type="radio" name="usuapi" value="Amazon.co.jp"> Amazon.co.jp検索商品表示（β）
 EOS;
         break;
         case 'じゃらん':
@@ -897,6 +965,7 @@ EOS;
                 <br>
         <input type="radio" name="usuapi" value="楽天市場"> 楽天市場タグ検索商品表示（β）
         <input type="radio" name="usuapi" value="バリューコマース"> バリューコマース検索商品表示（β）
+        <input type="radio" name="usuapi" value="Amazon.co.jp"> Amazon.co.jp検索商品表示（β）
 EOS;
         break;
 
@@ -910,6 +979,7 @@ EOS;
                 <br>
         <input type="radio" name="usuapi" value="楽天市場"> 楽天市場タグ検索商品表示（β）
         <input type="radio" name="usuapi" value="バリューコマース"> バリューコマース検索商品表示（β）
+        <input type="radio" name="usuapi" value="Amazon.co.jp"> Amazon.co.jp検索商品表示（β）
 EOS;
         break;
 
@@ -923,6 +993,7 @@ EOS;
                 <br>
         <input type="radio" name="usuapi" value="楽天市場" checked> 楽天市場タグ検索商品表示（β）
         <input type="radio" name="usuapi" value="バリューコマース"> バリューコマース検索商品表示（β）
+        <input type="radio" name="usuapi" value="Amazon.co.jp"> Amazon.co.jp検索商品表示（β）
 EOS;
         break;
 
@@ -936,6 +1007,21 @@ EOS;
                 <br>
         <input type="radio" name="usuapi" value="楽天市場"> 楽天市場タグ検索商品表示（β）
         <input type="radio" name="usuapi" value="バリューコマース" checked> バリューコマース検索商品表示（β）
+        <input type="radio" name="usuapi" value="Amazon.co.jp"> Amazon.co.jp検索商品表示（β）
+EOS;
+        break;
+    
+        case 'Amazon.co.jp':
+        echo <<< EOS
+        <input type="radio" name="usuapi" value="ホットペッパー" > ホットペッパー　
+        <input type="radio" name="usuapi" value="ぐるなび"> ぐるなび　
+        <input type="radio" name="usuapi" value="楽天トラベル"> 楽天トラベル　
+        <input type="radio" name="usuapi" value="じゃらん"> じゃらん　
+        <input type="radio" name="usuapi" value="Googleプレイス（Google Maps）"> Googleプレイス（Google Maps）
+                <br>
+        <input type="radio" name="usuapi" value="楽天市場"> 楽天市場タグ検索商品表示（β）
+        <input type="radio" name="usuapi" value="バリューコマース"> バリューコマース検索商品表示（β）
+        <input type="radio" name="usuapi" value="Amazon.co.jp" checked> Amazon.co.jp検索商品表示（β）
 EOS;
         break;
 }
@@ -972,7 +1058,7 @@ switch ($useapi) {
         if ($shops) {
         echo "<form action='' id='hotpepperresult'><ul>";
         foreach ($shops as $shop) {
-            echo "<li><input type='button' id='".locketsh($shop->id)."' value='挿入' class='button'>　".locketsh($shop->name)."（".locketsh($shop->id)."）</li>";
+            echo "<li><input type='button' id='".locketsh($shop->id)."' value='挿入' class='button'>　<a href='".locketsh($shop->urls->pc)."' target='_blank'>".locketsh($shop->name)."</a>（".locketsh($shop->id)."）</li>";
         }
         echo '<li>Powered by <a href="http://webservice.recruit.co.jp/">ホットペッパー Webサービス</a></li>';
         echo "</ul></form>";
@@ -996,7 +1082,7 @@ switch ($useapi) {
         if ($shops) {
         echo "<form action='' id='gurunaviresult'><ul>";
         foreach ($shops as $shop) {
-            echo "<li><input type='button' id='".locketsh($shop->id)."' value='挿入' class='button'>　".locketsh($shop->name)."（".locketsh($shop->id)."）</li>";
+            echo "<li><input type='button' id='".locketsh($shop->id)."' value='挿入' class='button'>　<a href='".locketsh($shop->url)."' target='_blank'>".locketsh($shop->name)."</a>（".locketsh($shop->id)."）</li>";
         }
         echo '<li>Supported by <a href="http://api.gnavi.co.jp/api/scope/" target="_blank">ぐるなびWebService</a></li>';
         echo "</ul></form>";
@@ -1027,7 +1113,7 @@ switch ($useapi) {
         if ($hotels) {
             echo "<form action='' id='rakutentravelresult'><ul>";
             foreach ($hotels as $hotel) {
-                echo "<li><input type='button' id='".locketsh($hotel->hotelBasicInfo->hotelNo)."' value='挿入' class='button'>　".locketsh($hotel->hotelBasicInfo->hotelName)."（".locketsh($hotel->hotelBasicInfo->hotelNo)."）</li>";
+                echo "<li><input type='button' id='".locketsh($hotel->hotelBasicInfo->hotelNo)."' value='挿入' class='button'>　<a href='".locketsh($hotel->hotelBasicInfo->hotelInformationUrl)."' target='_blank'>".locketsh($hotel->hotelBasicInfo->hotelName)."</a>（".locketsh($hotel->hotelBasicInfo->hotelNo)."）</li>";
             }
             echo '<li><!-- Rakuten Web Services Attribution Snippet FROM HERE -->
 <a href="https://webservice.rakuten.co.jp/" target="_blank">Supported by 楽天ウェブサービス</a>
@@ -1055,7 +1141,7 @@ switch ($useapi) {
         if ($jalanhotel) {
         echo "<form action='' id='jalanresult'><ul>";
         foreach ($jalanhotel as $hotel) {
-            echo "<li><input type='button' id='".locketsh($hotel->HotelID)."' value='挿入' class='button'>　".locketsh($hotel->HotelName)."（".locketsh($hotel->HotelID)."）</li>";
+            echo "<li><input type='button' id='".locketsh($hotel->HotelID)."' value='挿入' class='button'>　<a href='".locketsh($hotel->HotelDetailURL)."' target='_blank'>".locketsh($hotel->HotelName)."</a>（".locketsh($hotel->HotelID)."）</li>";
         }
         echo '<li><a href="http://www.jalan.net/jw/jwp0000/jww0001.do">じゃらん Web サービス</a></li>';
         echo "</ul></form>";
@@ -1076,9 +1162,9 @@ switch ($useapi) {
         if ($gmapplaces) {
         echo "<form action='' id='gmapplaceresult'><ul>";
         foreach ($gmapplaces as $place) {
-            echo "<li><input type='button' value='挿入' class='button' id='".locketsh($place->place_id)."'>　".locketsh($place->name)."（".locketsh($place->id)."）</li>";
+            echo "<li><input type='button' value='挿入' class='button' id='".locketsh($place->place_id)."'>　<a href='"."https://www.google.com/maps/embed/v1/place?q=place_id:".locketsh($place->place_id)."&key=".$lockets_gmap_apikey."' target='_blank'>".locketsh($place->name)."</a>（".locketsh($place->id)."）</li>";
         }
-        echo '<li><a href="https://developers.google.com/places/web-service/?hl=ja">Places API Web Service</a></li><li><img src="'.WP_PLUGIN_URL.'/lockets/images/powered_by_google_on_white.png"></li>';
+        echo '<li><a href="https://developers.google.com/places/web-service/?hl=ja">Places API Web Service</a> <a href="https://developers.google.com/maps/documentation/embed/?hl=ja">Maps Embed API</a></li><li><img src="'.WP_PLUGIN_URL.'/lockets/images/powered_by_google_on_white.png"></li>';
         echo "</ul></form>";
             } else {
             echo "<form id='noresult'><p>検索結果はありませんでした。キーワードもしくは検索対象を切り替えて試してみてください。</p></form>";
@@ -1108,7 +1194,7 @@ switch ($useapi) {
         if ($items) {
         echo "<form action='' id='rakutenitemresult'><ul>";
         foreach ($items as $item) {
-            echo "<li id='".locketsh($item->itemCode)."'><input type='button' value='挿入' class='button'>　".locketsh($item->itemName)."<br>（商品ID：".locketsh($item->itemCode)."　タグ：<span>".locketsh($item->tagIds->value)."</span>）</li>";
+            echo "<li id='".locketsh($item->itemCode)."'><input type='button' value='挿入' class='button'>　<a href='".locketsh($item->itemUrl)."' target='_blank'>".locketsh($item->itemName)."</a><br>（商品ID：".locketsh($item->itemCode)."　タグ：<span>".locketsh($item->tagIds->value)."</span>）</li>";
         }
         echo '<li><!-- Rakuten Web Services Attribution Snippet FROM HERE -->
 <a href="https://webservice.rakuten.co.jp/" target="_blank">Supported by 楽天ウェブサービス</a>
@@ -1144,11 +1230,38 @@ switch ($useapi) {
         if ($items) {
         echo "<form action='' id='valuecommerceitemresult'><ul>";
         foreach ($items as $item) {
-            echo "<li id='".locketsh($item->vcproductCode)."'><input type='button' value='挿入' class='button'>　".locketsh($item->title)."<br>（商品ID：".locketsh($item->vcproductCode)."　JANコード：<span>".locketsh($item->vcjanCode)."</span>）</li>";
+            echo "<li id='".locketsh($item->vcproductCode)."'><input type='button' value='挿入' class='button'>　<a href='".locketsh($item->link)."' target='_blank'>".locketsh($item->title)."</a><br>（商品ID：".locketsh($item->vcproductCode)."　JANコード：<span>".locketsh($item->vcjanCode)."</span>）</li>";
         }
-        echo '<li><!-- Rakuten Web Services Attribution Snippet FROM HERE -->
-<a href="https://webservice.rakuten.co.jp/" target="_blank">Supported by 楽天ウェブサービス</a>
-<!-- Rakuten Web Services Attribution Snippet TO HERE --></li>';
+        echo "</ul></form>";
+            } else {
+            echo "<form id='noresult'><p>検索結果はありませんでした。キーワードもしくは検索対象を切り替えて試してみてください。</p></form>";
+        }
+
+    break;
+        
+    case 'Amazon.co.jp':
+
+        $lockets_Amazonitemsearchtapi= new lockets_Amazonitemsearchtapi();
+        $awsurl = $lockets_Amazonitemsearchtapi->awsrequesturl($searchword);
+        
+        $Buff = get_transient( $awsurl );
+        if ( $Buff === false ) {
+            if ($Buff = file_get_contents($awsurl,false, stream_context_create($options))) {
+                $rakutenitemerror = "1";
+                set_transient( $awsurl, $Buff, 3600 * 24 );
+            }
+        }
+
+        $xml = simplexml_load_string($Buff);
+        $items = $xml->Items->Item;
+        $resultcount = locketsh($xml->Items->TotalResults);
+        $totalpage = locketsh($xml->Items->TotalPages);
+
+        if ($items) {
+        echo "<form action='' id='amazonitemresult'><ul>";
+        foreach ($items as $item) {
+            echo "<li id='".locketsh($item->ASIN)."'><input type='button' value='挿入' class='button'>　<a href='".locketsh($item->DetailPageURL)."' target='_blank'>".locketsh($item->ItemAttributes->Title)."</a><br>（ASIN：".locketsh($item->ASIN)."　<span>"."</span>）</li>";
+        }
         echo "</ul></form>";
             } else {
             echo "<form id='noresult'><p>検索結果はありませんでした。キーワードもしくは検索対象を切り替えて試してみてください。</p></form>";
@@ -1194,10 +1307,16 @@ function lockets_head(){
                     top.send_to_editor( '[LocketsRakutenItem itemcode="' + itemid + '" tagid="'+ tagid +'"]');
                     top.tb_remove(); 
                 });
-                 $('#valuecommerceitemresult input').on('click', function() {
+                $('#valuecommerceitemresult input').on('click', function() {
                 var itemid = $(this).parent('li').attr('id');
                 var tagid = $(this).parent('li').children('span').text();
                     top.send_to_editor( '[LocketsValuecommerceItem itemcode="' + itemid + '" jancode="'+ tagid +'"]');
+                    top.tb_remove(); 
+                });
+                $('#amazonitemresult input').on('click', function() {
+                var asin = $(this).parent('li').attr('id');
+                //var tagid = $(this).parent('li').children('span').text();
+                    top.send_to_editor( '[LocketsAmazonItem asin="' + asin + '"]');
                     top.tb_remove(); 
                 });
 
