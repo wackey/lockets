@@ -4,7 +4,7 @@ Donate link:
 Tags: AD,affiliate,Web API,location
 Requires at least: 4.8
 Tested up to: 4.9.1
-Stable tag: 0.54
+Stable tag: 0.60
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -87,6 +87,9 @@ none.
 An answer to that question.
 
 == Changelog ==
+= 0.60 =
+* Amazon Product Advertising API.
+　Amazon Product Advertising API対応版正式リリース。
 = 0.54 =
 * Amazon Product Advertising API.and Lockets Search Interface is easy to use.
 　Amazon Product Advertising APIによる商品検索とAmazonアソシエイトのリンク生成に対応した。また、同時にLockets Searchインターフェースにそれぞれの検索結果へのリンクを設置し使いやすくした。
