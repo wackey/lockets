@@ -1341,10 +1341,11 @@ function lockets_upload_tabs( $tabs )
 /* オリジナルfeed追加 */
 $url = plugins_url();
 // SmartFormat
-function do_feed_smtfmt() {
+function do_feed_lctfmt() {
     $feed_template = WP_PLUGIN_DIR . '/lockets/feeds/lctfmt.php';
     load_template( $feed_template );
 }
 add_action( 'do_feed_lctfmt', 'do_feed_lctfmt' );
+
 
 ?>

@@ -9,7 +9,7 @@
  *
  * @package WordPress
  */
-require_once dirname(dirname(__FILE__)) . '/ng_filter.php';
+//require_once dirname(dirname(__FILE__)) . '/ng_filter.php';
 
 header('Content-Type: ' . feed_content_type('rss2') . '; charset=' . get_option('blog_charset'), true);
 $more = 1;
@@ -91,10 +91,12 @@ do_action( 'rss_tag_pre', 'rss2' );
 	do_action('rss2_head');
 
 	query_posts('&posts_per_page=20');
-    $ng_filter = new NGFilter();
+    //$ng_filter = new NGFilter();
     while( have_posts()) : the_post();
-    if (mb_strlen(get_the_content()) > 200
+/*    if (mb_strlen(get_the_content()) > 200
         && !($ng_filter->judgement(get_the_content()) || $ng_filter->judgement(get_the_title_rss()))) {
+*/
+    if (mb_strlen(get_the_content()) > 0) {
 	?>
 	<item>
 		<title><?php the_title_rss() ?></title>
@@ -115,19 +117,18 @@ $image_url = wp_get_attachment_image_src($image_id,'thumbnail', true);
 		<media:thumbnail><?php echo plugins_url( 'images/noimage.png', dirname(__FILE__)); ?></media:thumbnail>
 <?php } ?>
 
-<?php if (get_option('rss_use_excerpt')) : ?>
-		<description><![CDATA[<?php echo remove_script_tag(get_the_excerpt()); ?>]]></description>
-<?php else : ?>
-		<description><![CDATA[<?php echo remove_script_tag(get_the_excerpt()); ?>]]></description>
-	<?php $content = get_the_content_feed('rss2'); ?>
-	<?php if ( strlen( $content ) > 0 ) : ?>
-		<content:encoded><![CDATA[<?php echo remove_script_tag($content); ?>]]></content:encoded>
-	<?php else : ?>
-		<content:encoded><![CDATA[<?php echo remove_script_tag(get_the_excerpt()); ?>]]></content:encoded>
-	<?php endif; ?>
-<?php endif; ?>
 
-<content:encoded><![CDATA[<?php echo remove_script_tag(get_the_content()); ?>]]></content:encoded>
+		<description><![CDATA[<?php echo lockets_remove_script_tag(get_the_excerpt()); ?>]]></description>
+	<?php $content = get_the_content_feed('rss2'); ?>
+    <?php //$content = get_the_content(); ?>
+
+		<content:encoded><![CDATA[<?php echo lockets_remove_script_tag($content); ?>]]></content:encoded>
+
+<placetype></placetype>
+<placeid></placeid>
+<locketslat></locketslat>
+<locketslng></locketslng>
+
 <snf:analytics><![CDATA[
  <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
