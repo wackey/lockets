@@ -4,7 +4,7 @@ Donate link:
 Tags: AD,affiliate,Web API,location
 Requires at least: 4.8
 Tested up to: 4.9.1
-Stable tag: 0.60
+Stable tag: 0.61
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -87,6 +87,9 @@ none.
 An answer to that question.
 
 == Changelog ==
+= 0.61 =
+* Lockets feeds  is now available.
+　Locketsへ配信するfeed機能の実装
 = 0.60 =
 * Amazon Product Advertising API.
 　Amazon Product Advertising API対応版正式リリース。
