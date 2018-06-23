@@ -11,6 +11,25 @@
  */
 //require_once dirname(dirname(__FILE__)) . '/ng_filter.php';
 
+// cf.https://qiita.com/lumbermill/items/3ca3a467313fbcafaf19
+/*
+$header = gelallheaders();
+if ($header['Authorization'] == 'トークン') {
+  echo '認証OK';
+}
+*/
+
+function http_basic_authenticate_with($name,$password,$realm = "Protected area"){
+  if (!isset($_SERVER['PHP_AUTH_USER']) || !($_SERVER['PHP_AUTH_USER'] == $name && $_SERVER['PHP_AUTH_PW'] == $password )) {
+    header('WWW-Authenticate: Basic realm="'.$realm.'"');
+    header('HTTP/1.0 401 Unauthorized');
+    echo 'Not allowed to access.';
+    exit;
+  }
+}
+
+http_basic_authenticate_with("lockets","plusm"); 
+
 header('Content-Type: ' . feed_content_type('rss2') . '; charset=' . get_option('blog_charset'), true);
 $more = 1;
 
