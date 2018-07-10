@@ -142,11 +142,12 @@ $image_url = wp_get_attachment_image_src($image_id,'thumbnail', true);
     <?php //$content = get_the_content(); ?>
 
 		<content:encoded><![CDATA[<?php echo lockets_remove_script_tag($content); ?>]]></content:encoded>
-
-<placetype></placetype>
-<placeid></placeid>
-<locketslat></locketslat>
-<locketslng></locketslng>
+        <place>
+            <placetype></placetype>
+            <placeid></placeid>
+            <locketslat></locketslat>
+            <locketslng></locketslng>
+        </place>
 
 <snf:analytics><![CDATA[
  <script>
