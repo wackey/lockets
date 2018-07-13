@@ -54,6 +54,8 @@ do_action( 'rss_tag_pre', 'rss2' );
 	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
     xmlns:media="http://search.yahoo.com/mrss/"
     xmlns:snf="http://www.smartnews.be/snf"
+    xmlns:georss="http://www.georss.org/georss"
+    xmlns:gml="http://www.opengis.net/gml"
 	<?php
 	/**
 	 * Fires at the end of the RSS root to add namespaces.
@@ -142,12 +144,25 @@ $image_url = wp_get_attachment_image_src($image_id,'thumbnail', true);
     <?php //$content = get_the_content(); ?>
 
 		<content:encoded><![CDATA[<?php echo lockets_remove_script_tag($content); ?>]]></content:encoded>
-        <place>
-            <placetype></placetype>
-            <placeid></placeid>
-            <locketslat></locketslat>
-            <locketslng></locketslng>
-        </place>
+
+        <georss:where>
+            <entry>
+                <!-- 緯度 経度 -->
+                <georss:point>35.5858076 139.6505332</georss:point>
+                <!-- 位置情報サービスの種類 -->
+                <georss:featuretypetag>google_place</georss:featuretypetag>
+                <!-- 位置情報サービスが割り当てている拠点ID -->
+                <georss:relationshiptag>ChIJRRAB1wr1GGARkSfxopsiBjI</georss:relationshiptag>
+                <!-- 名称 -->
+                <georss:featurename>等々力陸上競技場</georss:featurename>
+            </entry>
+            <entry>
+                <georss:featurename>ニッパツ三ツ沢球技場</georss:featurename>
+                <georss:featuretypetag>google_place</georss:featuretypetag>
+                <georss:relationshiptag>ChIJt7qH9_tbGGAR8w8X5ztxCSg</georss:relationshiptag>
+                <georss:point>35.4691592 139.60163</georss:point>
+            </entry>
+        </georss:where>
 
 <snf:analytics><![CDATA[
  <script>
