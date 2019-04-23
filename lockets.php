@@ -76,7 +76,7 @@ $lockets_rakuten_travel_template= <<<EOT
 【住所１】【住所２】</p>
 <p><a href="【宿泊プラン一覧ページURL】" target="_blank" rel="nofollow">宿泊プランはこちら</a></p>
 【Google Maps埋め込み】
-<p>【楽天ウェブサービスクレジットA】</p>
+<p>【楽天ウェブサービスクレジットC】</p>
 EOT;
 }
 $lockets_rakuten_travel_template=str_replace('\\','',$lockets_rakuten_travel_template);
@@ -116,7 +116,10 @@ $lockets_rakuten_travel_template=str_replace('【楽天ウェブサービスク�
 <a href="https://webservice.rakuten.co.jp/" target="_blank"><img src="https://webservice.rakuten.co.jp/img/credit/200709/credit_22121.gif" border="0" alt="楽天ウェブサービスセンター" title="楽天ウェブサービスセンター" width="221" height="21"/></a>
 <!-- Rakuten Web Services Attribution Snippet TO HERE -->',$lockets_rakuten_travel_template);
 $lockets_rakuten_travel_template=str_replace('【楽天ウェブサービスクレジットD】','<!-- Rakuten Web Services Attribution Snippet FROM HERE -->
-<a href="https://webservice.rakuten.co.jp/" target="_blank">Supported by 楽天ウェブサービス</a>
+<a href="https://webservice.rakuten.co.jp/" target="_blank">Supported by Rakuten Developers</a>
+<!-- Rakuten Web Services Attribution Snippet TO HERE -->',$lockets_rakuten_travel_template);
+$lockets_rakuten_travel_template=str_replace('【楽天ウェブサービスクレジット E】','<!-- Rakuten Web Services Attribution Snippet FROM HERE -->
+<a href="https://webservice.rakuten.co.jp/" target="_blank"><img src="https://webservice.rakuten.co.jp/img/credit/200709/credit_31130.gif" border="0" alt="楽天ウェブサービスセンター" title="楽天ウェブサービスセンター" width="311" height="30"/></a>
 <!-- Rakuten Web Services Attribution Snippet TO HERE -->',$lockets_rakuten_travel_template);
 $gmap = lockets_gmap_draw(locketsh($hotelBasicInfo->hotelName),locketsh($hotelBasicInfo->latitude),locketsh($hotelBasicInfo->longitude),$zoom,$width,$height);
 $lockets_rakuten_travel_template=str_replace('【Google Maps埋め込み】',$gmap,$lockets_rakuten_travel_template);

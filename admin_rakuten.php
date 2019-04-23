@@ -26,17 +26,17 @@ $lockets_rakuten_travel_template= get_option('lockets_rakuten_travel_template');
 <table class="form-table"><tbody>
 
 <tr>
-<th><label for="rakuten_affiliate_id"><?php
-_e('楽天アフィリエイトID', 'rakuten_affiliate_id'); ?></label></th> <td><input size="36" type="text" name="rakuten_affiliate_id"
-id="rakuten_affiliate_id" value="<?php
-echo attribute_escape($rakutenaffid); ?>" /></td>
+<th><label for="rakuten_search_token"><?php
+_e('アプリID/デベロッパーID', 'applicationId / developerId'); ?></label></th> <td><input size="36" type="text" name="rakuten_search_token"
+id="rakuten_search_token" value="<?php
+echo attribute_escape($rakutentoken); ?>" /></td>
 </tr>
 
 <tr>
-<th><label for="rakuten_search_token"><?php
-_e('楽天デベロッパーID', 'rakuten_search_token'); ?></label></th> <td><input size="36" type="text" name="rakuten_search_token"
-id="rakuten_search_token" value="<?php
-echo attribute_escape($rakutentoken); ?>" /></td>
+<th><label for="rakuten_affiliate_id"><?php
+_e('アフィリエイトID', 'affiliateId'); ?></label></th> <td><input size="36" type="text" name="rakuten_affiliate_id"
+id="rakuten_affiliate_id" value="<?php
+echo attribute_escape($rakutenaffid); ?>" /></td>
 </tr>
     
 <tr>
@@ -46,7 +46,7 @@ _e('楽天トラベル<br>表示テンプレート<br>（HTMLと置換文字列�
 <?php echo str_replace('\\','',$lockets_rakuten_travel_template); ?>
 </textarea>
     
-<h4>置き換え用の文字列は下記のとおり</h4>
+<h4>置き換え用の文字列</h4>
 【施設番号】
 【施設名称】
 【施設情報ページURL】
@@ -75,12 +75,14 @@ _e('楽天トラベル<br>表示テンプレート<br>（HTMLと置換文字列�
 【お客さまの声（1件目）】
 【Google Maps埋め込み】
 
-<h5>クレジット</h5>
+<h5>■クレジット</h5>
 ※クレジットはいずれか必須<br>
-【楽天ウェブサービスクレジットA】※画像形式　Sサイズ（スクエア版）49px × 36px<br>
-【楽天ウェブサービスクレジットB】※画像形式　Lサイズ（スクエア版）70px × 52px<br>
+【楽天ウェブサービスクレジットA】※＜旧ロゴのため廃止予定＞画像形式　Sサイズ（スクエア版）49px × 36px<br>
+【楽天ウェブサービスクレジットB】※＜旧ロゴのため廃止予定＞画像形式　Lサイズ（スクエア版）70px × 52px<br>
+    上記を使用されている方は廃止予定のため下記をお使い下さい。
 【楽天ウェブサービスクレジットC】※画像形式　Sサイズ（バナー版）221px × 21px<br>
 【楽天ウェブサービスクレジットD】※テキスト形式<br>
+【楽天ウェブサービスクレジットE】※画像形式　Lサイズ（バナー版）221px × 21px<br>
 </td>
 </tr>
 
