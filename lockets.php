@@ -686,7 +686,8 @@ require_once("admin_gmap.php");
 
 // 管理画面メニュー作成関数
 function lockets_menu() {
-    add_menu_page('Lockets', 'Lockets', 8,__FILE__, 'lockets_options', WP_PLUGIN_URL.'/lockets/icon16.png');
+    add_menu_page('Lockets', 'Lockets', 8,__FILE__, 'lockets_options','
+dashicons-location-alt');
     add_submenu_page(__FILE__, '楽天ウェブサービス', '楽天ウェブサービス', 8, "admin_rakuten", 'lockets_rws');
     add_submenu_page(__FILE__, 'リクルートWEBサービス', 'リクルートWEBサービス', 8, "admin_recruit_webservice", 'lockets_recruit_webservice');
     add_submenu_page(__FILE__, 'ぐるなびWebサービス', 'ぐるなびWebサービス', 8, "admin_gnavi_webservice", 'lockets_gnavi_webservice');
