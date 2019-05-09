@@ -3,8 +3,8 @@ Contributors: wackey
 Donate link: 
 Tags: AD,affiliate,Web API,location
 Requires at least: 4.8
-Tested up to: 4.9.1
-Stable tag: 0.61
+Tested up to: 5.2
+Stable tag: 0.62
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -18,6 +18,9 @@ and,ability to convert links to affiliate links with "Valuecommerce LinkSwitch S
 
 A plug-in that gets information on spots such as shops and inns from various APIs and displays the latest information embedded in the blog.Also, This plugin will assist you such as creating affiliate links.
 
+*Available only with Classic Editor
+　現在、クラシックエディターのみで利用出来ます
+
 *HOTEL Search
  -Rakuten Travel Search API,Jalan Web Service(Hotel search)
  　楽天トラベルAPIとじゃらんWebサービスに対応しています
@@ -30,7 +33,7 @@ A plug-in that gets information on spots such as shops and inns from various API
  -Google Places API,Maps Embed API
   GoogleプレイスAPI、Google Maps Embed APIに対応しています。
 
-*Affiliate
+*Affiliate Beta
  -Rakuten Affiliate
  　楽天トラベルでの施設へのリンク、楽天市場での商品検索結果などをアフィリエイトリンクとしして出力します
  -Value Commerce LinkSwitch ex.HOT PEPPER ,Jalan's link, etc.
@@ -87,6 +90,9 @@ none.
 An answer to that question.
 
 == Changelog ==
+= 0.62 =
+* Improvement of management screen menu, Rakuten developer logo update, on / off function of feed function to deliver to Lockets.
+　管理画面メニューの改善、楽天デベロッパーロゴ更新、Locketsへ配信するfeed機能のオンオフ機能
 = 0.61 =
 * Lockets feeds  is now available.
 　Locketsへ配信するfeed機能の実装

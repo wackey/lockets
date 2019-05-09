@@ -8,7 +8,7 @@ Version: 0.62
 Author URI: https://musilog.net/
 License: GPL2
 */
-/*  Copyright 2017 wackey (email : takashi.wakimura@gmail.com)
+/*  Copyright 2017-2019 wackey (email : takashi.wakimura@gmail.com)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License, version 2, as
@@ -709,6 +709,7 @@ function lockets_options() {
     $lockets_amzacckey=get_option('lockets_amzacckey');
     $lockets_amzseckey=get_option('lockets_amzseckey');
     $lockets_amzassid=get_option('lockets_amzassid');
+    $lockets_gmap_apikey= get_option('lockets_gmap_apikey');
 ?>
 
 <div class="wrap">
@@ -731,11 +732,11 @@ function lockets_options() {
 <h3>旅行・ホテル情報系</h3>
 <ul>
 <li><?php
-if ($rakutentoken=="" and $rakutenaffid=="") {echo '<span style="color:#AA0000;font-weight:bold;">[NG]</span>';} else {echo '<span style="color:#00AA00;:font-weight:bold;">[OK]</span>';}
+if ($rakutentoken=="" and $rakutenaffid=="") {echo '<span style="color:#AA0000;font-weight:bold;">[未設定]</span>';} else {echo '<span style="color:#00AA00;:font-weight:bold;">[設定済]</span>';}
 echo "楽天トラベル（楽天アフィリエイト使用）"
 ?> </li>
 <li><?php
-if ($jalan_webservice_key=="") {echo '<span style="color:#AA0000;font-weight:bold;">[NG]</span>';} else {echo '<span style="color:#00AA00;:font-weight:bold;">[OK]</span>';}
+if ($jalan_webservice_key=="") {echo '<span style="color:#AA0000;font-weight:bold;">[未設定]</span>';} else {echo '<span style="color:#00AA00;:font-weight:bold;">[設定済]</span>';}
 echo "じゃらん　※LinkSwitchでバリューコマースアフィリエイト使用可"
 ?> </li> 
 </ul>
@@ -743,11 +744,11 @@ echo "じゃらん　※LinkSwitchでバリューコマースアフィリエイ�
 <h3>飲食店情報系</h3>
 <ul>
 <li><?php
-if ($recruit_webservice_key=="") {echo '<span style="color:#AA0000;font-weight:bold;">[NG]</span>';} else {echo '<span style="color:#00AA00;:font-weight:bold;">[OK]</span>';}
+if ($recruit_webservice_key=="") {echo '<span style="color:#AA0000;font-weight:bold;">[未設定]</span>';} else {echo '<span style="color:#00AA00;:font-weight:bold;">[設定済]</span>';}
 echo "HOT PEPPER　※LinkSwitchでバリューコマースアフィリエイト使用可"
 ?> </li> 
 <li><?php
-if ($gnavi_webservice_key=="") {echo '<span style="color:#AA0000;font-weight:bold;">[NG]</span>';} else {echo '<span style="color:#00AA00;:font-weight:bold;">[OK]</span>';}
+if ($gnavi_webservice_key=="") {echo '<span style="color:#AA0000;font-weight:bold;">[未設定]</span>';} else {echo '<span style="color:#00AA00;:font-weight:bold;">[設定済]</span>';}
 echo "ぐるなび"
 ?> </li> 
 </ul>
@@ -755,31 +756,35 @@ echo "ぐるなび"
 <h3>商品情報系</h3>
 <ul>
 <li><?php
-if ($rakutentoken=="" and $rakutenaffid=="") {echo '<span style="color:#AA0000;font-weight:bold;">[NG]</span>';} else {echo '<span style="color:#00AA00;:font-weight:bold;">[OK]</span>';}
+if ($rakutentoken=="" and $rakutenaffid=="") {echo '<span style="color:#AA0000;font-weight:bold;">[未設定]</span>';} else {echo '<span style="color:#00AA00;:font-weight:bold;">[設定済]</span>';}
 echo "楽天市場（楽天アフィリエイト）"
 ?> </li>
 <li><?php
-if ($lockets_amzacckey=="" and $lockets_amzseckey=="" and $lockets_amzassid=="") {echo '<span style="color:#AA0000;font-weight:bold;">[NG]</span>';} else {echo '<span style="color:#00AA00;:font-weight:bold;">[OK]</span>';}
+if ($lockets_amzacckey=="" and $lockets_amzseckey=="" and $lockets_amzassid=="") {echo '<span style="color:#AA0000;font-weight:bold;">[未設定]</span>';} else {echo '<span style="color:#00AA00;:font-weight:bold;">[設定済]</span>';}
 echo "Amazonアソシエイト"
 ?> </li>
 </ul>
 
-<h3>地図</h3>
+<h3>その他スポット</h3>
 <ul>
-<li><span style="color:#00AA00;:font-weight:bold;">[OK]</span>Google Maps</li>
+<li><?php
+if ($lockets_gmap_apikey=="") {echo '<span style="color:#AA0000;font-weight:bold;">[未設定]</span>';} else {echo '<span style="color:#00AA00;:font-weight:bold;">[設定済]</span>';}
+echo "Google プレイス"
+?> </li>
 </ul>
 
 
 <h3>その他アフィリエイト機能</h3>
 <ul>
 <li><?php
-if ($valuecommerce_pid=="") {echo '<span style="color:#AA0000;font-weight:bold;">[NG]</span>';} else {echo '<span style="color:#00AA00;:font-weight:bold;">[OK]</span>';}
+if ($valuecommerce_pid=="") {echo '<span style="color:#AA0000;font-weight:bold;">[未設定]</span>';} else {echo '<span style="color:#00AA00;:font-weight:bold;">[設定済]</span>';}
 echo "バリューコマース LinkSwitch<br>LinkSwitchに必要なJavaScriptを自動的に挿入します。<br>HOTPEPPERやじゃらんなど対応ECサイトと提携していると上記リンクが自動的にバリューマースのアフィリエイトリンクに置き換わります。"
 ?> </li>
 
     
 </ul>
-
+<p>※[設定済][未設定]はAPIキーの入力のみのチェックです。HTMLテンプレートは編集しなくても動作します。<br>
+    Google Maps表示は各スポット検索と連携して使用出来ますが、Googleプレイスは設定が必要です。</p>
 
 
 </div>
