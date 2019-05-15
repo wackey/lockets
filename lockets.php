@@ -422,7 +422,7 @@ function lockets_gmaps_func ( $atts, $content = null ) {
     //プレイスAPIを使う処理
         $lockets_gmap_apikey= get_option('lockets_gmap_apikey');
         $lockets_googleplace_template= get_option('lockets_googleplace_template');
-        $gmapurl="https://maps.googleapis.com/maps/api/place/details/xml?key=$lockets_gmap_apikey&placeid=$placeid&fields=name,rating,formatted_address,formatted_phone_number,geometry&language=ja";
+        $gmapurl="https://maps.googleapis.com/maps/api/place/details/xml?key=$lockets_gmap_apikey&placeid=$placeid&fields=name,rating,formatted_address,formatted_phone_number,geometry,website&language=ja";
         $Buff = file_get_contents($gmapurl);//キャッシュ使用しない
         $xml = simplexml_load_string($Buff);
         $gmapplaces = $xml->result;
@@ -771,7 +771,6 @@ echo "バリューコマース LinkSwitch<br>LinkSwitchに必要なJavaScriptを
 </ul>
 <p>※[設定済][未設定]はAPIキーの入力のみのチェックです。HTMLテンプレートは編集しなくても動作します。<br>
     Google Maps表示は各スポット検索と連携して使用出来ますが、Googleプレイスは設定が必要です。</p>
-
 
 </div>
 
@@ -1149,8 +1148,7 @@ switch ($useapi) {
         
     case 'Googleプレイス（Google Maps）':
         $lockets_gmap_apikey= get_option('lockets_gmap_apikey');
-        $gmapurl="https://maps.googleapis.com/maps/api/place/textsearch/xml?key=$lockets_gmap_apikey&query=$url4searchword&fields=name,geometry,place_id&language=ja";
-echo $gmapurl;
+        $gmapurl="https://maps.googleapis.com/maps/api/place/textsearch/xml?key=$lockets_gmap_apikey&query=$url4searchword&language=ja";
 
         $Buff = file_get_contents($gmapurl);//キャッシュ使わない
         $xml = simplexml_load_string($Buff);
