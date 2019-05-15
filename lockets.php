@@ -422,7 +422,7 @@ function lockets_gmaps_func ( $atts, $content = null ) {
     //プレイスAPIを使う処理
         $lockets_gmap_apikey= get_option('lockets_gmap_apikey');
         $lockets_googleplace_template= get_option('lockets_googleplace_template');
-        $gmapurl="https://maps.googleapis.com/maps/api/place/details/xml?key=$lockets_gmap_apikey&placeid=$placeid&language=ja";
+        $gmapurl="https://maps.googleapis.com/maps/api/place/details/xml?key=$lockets_gmap_apikey&placeid=$placeid&fields=name,rating,formatted_address,formatted_phone_number,geometry&language=ja";
         $Buff = file_get_contents($gmapurl);//キャッシュ使用しない
         $xml = simplexml_load_string($Buff);
         $gmapplaces = $xml->result;
@@ -457,23 +457,6 @@ EOT;
     return $ret;
 }
 
-// 関数呼び出し
-function lockets_gmap_draw($keyword,$lat,$lng,$zoom,$width,$height) {
-    $lockets_gmap_zoom= get_option('lockets_gmap_zoom');
-    $lockets_gmap_width= get_option('lockets_gmap_width');
-    $lockets_gmap_height= get_option('lockets_gmap_height');
-    if ($zoom == "") {
-        if ($lockets_gmap_zoom == "") {$zoom="14";} else {$zoom=$lockets_gmap_zoom;}
-        }
-    if ($width == "") {
-        if ($lockets_gmap_width == "") {$width="100%";} else {$width=$lockets_gmap_width;}
-        }
-    if ($height == "") {
-        if ($lockets_gmap_height == "") {$height="450";} else {$height=$lockets_gmap_height;}
-        }
-    $ret = '<iframe src="https://maps.google.co.jp/maps?q='.$keyword.'&ll='.$lat.','.$lng.'&output=embed&t=m&z='.$zoom.'&hl=ja" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" width="'.$width.'" height="'.$height.'"></iframe>';
-    return $ret;
-}
 
 
 /***------------------------------------------
@@ -681,6 +664,7 @@ require_once("admin_gnavi.php");
 require_once("admin_jalan.php");
 require_once("admin_affiliate.php");
 require_once("admin_gmap.php");
+require_once("admin_feed.php");
 
 
 
@@ -693,6 +677,7 @@ dashicons-location-alt');
     add_submenu_page(__FILE__, 'ぐるなびWebサービス', 'ぐるなびWebサービス', 8, "admin_gnavi_webservice", 'lockets_gnavi_webservice');
     add_submenu_page(__FILE__, 'じゃらんWebサービス', 'じゃらんWebサービス', 8, "admin_jalan_webservice", 'lockets_jalan_webservice');
     add_submenu_page(__FILE__, 'Google プレイス', 'Google プレイス', 8, "admin_gmap", 'lockets_gmap');
+    add_submenu_page(__FILE__, '外部配信', '外部配信', 8, "admin_feed", 'lockets_feed');
     add_submenu_page(__FILE__, 'その他アフィリエイト', 'その他アフィリエイト', 8, "admin_affiliate", 'lockets_affiliate');
 
 }
@@ -710,6 +695,7 @@ function lockets_options() {
     $lockets_amzseckey=get_option('lockets_amzseckey');
     $lockets_amzassid=get_option('lockets_amzassid');
     $lockets_gmap_apikey= get_option('lockets_gmap_apikey');
+    $locketsfeedswitch= get_option('locketsfeedswitch');
 ?>
 
 <div class="wrap">
@@ -843,8 +829,8 @@ function remove_lockets()
     
     delete_option('gnavi_webservice_key');
     delete_option('lockets_gnavi_template');
-    
-    
+
+    delete_option('locketsfeedswitch');  
 }
 
 /***------------------------------------------
@@ -867,6 +853,7 @@ function add_vc_automylink() {
 /* ボタン */
 //media_buttons_contextフィルターフック
 add_filter( "media_buttons_context", "lockets_media_buttons_context2");
+
 
 //ボタン追加
 
@@ -892,7 +879,7 @@ function locketsSearch_wp_iframe() {
 
 // 検索インタフェース用
 function media_upload_lockets2_form() {
-	add_filter( "media_upload_tabs", "lockets_upload_tabs"  ,1000);
+	add_filter( "media_upload_tabs", "lockets_upload_tabs" ,1000);
 	media_upload_header();
 
 $searchword =sanitize_text_field($_GET['searchword']);
@@ -1162,10 +1149,12 @@ switch ($useapi) {
         
     case 'Googleプレイス（Google Maps）':
         $lockets_gmap_apikey= get_option('lockets_gmap_apikey');
-        $gmapurl="https://maps.googleapis.com/maps/api/place/textsearch/xml?key=$lockets_gmap_apikey&query=$url4searchword&language=ja";
+        $gmapurl="https://maps.googleapis.com/maps/api/place/textsearch/xml?key=$lockets_gmap_apikey&query=$url4searchword&fields=name,geometry,place_id&language=ja";
+echo $gmapurl;
 
         $Buff = file_get_contents($gmapurl);//キャッシュ使わない
         $xml = simplexml_load_string($Buff);
+                        print_r($xml);
         $gmapplaces = $xml->result;
 
         if ($gmapplaces) {
@@ -1348,13 +1337,16 @@ function lockets_upload_tabs( $tabs )
 /* feed */
 
 /* オリジナルfeed追加 */
-$url = plugins_url();
-// SmartFormat
-function do_feed_lctfmt() {
-    $feed_template = WP_PLUGIN_DIR . '/lockets/feeds/lctfmt.php';
-    load_template( $feed_template );
-}
-add_action( 'do_feed_lctfmt', 'do_feed_lctfmt' );
 
+// Lockets配信用フォーマット
+
+$locketsfeedswitch = get_option('locketsfeedswitch');
+if($locketsfeedswitch == "1"){
+    function do_feed_lctfmt() {
+        $feed_template = WP_PLUGIN_DIR . '/lockets/feeds/lctfmt.php';
+        load_template( $feed_template );
+    }
+    add_action( 'do_feed_lctfmt', 'do_feed_lctfmt' );
+}
 
 ?>

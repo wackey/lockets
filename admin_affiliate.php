@@ -7,9 +7,9 @@ check_admin_referer('lockets-options');
 update_option('valuecommerce_pid', sanitize_text_field($_POST['valuecommerce_pid']));
 update_option('lockets_valuecommerce_token', sanitize_text_field($_POST['lockets_valuecommerce_token']));
 update_option('lockets_linkshare_token', sanitize_text_field($_POST['lockets_linkshare_token']));
-update_option('lockets_amzacckey', $_POST['lockets_amzacckey']);
-update_option('lockets_amzseckey', $_POST['lockets_amzseckey']);
-update_option('lockets_amzassid', $_POST['lockets_amzassid']);
+update_option('lockets_amzacckey', sanitize_text_field($_POST['lockets_amzacckey']));
+update_option('lockets_amzseckey', sanitize_text_field($_POST['lockets_amzseckey']));
+update_option('lockets_amzassid', sanitize_text_field($_POST['lockets_amzassid']));
 ?>
 <div class="updated fade"><p><strong><?php _e('Options saved.'); ?></strong></p>
 </div>

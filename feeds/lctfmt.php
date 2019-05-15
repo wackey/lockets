@@ -28,6 +28,7 @@ function http_basic_authenticate_with($name,$password,$realm = "Protected area")
   }
 }
 
+//IDパス認証追って検討
 http_basic_authenticate_with("lockets","plusm"); 
 
 header('Content-Type: ' . feed_content_type('rss2') . '; charset=' . get_option('blog_charset'), true);

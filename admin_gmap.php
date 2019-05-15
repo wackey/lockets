@@ -43,21 +43,24 @@ echo attribute_escape($lockets_gmap_apikey); ?>" /><br />※Google プレイス�
 <th><label for="lockets_gmap_zoom"><?php
 _e('Google Mapsのズーム値', 'loclets_gmap_zoom'); ?></label></th> <td><input size="36" type="text" name="lockets_gmap_zoom"
 id="lockets_gmap_zoom" value="<?php
-echo attribute_escape($lockets_gmap_zoom); ?>" /></td>
+echo attribute_escape($lockets_gmap_zoom); ?>" /><br>
+    デフォルト：14</td>
 </tr>
 
 <tr>
 <th><label for="lockets_gmap_width"><?php
 _e('Google Mapsの幅', 'lockets_gmap_width'); ?></label></th> <td><input size="36" type="text" name="lockets_gmap_width"
 id="lockets_gmap_width" value="<?php
-echo attribute_escape($lockets_gmap_width); ?>" /></td>
+echo attribute_escape($lockets_gmap_width); ?>" /><br>
+    デフォルト：100%　※1〜100%もしくはpx指定は数字のみ入力 例：500pxの場合「500」と入力</td>
 </tr>
     
 <tr>
 <th><label for="lockets_gmap_height"><?php
 _e('Google Mapsの高さ', 'lockets_gmap_height'); ?></label></th> <td><input size="36" type="text" name="lockets_gmap_height"
 id="lockets_gmap_height" value="<?php
-echo attribute_escape($lockets_gmap_height); ?>" /></td>
+echo attribute_escape($lockets_gmap_height); ?>" /><br>
+    デフォルト：450（単位はpx）　※px指定は数字のみ入力 例：500pxの場合「500」と入力</td>
 </tr>
 
 <tr>
