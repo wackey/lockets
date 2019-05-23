@@ -1156,7 +1156,7 @@ switch ($useapi) {
 
         $Buff = file_get_contents($gmapurl);//キャッシュ使わない
         $xml = simplexml_load_string($Buff);
-                        print_r($xml);
+        // print_r($xml);//エラー確認用
         $gmapplaces = $xml->result;
 
         if ($gmapplaces) {
