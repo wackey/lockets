@@ -30,8 +30,9 @@ function lockets_gmap_draw($keyword,$lat,$lng,$zoom,$width,$height) {
     if ($height == "") {
         if ($lockets_gmap_height == "") {$height="450";} else {$height=$lockets_gmap_height;}
         }
+    if ($lat == "") {return "";} else {
     $ret = '<iframe src="https://maps.google.co.jp/maps?q='.$keyword.'&ll='.$lat.','.$lng.'&output=embed&t=m&z='.$zoom.'&hl=ja" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" width="'.$width.'" height="'.$height.'"></iframe>';
-    return $ret;
+    return $ret;}
 }
 
 ?>
