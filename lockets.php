@@ -4,7 +4,7 @@ Plugin Name: Lockets
 Plugin URI: http://lockets.jp/
 Description: A plug-in that gets information on spots such as shops and inns from various APIs and displays the latest information embedded in the blog.Also, This plugin will assist you such as creating affiliate links. お店や旅館などスポットに関する情報を各種APIから取得し、ブログ内に最新の情報を埋め込んで表示するプラグイン。また、アフィリエイトリンク作成支援を行います。
 Author: wackey
-Version: 0.62
+Version: 0.70
 Author URI: https://musilog.net/
 License: GPL2
 */
@@ -326,7 +326,7 @@ extract(shortcode_atts(array(
     'height' => null,), $atts));
 
 // リクエストURL
-$gurunaviurl="https://api.gnavi.co.jp/RestSearchAPI/20150630/?keyid=$gnavi_webservice_key&format=xml&id=$shopid&coordinates_mode=2";
+$gurunaviurl="https://api.gnavi.co.jp/RestSearchAPI/v3/?keyid=$gnavi_webservice_key&id=$shopid&coordinates_mode=2";
 
 // キャッシュ有無確認
 $Buff = get_transient( $shopid );
@@ -335,8 +335,8 @@ $Buff = get_transient( $shopid );
     set_transient( $shopid, $Buff, 3600 * 24 );
 }
 
-$xml = simplexml_load_string($Buff);
-$shop = $xml->rest;
+$json = json_decode($Buff);
+$shop = $json->rest[0];
 
 //デフォルトテンプレートの登録
 if ($lockets_gnavi_template=="") {
@@ -664,7 +664,6 @@ require_once("admin_gnavi.php");
 require_once("admin_jalan.php");
 require_once("admin_affiliate.php");
 require_once("admin_gmap.php");
-require_once("admin_feed.php");
 
 
 
@@ -677,7 +676,6 @@ dashicons-location-alt');
     add_submenu_page(__FILE__, 'ぐるなびWebサービス', 'ぐるなびWebサービス', 8, "admin_gnavi_webservice", 'lockets_gnavi_webservice');
     add_submenu_page(__FILE__, 'じゃらんWebサービス', 'じゃらんWebサービス', 8, "admin_jalan_webservice", 'lockets_jalan_webservice');
     add_submenu_page(__FILE__, 'Google プレイス', 'Google プレイス', 8, "admin_gmap", 'lockets_gmap');
-    add_submenu_page(__FILE__, '外部配信', '外部配信', 8, "admin_feed", 'lockets_feed');
     add_submenu_page(__FILE__, 'その他アフィリエイト', 'その他アフィリエイト', 8, "admin_affiliate", 'lockets_affiliate');
 
 }
@@ -877,7 +875,7 @@ add_action( 'media_upload_locketsSearch',  'locketsSearch_wp_iframe' );
 add_action( "admin_head-media-upload-popup", 'lockets_head');
 
 function locketsSearch_wp_iframe() {
-        wp_iframe( media_upload_lockets2_form );
+        wp_iframe( 'media_upload_lockets2_form' );
 }
 
 // 検索インタフェース用
@@ -1068,16 +1066,15 @@ switch ($useapi) {
 
     case 'ぐるなび':
         $gnavi_webservice_key= get_option('gnavi_webservice_key');
-        $gurunaviurl="https://api.gnavi.co.jp/RestSearchAPI/20150630/?keyid=$gnavi_webservice_key&format=xml&name=$url4searchword&coordinates_mode=2";
+        $gurunaviurl="https://api.gnavi.co.jp/RestSearchAPI/v3/?keyid=$gnavi_webservice_key&name=$url4searchword&coordinates_mode=2";
 
         $Buff = get_transient( $gurunaviurl );
         if ( $Buff === false ) {
             $Buff = file_get_contents($gurunaviurl);
             set_transient( $gurunaviurl, $Buff, 3600 * 24 );
         }
-
-        $xml = simplexml_load_string($Buff);
-        $shops = $xml->rest;
+        $json = json_decode($Buff);
+        $shops = $json->rest;
         if ($shops) {
         echo "<form action='' id='gurunaviresult'><ul>";
         foreach ($shops as $shop) {
@@ -1335,20 +1332,5 @@ function lockets_upload_tabs( $tabs )
 	return $tabs;
 }
 
-
-/* feed */
-
-/* オリジナルfeed追加 */
-
-// Lockets配信用フォーマット
-
-$locketsfeedswitch = get_option('locketsfeedswitch');
-if($locketsfeedswitch == "1"){
-    function do_feed_lctfmt() {
-        $feed_template = WP_PLUGIN_DIR . '/lockets/feeds/lctfmt.php';
-        load_template( $feed_template );
-    }
-    add_action( 'do_feed_lctfmt', 'do_feed_lctfmt' );
-}
 
 ?>

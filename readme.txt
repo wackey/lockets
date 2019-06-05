@@ -4,7 +4,7 @@ Donate link:
 Tags: AD,affiliate,Web API,location
 Requires at least: 4.8
 Tested up to: 5.2
-Stable tag: 0.62
+Stable tag: 0.70
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -90,6 +90,9 @@ none.
 An answer to that question.
 
 == Changelog ==
+= 0.70 =
+*
+　ぐるなびAPI URL変更
 = 0.62 =
 * Improvement of management screen menu, Rakuten developer logo update, on / off function of feed function to deliver to Lockets.
 　管理画面メニューの改善、楽天デベロッパーロゴ更新、Locketsへ配信するfeed機能のオンオフ機能
