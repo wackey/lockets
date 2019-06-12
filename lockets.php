@@ -663,23 +663,23 @@ require_once("admin_hotpepper.php");
 require_once("admin_gnavi.php");
 require_once("admin_jalan.php");
 require_once("admin_affiliate.php");
+require_once("admin_feed.php");
 require_once("admin_gmap.php");
 
 
 
 // 管理画面メニュー作成関数
 function lockets_menu() {
-    add_menu_page('Lockets', 'Lockets', 8,__FILE__, 'lockets_options','
+add_menu_page('Lockets', 'Lockets', 8,__FILE__, 'lockets_options','
 dashicons-location-alt');
-    add_submenu_page(__FILE__, '楽天ウェブサービス', '楽天ウェブサービス', 8, "admin_rakuten", 'lockets_rws');
-    add_submenu_page(__FILE__, 'リクルートWEBサービス', 'リクルートWEBサービス', 8, "admin_recruit_webservice", 'lockets_recruit_webservice');
-    add_submenu_page(__FILE__, 'ぐるなびWebサービス', 'ぐるなびWebサービス', 8, "admin_gnavi_webservice", 'lockets_gnavi_webservice');
-    add_submenu_page(__FILE__, 'じゃらんWebサービス', 'じゃらんWebサービス', 8, "admin_jalan_webservice", 'lockets_jalan_webservice');
-    add_submenu_page(__FILE__, 'Google プレイス', 'Google プレイス', 8, "admin_gmap", 'lockets_gmap');
-    add_submenu_page(__FILE__, 'その他アフィリエイト', 'その他アフィリエイト', 8, "admin_affiliate", 'lockets_affiliate');
-
+add_submenu_page(__FILE__, '楽天ウェブサービス', '楽天ウェブサービス', 8, "admin_rakuten", 'lockets_rws');
+add_submenu_page(__FILE__, 'リクルートWEBサービス', 'リクルートWEBサービス', 8, "admin_recruit_webservice", 'lockets_recruit_webservice');
+add_submenu_page(__FILE__, 'ぐるなびWebサービス', 'ぐるなびWebサービス', 8, "admin_gnavi_webservice", 'lockets_gnavi_webservice');
+add_submenu_page(__FILE__, 'じゃらんWebサービス', 'じゃらんWebサービス', 8, "admin_jalan_webservice", 'lockets_jalan_webservice');
+add_submenu_page(__FILE__, 'Google プレイス', 'Google プレイス', 8, "admin_gmap", 'lockets_gmap');
+add_submenu_page(__FILE__, '外部配信', '外部配信', 8, "admin_feed", 'lockets_feed');
+add_submenu_page(__FILE__, 'その他アフィリエイト', 'その他アフィリエイト', 8, "admin_affiliate", 'lockets_affiliate');
 }
-
 
 // 管理画面描画
 function lockets_options() {
@@ -1332,5 +1332,16 @@ function lockets_upload_tabs( $tabs )
 	return $tabs;
 }
 
+// Lockets配信用フォーマット
+
+$locketsfeedswitch = get_option('locketsfeedswitch');
+$lockets_feedurl = get_option('lockets_feedurl');
+if($locketsfeedswitch == "1"){
+    function do_feed_lctfmt() {
+        $feed_template = WP_PLUGIN_DIR . '/lockets/feeds/lctfmt.php';
+        load_template( $feed_template );
+    }
+    add_action( 'do_feed_'.$lockets_feedurl , 'do_feed_lctfmt');
+}
 
 ?>
