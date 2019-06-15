@@ -6,6 +6,8 @@ if (isset($_POST['update_option'])) {
 check_admin_referer('lockets-options');
 update_option('lockets_feedswitch', sanitize_text_field($_POST['lockets_feedswitch']));
 update_option('lockets_feedurl', sanitize_text_field($_POST['lockets_feedurl']));
+update_option('lockets_feedid', sanitize_text_field($_POST['lockets_feedid']));
+update_option('lockets_feedpass', sanitize_text_field($_POST['lockets_feedpass']));
 ?>
 <div class="updated fade">
     <p><strong><?php _e('Options saved.'); ?></strong></p>
@@ -13,6 +15,8 @@ update_option('lockets_feedurl', sanitize_text_field($_POST['lockets_feedurl']))
 <?php }
 $lockets_feedswitch = get_option('lockets_feedswitch');
 $lockets_feedurl = get_option('lockets_feedurl');
+$lockets_feedid = get_option('lockets_feedid');
+$lockets_feedpass = get_option('lockets_feedpass');
 ?>
 
 <div class="wrap">
@@ -45,6 +49,19 @@ _e('外部配信用URL設定', 'lockets_feedurl'); ?></label></th>
 echo attribute_escape($lockets_feedurl); ?>" /></td>
                 </tr>
 
+                <tr>
+                    <th><label for="lockets_feedid"><?php
+_e('Basic認証id', 'lockets_feedid'); ?></label></th>
+                    <td><input size="36" type="text" name="lockets_feedid" id="lockets_feedid" value="<?php
+echo attribute_escape($lockets_feedid); ?>" /></td>
+                </tr>
+
+                <tr>
+                    <th><label for="lockets_feedpass"><?php
+_e('Basic認証pass', 'lockets_feedpass'); ?></label></th>
+                    <td><input size="36" type="text" name="lockets_feedpass" id="lockets_feedpass" value="<?php
+echo attribute_escape($lockets_feedpass); ?>" /></td>
+                </tr>
             </tbody>
         </table>
 
