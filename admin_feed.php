@@ -20,7 +20,7 @@ $lockets_feedpass = get_option('lockets_feedpass');
 ?>
 
 <div class="wrap">
-    <h2>Locketsプラグイン：外部へのfeed配信</h2>
+    <h2>Locketsプラグイン：外部へのfeed配信β＜開発中/テスター向け＞</h2>
     <p>外部サイトへ配信するfeedを有効にする場合はONとしてください</p>
     <form name="form" method="post" action="">
         <input type="hidden" name="action" value="update" />
