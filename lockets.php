@@ -125,6 +125,14 @@ $gmap = lockets_gmap_draw(locketsh($hotelBasicInfo->hotelName),locketsh($hotelBa
 $lockets_rakuten_travel_template=str_replace('【Google Maps埋め込み】',$gmap,$lockets_rakuten_travel_template);
 //メモ　その他の要素後日追加
 
+// Lockets feedへの緯度経度連携
+$lockets_rakuten_travel_template .= "<!--";
+$lockets_rakuten_travel_template .= "<georss:point>".locketsh($hotelBasicInfo->latitude)." ".locketsh($hotelBasicInfo->longitude)."</georss:point>";
+$lockets_rakuten_travel_template .= "<georss:featuretypetag>rakuten_travel</georss:featuretypetag>";
+$lockets_rakuten_travel_template .= "<georss:relationshiptag>".locketsh($hotelBasicInfo->hotelNo)."</georss:relationshiptag>";
+$lockets_rakuten_travel_template .= "<georss:featurename>".locketsh($hotelBasicInfo->hotelName)."</georss:featurename>";
+$lockets_rakuten_travel_template .= "LocketsFeedend-->";
+    
 return $lockets_rakuten_travel_template;
 
 }
@@ -197,6 +205,14 @@ $lockets_jalan_template=str_replace('【じゃらんクレジットC】','<a hre
 //$gmap = lockets_gmap_draw(locketsh($hotelBasicInfo->hotelName),locketsh($hotelBasicInfo->latitude),locketsh($hotelBasicInfo->longitude),$zoom,$width,$height);
 //$lockets_jalan_template=str_replace('【Google Maps埋め込み】',$gmap,$lockets_jalan_template);
 //メモ　その他の要素後日追加
+
+// Lockets feedへの緯度経度連携
+$lockets_jalan_template .= "<!--";
+$lockets_jalan_template .= "<georss:point>"."</georss:point>";
+$lockets_jalan_template .= "<georss:featuretypetag>jalan</georss:featuretypetag>";
+$lockets_jalan_template .= "<georss:relationshiptag>".locketsh($jalanhotel->HotelID)."</georss:relationshiptag>";
+$lockets_jalan_template .= "<georss:featurename>".locketsh($jalanhotel->HotelName)."</georss:featurename>";
+$lockets_jalan_template .= "LocketsFeedend-->";
 
 return $lockets_jalan_template;
 
@@ -306,6 +322,14 @@ $gmap = lockets_gmap_draw(locketsh($shop->name),locketsh($shop->lat),locketsh($s
 $lockets_hotpepper_template=str_replace('【Google Maps埋め込み】',$gmap,$lockets_hotpepper_template);
 //抜けている項目は後日追加する
 
+// Lockets feedへの緯度経度連携
+$lockets_hotpepper_template .= "<!--";
+$lockets_hotpepper_template .= "<georss:point>".locketsh($shop->lat)." ".locketsh($shop->lng)."</georss:point>";
+$lockets_hotpepper_template .= "<georss:featuretypetag>hotpepper</georss:featuretypetag>";
+$lockets_hotpepper_template .= "<georss:relationshiptag>".locketsh($shop->id)."</georss:relationshiptag>";
+$lockets_hotpepper_template .= "<georss:featurename>".locketsh($shop->name)."</georss:featurename>";
+$lockets_hotpepper_template .= "LocketsFeedend-->";
+
 return $lockets_hotpepper_template;
 }
 
@@ -397,6 +421,14 @@ $lockets_gnavi_template=str_replace('【ぐるなびクレジットC】','Suppor
 $gmap = lockets_gmap_draw(locketsh($shop->name),locketsh($shop->latitude),locketsh($shop->longitude),$zoom,$width,$height);
 $lockets_gnavi_template=str_replace('【Google Maps埋め込み】',$gmap,$lockets_gnavi_template);
 //抜けている項目は後日追加する
+    
+// Lockets feedへの緯度経度連携
+$lockets_gnavi_template .= "<!--";
+$lockets_gnavi_template .= "<georss:point>".locketsh($shop->latitude)." ".locketsh($shop->longitude)."</georss:point>";
+$lockets_gnavi_template .= "<georss:featuretypetag>gurunavi</georss:featuretypetag>";
+$lockets_gnavi_template .= "<georss:relationshiptag>".locketsh($shop->id)."</georss:relationshiptag>";
+$lockets_gnavi_template .= "<georss:featurename>".locketsh($shop->name)."</georss:featurename>";
+$lockets_gnavi_template .= "LocketsFeedend-->";
 
 return $lockets_gnavi_template;
 }
@@ -450,6 +482,13 @@ EOT;
     }
     $lockets_googleplace_template=str_replace('【GoogleクレジットA】','<img src="'.WP_PLUGIN_URL.'/lockets/images/powered_by_google_on_white.png">',$lockets_googleplace_template);
     $lockets_googleplace_template=str_replace('【GoogleクレジットB】','<img src="'.WP_PLUGIN_URL.'/lockets/images/powered_by_google_on_non_white.png">',$lockets_googleplace_template);
+    // Lockets feedへの緯度経度連携
+    $lockets_googleplace_template .= "<!--";
+    $lockets_googleplace_template .= "<georss:point>".$lat." ".$lng ."</georss:point>";
+    $lockets_googleplace_template .= "<georss:featuretypetag>google_place</georss:featuretypetag>";
+    $lockets_googleplace_template .= "<georss:relationshiptag>".$placeid."</georss:relationshiptag>";
+    $lockets_googleplace_template .= "<georss:featurename>".$keyword."</georss:featurename>";
+    $lockets_googleplace_template .= "LocketsFeedend-->";
     $ret= $lockets_googleplace_template;
 } else {
     $ret= lockets_gmap_draw($keyword,$lat,$lng,$zoom,$width,$height);

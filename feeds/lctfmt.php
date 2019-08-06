@@ -148,20 +148,13 @@ $image_url = wp_get_attachment_image_src($image_id,'thumbnail', true);
 
         <georss:where>
             <entry>
-                <!-- 緯度 経度 -->
-                <georss:point>35.5858076 139.6505332</georss:point>
-                <!-- 位置情報サービスの種類 -->
-                <georss:featuretypetag>google_place</georss:featuretypetag>
-                <!-- 位置情報サービスが割り当てている拠点ID -->
-                <georss:relationshiptag>ChIJRRAB1wr1GGARkSfxopsiBjI</georss:relationshiptag>
-                <!-- 名称 -->
-                <georss:featurename>等々力陸上競技場</georss:featurename>
-            </entry>
-            <entry>
-                <georss:featurename>ニッパツ三ツ沢球技場</georss:featurename>
-                <georss:featuretypetag>google_place</georss:featuretypetag>
-                <georss:relationshiptag>ChIJt7qH9_tbGGAR8w8X5ztxCSg</georss:relationshiptag>
-                <georss:point>35.4691592 139.60163</georss:point>
+                <?php
+                $feedcontent = lockets_remove_script_tag($content);
+                        if( preg_match("/<georss:point>.*<\/georss:featurename>/", $feedcontent, $matches) ){
+                                    print $matches[0];
+                                }
+                ?>
+
             </entry>
         </georss:where>
 
