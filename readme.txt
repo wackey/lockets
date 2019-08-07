@@ -4,7 +4,7 @@ Donate link:
 Tags: AD,affiliate,Web API,location
 Requires at least: 4.8
 Tested up to: 5.2
-Stable tag: 0.71
+Stable tag: 0.72
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -90,6 +90,9 @@ none.
 An answer to that question.
 
 == Changelog ==
+= 0.72 =
+*
+　外部配信β、スポット情報（緯度経度、スポット名、ソース元）のFeedへの反映
 = 0.70 =
 *
 　ぐるなびAPI URL変更
