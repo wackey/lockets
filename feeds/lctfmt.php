@@ -56,7 +56,6 @@ do_action( 'rss_tag_pre', 'rss2' );
 	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
     xmlns:media="http://search.yahoo.com/mrss/"
     xmlns:snf="http://www.smartnews.be/snf"
-    xmlns:georss="http://www.georss.org/georss"
     xmlns:gml="http://www.opengis.net/gml"
 	<?php
 	/**
