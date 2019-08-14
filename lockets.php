@@ -4,7 +4,7 @@ Plugin Name: Lockets
 Plugin URI: http://lockets.jp/
 Description: A plug-in that gets information on spots such as shops and inns from various APIs and displays the latest information embedded in the blog.Also, This plugin will assist you such as creating affiliate links. お店や旅館などスポットに関する情報を各種APIから取得し、ブログ内に最新の情報を埋め込んで表示するプラグイン。また、アフィリエイトリンク作成支援を行います。
 Author: wackey
-Version: 0.72
+Version: 0.81
 Author URI: https://musilog.net/
 License: GPL2
 */
@@ -175,7 +175,7 @@ $lockets_jalan_template= <<<EOT
 <p>【宿画像キャプション】<br>
 【郵便番号】<br>
 【住所】</p>
-
+【Google Maps埋め込み】
 <p>【じゃらんクレジットA】</p>
 EOT;
 }
@@ -201,14 +201,19 @@ $lockets_jalan_template=str_replace('【じゃらんクレジットA】','<a hre
 $lockets_jalan_template=str_replace('【じゃらんクレジットB】','<a href="http://www.jalan.net/jw/jwp0000/jww0001.do"><img src="https://www.jalan.net/jalan/doc/jws/images/jws_88_50_gray.gif" alt="じゃらん Web サービス" title="じゃらん Web サービス" border="0"></a>',$lockets_jalan_template);
 $lockets_jalan_template=str_replace('【じゃらんクレジットC】','<a href="http://www.jalan.net/jw/jwp0000/jww0001.do">じゃらん Web サービス</a>',$lockets_jalan_template);
 
-//Google Mapsは緯度経度変換のロジックを載せてから対応する 
-//$gmap = lockets_gmap_draw(locketsh($hotelBasicInfo->hotelName),locketsh($hotelBasicInfo->latitude),locketsh($hotelBasicInfo->longitude),$zoom,$width,$height);
-//$lockets_jalan_template=str_replace('【Google Maps埋め込み】',$gmap,$lockets_jalan_template);
+//　日本測地系（ミリ秒）から世界測地系へ変換
+$jalanlng = locketsh($jalanhotel->X);
+$jalanlat = locketsh($jalanhotel->Y);
+$lat = $jalanlat - $jalanlat * 0.00010695 + $jalanlng * 0.000017464 + 0.0046017;
+$lon = $jalanlng - $jalanlat * 0.000046038 - $jalanlng * 0.000083043 + 0.010040;
+
+$gmap = lockets_gmap_draw(locketsh($jalanhotel->HotelName),$lat,$lon,$zoom,$width,$height);
+$lockets_jalan_template=str_replace('【Google Maps埋め込み】',$gmap,$lockets_jalan_template);
 //メモ　その他の要素後日追加
 
 // Lockets feedへの緯度経度連携
 $lockets_jalan_template .= "<!--";
-$lockets_jalan_template .= "<georss:point>"."</georss:point>";
+$lockets_jalan_template .= "<georss:point>".$lat." ".$lon."</georss:point>";
 $lockets_jalan_template .= "<georss:featuretypetag>jalan</georss:featuretypetag>";
 $lockets_jalan_template .= "<georss:relationshiptag>".locketsh($jalanhotel->HotelID)."</georss:relationshiptag>";
 $lockets_jalan_template .= "<georss:featurename>".locketsh($jalanhotel->HotelName)."</georss:featurename>";

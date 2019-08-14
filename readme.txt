@@ -4,7 +4,7 @@ Donate link:
 Tags: AD,affiliate,Web API,location
 Requires at least: 4.8
 Tested up to: 5.2
-Stable tag: 0.72
+Stable tag: 0.81
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -90,11 +90,12 @@ none.
 An answer to that question.
 
 == Changelog ==
-= 0.72 =
-*
+= 0.81 =
+* Jalan Google Maps,spot feed(Beta) is now available.
+　じゃらん日本測地系緯度経度を世界測地系へ変換しGoogle Maps表示を可能に
 　外部配信βメニュー実装（ベーシック認証、任意URL）、スポット情報（緯度経度、スポット名、ソース元）のFeedへの反映
 = 0.70 =
-*
+* Gurunaib URL changed.
 　ぐるなびAPI URL変更
 = 0.62 =
 * Improvement of management screen menu, Rakuten developer logo update, on / off function of feed function to deliver to Lockets.
