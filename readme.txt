@@ -4,7 +4,7 @@ Donate link:
 Tags: AD,affiliate,Web API,location
 Requires at least: 4.8
 Tested up to: 5.2
-Stable tag: 0.81
+Stable tag: 0.82
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -90,6 +90,9 @@ none.
 An answer to that question.
 
 == Changelog ==
+= 0.81 =
+* spot feed(Beta), Multiple distribution start.
+　外部配信、1記事で複数拠点情報配信可能に。外部配信ベーシック認証機能廃止。
 = 0.81 =
 * Jalan Google Maps,spot feed(Beta) is now available.
 　じゃらん日本測地系緯度経度を世界測地系へ変換しGoogle Maps表示を可能に

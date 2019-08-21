@@ -133,15 +133,16 @@ $image_url = wp_get_attachment_image_src($image_id,'thumbnail', true);
 		<content:encoded><![CDATA[<?php echo lockets_remove_script_tag($content); ?>]]></content:encoded>
 
         <georss:where>
-            <entry>
                 <?php
                 $feedcontent = lockets_remove_script_tag($content);
-                        if( preg_match("/<georss:point>.*<\/georss:featurename>/", $feedcontent, $matches) ){
-                                    print $matches[0];
-                                }
+                if( preg_match_all("/<georss:point>.*<\/georss:featurename>/", $feedcontent, $matches) ){ $points = $matches[0]
                 ?>
-
+            <?php foreach ($points as $point) { ?>
+            <entry>
+                    <?php echo $point. "\n"; ?>
             </entry>
+                <?php }
+}?>
         </georss:where>
 
 <snf:analytics><![CDATA[
