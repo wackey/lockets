@@ -4,8 +4,13 @@ function lockets_feed() {
 // ポストされた値の入力チェックと書き込み
 if (isset($_POST['update_option'])) {
 check_admin_referer('lockets-options');
+if(isset($_POST['lockets_feedswitch'])){
 update_option('lockets_feedswitch', sanitize_text_field($_POST['lockets_feedswitch']));
-update_option('lockets_feedurl', sanitize_text_field($_POST['lockets_feedurl']));
+} else {
+update_option('lockets_feedswitch', "0");
+}
+    
+    update_option('lockets_feedurl', sanitize_text_field($_POST['lockets_feedurl']));
 update_option('lockets_feedua', sanitize_text_field($_POST['lockets_feedua']));
 ?>
 <div class="updated fade">
@@ -36,7 +41,6 @@ _e('外部配信を有効にする', 'lockets_feedswitch'); ?></label></th>
                         <?php }else{ ?>
                         <input type="checkbox" name="lockets_feedswitch" id="lockets_feedswitch" value="1" /> ONにする
                         <?php } ?>
-
                     </td>
                 </tr>
 
