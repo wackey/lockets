@@ -19,23 +19,10 @@ if ($header['Authorization'] == '2d60a728-17fd-4f94-bd85-f960ee037e97') {
 }
 */
 
-function http_basic_authenticate_with($name,$password,$realm = "Protected area"){
-  if (!isset($_SERVER['PHP_AUTH_USER']) || !($_SERVER['PHP_AUTH_USER'] == $name && $_SERVER['PHP_AUTH_PW'] == $password )) {
-    header('WWW-Authenticate: Basic realm="'.$realm.'"');
-    header('HTTP/1.0 401 Unauthorized');
-    echo 'Not allowed to access.';
-    exit;
-  }
-}
-
-$lockets_feedid = get_option('lockets_feedid');
-$lockets_feedpass = get_option('lockets_feedpass');
-http_basic_authenticate_with($lockets_feedid,$lockets_feedpass); 
-
-header('Content-Type: ' . feed_content_type('rss2') . '; charset=' . get_option('blog_charset'), true);
+header( 'Content-Type: ' . feed_content_type( 'rss2' ) . '; charset=' . get_option( 'blog_charset' ), true );
 $more = 1;
 
-echo '<?xml version="1.0" encoding="'.get_option('blog_charset').'"?'.'>';
+echo '<?xml version="1.0" encoding="' . get_option( 'blog_charset' ) . '"?' . '>';
 
 /**
  * Fires between the xml and rss tags in a feed.
@@ -163,8 +150,8 @@ $image_url = wp_get_attachment_image_src($image_id,'thumbnail', true);
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
   })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-
-  ga('create', 'UA-36543639-6', 'auto');
+<?php $ua=$lockets_feedpass = get_option('lockets_feedua'); ?>
+  ga('create', <?php echo $ua; ?> , 'auto');
   ga('send', 'pageview');
 
 </script>
