@@ -48,7 +48,7 @@ do_action( 'rss_tag_pre', 'rss2' );
 	<language><?php bloginfo_rss( 'language' ); ?></language>
 	<copyright>(C) <?php bloginfo_rss('name'); ?></copyright>
 	<ttl>5</ttl>
-	<snf:logo><?php $lockets_feedlogourl = get_option('lockets_feedlogourl'); ?><?php echo $lockets_feedlogourl; ?></snf:logo>
+    <snf:logo><url><?php $lockets_feedlogourl = get_option('lockets_feedlogourl'); ?><?php echo $lockets_feedlogourl; ?></url></snf:logo>
 	<sy:updatePeriod><?php
 		$duration = 'hourly';
 

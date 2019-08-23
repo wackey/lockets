@@ -4,7 +4,7 @@ Donate link:
 Tags: AD,affiliate,Web API,location
 Requires at least: 5.2
 Tested up to: 5.2
-Stable tag: 0.83
+Stable tag: 0.84
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -90,6 +90,9 @@ none.
 An answer to that question.
 
 == Changelog ==
+= 0.84 =
+* spot feed(Beta), logo,format changed.
+　外部配信のロゴ設定機能、フォーマットの微修正を行いました。
 = 0.81 =
 * spot feed(Beta), Multiple distribution start.
 　外部配信、1記事で複数拠点情報配信可能に。外部配信ベーシック認証機能廃止。
