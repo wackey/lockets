@@ -2,9 +2,9 @@
 Contributors: wackey
 Donate link: 
 Tags: AD,affiliate,Web API,location
-Requires at least: 4.8
+Requires at least: 5.2
 Tested up to: 5.2
-Stable tag: 0.82
+Stable tag: 0.83
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -14,7 +14,7 @@ Use API and output information shops,hotels,etc.
 and,ability to convert links to affiliate links with "Valuecommerce LinkSwitch Service(JavaScript)".
 
 == Description ==
-<a href="http://lockets.jp/plugin/">日本語の説明を読む</a>
+<a href="https://lockets.jp/plugin/">日本語の説明を読む</a>
 
 A plug-in that gets information on spots such as shops and inns from various APIs and displays the latest information embedded in the blog.Also, This plugin will assist you such as creating affiliate links.
 

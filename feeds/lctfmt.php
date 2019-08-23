@@ -1,24 +1,9 @@
 <?php
-/*
- Lockets format
- arr. by wackey.
-*/
-
 /**
- * RSS2 Feed Template for displaying RSS2 Posts feed.
+ * Lockets Feed Template for displaying Lockets Posts feed.
  *
- * @package WordPress
+ * @package Lockets
  */
-//require_once dirname(dirname(__FILE__)) . '/ng_filter.php';
-
-// cf.https://qiita.com/lumbermill/items/3ca3a467313fbcafaf19
-/*
-$header = gelallheaders();
-if ($header['Authorization'] == '2d60a728-17fd-4f94-bd85-f960ee037e97') {
-  echo '認証OK';
-}
-*/
-
 header( 'Content-Type: ' . feed_content_type( 'rss2' ) . '; charset=' . get_option( 'blog_charset' ), true );
 $more = 1;
 
@@ -55,16 +40,15 @@ do_action( 'rss_tag_pre', 'rss2' );
 >
 
 <channel>
-	<title><?php wp_title_rss(); ?></title>
-	<atom:link href="<?php self_link(); ?>" rel="self" type="application/rss+xml" />
+	<title><?php bloginfo_rss('name'); ?></title>
 	<link><?php bloginfo_rss('url') ?></link>
 	<description><?php bloginfo_rss("description") ?></description>
 	<pubDate><?php echo mysql2date('D, d M Y H:i:s +0000', get_lastpostmodified('GMT'), false); ?></pubDate>
 	<lastBuildDate><?php echo mysql2date('D, d M Y H:i:s +0000', get_lastpostmodified('GMT'), false); ?></lastBuildDate>
 	<language><?php bloginfo_rss( 'language' ); ?></language>
-	<copyright>(C) Plus Movement LLC.</copyright>
+	<copyright>(C) <?php bloginfo_rss('name'); ?></copyright>
 	<ttl>5</ttl>
-	<snf:logo><?php echo plugins_url( 'images/locketslogosf.png', dirname(__FILE__)); ?></snf:logo>
+	<snf:logo><?php $lockets_feedlogourl = get_option('lockets_feedlogourl'); ?><?php echo $lockets_feedlogourl; ?></snf:logo>
 	<sy:updatePeriod><?php
 		$duration = 'hourly';
 

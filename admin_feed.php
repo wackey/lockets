@@ -9,9 +9,9 @@ update_option('lockets_feedswitch', sanitize_text_field($_POST['lockets_feedswit
 } else {
 update_option('lockets_feedswitch', "0");
 }
-    
-    update_option('lockets_feedurl', sanitize_text_field($_POST['lockets_feedurl']));
+update_option('lockets_feedurl', sanitize_text_field($_POST['lockets_feedurl']));
 update_option('lockets_feedua', sanitize_text_field($_POST['lockets_feedua']));
+update_option('lockets_feedlogourl', sanitize_text_field($_POST['lockets_feedlogourl']));
 ?>
 <div class="updated fade">
     <p><strong><?php _e('Options saved.'); ?></strong></p>
@@ -20,6 +20,7 @@ update_option('lockets_feedua', sanitize_text_field($_POST['lockets_feedua']));
 $lockets_feedswitch = get_option('lockets_feedswitch');
 $lockets_feedurl = get_option('lockets_feedurl');
 $lockets_feedua = get_option('lockets_feedua');
+$lockets_feedlogourl = get_option('lockets_feedlogourl');
 ?>
 
 <div class="wrap">
@@ -51,6 +52,13 @@ _e('外部配信用URL設定', 'lockets_feedurl'); ?></label></th>
 echo attribute_escape($lockets_feedurl); ?>" /></td>
                 </tr>
 
+                <tr>
+                    <th><label for="lockets_feedlogourl"><?php
+_e('logoの画像URL', 'lockets_feedlogourl'); ?></label></th>
+                    <td><input size="36" type="text" name="lockets_feedlogourl" id="lockets_feedlogourl" value="<?php
+echo attribute_escape($lockets_feedlogourl); ?>" /><br>logoのURLをhttpから入れてください。</td>
+                </tr>
+                
                 <tr>
                     <th><label for="lockets_feedua"><?php
 _e('SmartView上に入れるGoogle AnalyticsのUA番号', 'lockets_feedua'); ?></label></th>
