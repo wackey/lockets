@@ -4,7 +4,7 @@ Plugin Name: Lockets
 Plugin URI: https://lockets.jp/
 Description: A plug-in that gets information on spots such as shops and inns from various APIs and displays the latest information embedded in the blog.Also, This plugin will assist you such as creating affiliate links. お店や旅館などスポットに関する情報を各種APIから取得し、ブログ内に最新の情報を埋め込んで表示するプラグイン。また、アフィリエイトリンク作成支援を行います。
 Author: wackey
-Version: 0.84
+Version: 0.85
 Author URI: https://musilog.net/
 License: GPL2
 */
@@ -128,7 +128,7 @@ $lockets_rakuten_travel_template=str_replace('【Google Maps埋め込み】',$gm
 // Lockets feedへの緯度経度連携
 $lockets_rakuten_travel_template .= "<!--";
 $lockets_rakuten_travel_template .= "<georss:point>".locketsh($hotelBasicInfo->latitude)." ".locketsh($hotelBasicInfo->longitude)."</georss:point>";
-$lockets_rakuten_travel_template .= "<georss:featuretypetag>rakuten_travel</georss:featuretypetag>";
+$lockets_rakuten_travel_template .= "<georss:featuretypetag>rakuten</georss:featuretypetag>";
 $lockets_rakuten_travel_template .= "<georss:relationshiptag>".locketsh($hotelBasicInfo->hotelNo)."</georss:relationshiptag>";
 $lockets_rakuten_travel_template .= "<georss:featurename>".locketsh($hotelBasicInfo->hotelName)."</georss:featurename>";
 $lockets_rakuten_travel_template .= "LocketsFeedend-->";
@@ -430,7 +430,7 @@ $lockets_gnavi_template=str_replace('【Google Maps埋め込み】',$gmap,$locke
 // Lockets feedへの緯度経度連携
 $lockets_gnavi_template .= "<!--";
 $lockets_gnavi_template .= "<georss:point>".locketsh($shop->latitude)." ".locketsh($shop->longitude)."</georss:point>";
-$lockets_gnavi_template .= "<georss:featuretypetag>gurunavi</georss:featuretypetag>";
+$lockets_gnavi_template .= "<georss:featuretypetag>gnavi</georss:featuretypetag>";
 $lockets_gnavi_template .= "<georss:relationshiptag>".locketsh($shop->id)."</georss:relationshiptag>";
 $lockets_gnavi_template .= "<georss:featurename>".locketsh($shop->name)."</georss:featurename>";
 $lockets_gnavi_template .= "LocketsFeedend-->";

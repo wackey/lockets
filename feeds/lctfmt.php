@@ -83,12 +83,8 @@ do_action( 'rss_tag_pre', 'rss2' );
 	 */
 	do_action('rss2_head');
 
-	query_posts('&posts_per_page=20');
-    //$ng_filter = new NGFilter();
     while( have_posts()) : the_post();
-/*    if (mb_strlen(get_the_content()) > 200
-        && !($ng_filter->judgement(get_the_content()) || $ng_filter->judgement(get_the_title_rss()))) {
-*/
+
     if (mb_strlen(get_the_content()) > 0) {
 	?>
 	<item>
