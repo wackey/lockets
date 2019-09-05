@@ -4,7 +4,7 @@ Donate link:
 Tags: AD,affiliate,Web API,location
 Requires at least: 5.2
 Tested up to: 5.2
-Stable tag: 0.85
+Stable tag: 0.90
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,6 +32,9 @@ A plug-in that gets information on spots such as shops and inns from various API
 *Place Search
  -Google Places API,Maps Embed API
   GoogleプレイスAPI、Google Maps Embed APIに対応しています。
+  
+*Lockets feed
+Locketsなど外部に配信可能なfeedを生成します。
 
 *Affiliate Beta
  -Rakuten Affiliate
@@ -90,6 +93,9 @@ none.
 An answer to that question.
 
 == Changelog ==
+= 0.90 =
+* icon changed.
+　アイコンを新ロゴのものに変更。管理画面に解説動画など挿入。
 = 0.85 =
 * spot feed(Beta), format changed.
 　外部配信のフォーマットの不要コードの削除、拠点タグの修正。
