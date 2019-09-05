@@ -754,6 +754,10 @@ function lockets_options() {
     つまり、それぞれのサービス上で価格や営業時間などの情報が更新されればその最新の情報を元にコンテンツを表示します。</p>
 
     <p>また、表示するテンプレートはHTMLで自由にカスタマイズすることが可能です。そのカスタマイズで表示させたい項目を自由にアレンジ出来ます</p>
+    
+    <p>使い方のイメージは下記動画をご確認ください。</p>
+    
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/e8_WJ65xDWA" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 <h2>埋め込める情報一覧</h2>
 

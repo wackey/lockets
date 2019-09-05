@@ -14,7 +14,7 @@ Use API and output information shops,hotels,etc.
 and,ability to convert links to affiliate links with "Valuecommerce LinkSwitch Service(JavaScript)".
 
 == Description ==
-<a href="https://lockets.jp/plugin/">日本語の説明を読む</a>
+<a href="https://plugins.lockets.jp/">日本語の説明を読む</a>
 
 A plug-in that gets information on spots such as shops and inns from various APIs and displays the latest information embedded in the blog.Also, This plugin will assist you such as creating affiliate links.
 
@@ -94,8 +94,8 @@ An answer to that question.
 
 == Changelog ==
 = 0.90 =
-* icon changed.
-　アイコンを新ロゴのものに変更。管理画面に解説動画など挿入。
+* icon changed.Lockets Plugin oficial page changed
+　アイコンを新ロゴのものに変更。管理画面に解説動画など挿入。プラグイン解説のサイト移転
 = 0.85 =
 * spot feed(Beta), format changed.
 　外部配信のフォーマットの不要コードの削除、拠点タグの修正。
