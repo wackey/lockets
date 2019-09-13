@@ -1,9 +1,10 @@
 <?php
 /**
- * Lockets Feed Template for displaying Lockets Posts feed.
+ * RSS2 Feed Template for displaying RSS2 Posts feed.
  *
- * @package Lockets
+ * @package WordPress
  */
+
 header( 'Content-Type: ' . feed_content_type( 'rss2' ) . '; charset=' . get_option( 'blog_charset' ), true );
 $more = 1;
 
@@ -26,9 +27,6 @@ do_action( 'rss_tag_pre', 'rss2' );
 	xmlns:atom="http://www.w3.org/2005/Atom"
 	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
 	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
-    xmlns:media="http://search.yahoo.com/mrss/"
-    xmlns:snf="http://www.smartnews.be/snf"
-    xmlns:gml="http://www.opengis.net/gml"
 	<?php
 	/**
 	 * Fires at the end of the RSS root to add namespaces.
@@ -40,16 +38,14 @@ do_action( 'rss_tag_pre', 'rss2' );
 >
 
 <channel>
-	<title><?php bloginfo_rss('name'); ?></title>
-	<link><?php bloginfo_rss('url') ?></link>
-	<description><?php bloginfo_rss("description") ?></description>
-	<pubDate><?php echo mysql2date('D, d M Y H:i:s +0000', get_lastpostmodified('GMT'), false); ?></pubDate>
-	<lastBuildDate><?php echo mysql2date('D, d M Y H:i:s +0000', get_lastpostmodified('GMT'), false); ?></lastBuildDate>
+	<title><?php wp_title_rss(); ?></title>
+	<atom:link href="<?php self_link(); ?>" rel="self" type="application/rss+xml" />
+	<link><?php bloginfo_rss( 'url' ); ?></link>
+	<description><?php bloginfo_rss( 'description' ); ?></description>
+	<lastBuildDate><?php echo get_feed_build_date( 'r' ); ?></lastBuildDate>
 	<language><?php bloginfo_rss( 'language' ); ?></language>
-	<copyright>(C) <?php bloginfo_rss('name'); ?></copyright>
-	<ttl>5</ttl>
-    <snf:logo><url><?php $lockets_feedlogourl = get_option('lockets_feedlogourl'); ?><?php echo $lockets_feedlogourl; ?></url></snf:logo>
-	<sy:updatePeriod><?php
+	<sy:updatePeriod>
+	<?php
 		$duration = 'hourly';
 
 		/**
@@ -61,8 +57,10 @@ do_action( 'rss_tag_pre', 'rss2' );
 		 *                         'yearly'. Default 'hourly'.
 		 */
 		echo apply_filters( 'rss_update_period', $duration );
-	?></sy:updatePeriod>
-	<sy:updateFrequency><?php
+	?>
+	</sy:updatePeriod>
+	<sy:updateFrequency>
+	<?php
 		$frequency = '1';
 
 		/**
@@ -74,87 +72,55 @@ do_action( 'rss_tag_pre', 'rss2' );
 		 *                          of RSS updates within the update period. Default '1'.
 		 */
 		echo apply_filters( 'rss_update_frequency', $frequency );
-	?></sy:updateFrequency>
+	?>
+	</sy:updateFrequency>
 	<?php
 	/**
 	 * Fires at the end of the RSS2 Feed Header.
 	 *
 	 * @since 2.0.0
 	 */
-	do_action('rss2_head');
+	do_action( 'rss2_head' );
 
-    while( have_posts()) : the_post();
-
-    if (mb_strlen(get_the_content()) > 0) {
-	?>
+	while ( have_posts() ) :
+		the_post();
+		?>
 	<item>
-		<title><?php the_title_rss() ?></title>
-		<link><?php the_permalink_rss() ?></link>
-		<pubDate><?php echo mysql2date('D, d M Y H:i:s +0000', get_post_time('Y-m-d H:i:s', true), false); ?></pubDate>
-		<dc:creator><![CDATA[<?php the_author() ?>]]></dc:creator>
-		<?php the_category_rss('rss2') ?>
+		<title><?php the_title_rss(); ?></title>
+		<link><?php the_permalink_rss(); ?></link>
+		<?php if ( get_comments_number() || comments_open() ) : ?>
+		<comments><?php comments_link_feed(); ?></comments>
+		<?php endif; ?>
+		<pubDate><?php echo mysql2date( 'D, d M Y H:i:s +0000', get_post_time( 'Y-m-d H:i:s', true ), false ); ?></pubDate>
+		<dc:creator><![CDATA[<?php the_author(); ?>]]></dc:creator>
+		<?php the_category_rss( 'rss2' ); ?>
 
 		<guid isPermaLink="false"><?php the_guid(); ?></guid>
-
-<?php
-$image_id = get_post_thumbnail_id();
-$image_url = wp_get_attachment_image_src($image_id,'thumbnail', true);
-?>
-<?php if (has_post_thumbnail()) {$eyecatchimage=$image_url[0];//アイキャッチの指定 ?>
-		<media:thumbnail><?php echo $image_url[0]; ?></media:thumbnail>
-<?php } else {$eyecatchimage=get_template_directory_uri(); ?>/images/noimage.png;//アイキャッチ画像が無ければ ?>
-		<media:thumbnail><?php echo plugins_url( 'images/noimage.png', dirname(__FILE__)); ?></media:thumbnail>
-<?php } ?>
-
-
-		<description><![CDATA[<?php echo lockets_remove_script_tag(get_the_excerpt()); ?>]]></description>
-	<?php $content = get_the_content_feed('rss2'); ?>
-
-		<content:encoded><![CDATA[<?php echo lockets_remove_script_tag($content); ?>]]></content:encoded>
-
-        <georss:where>
-                <?php
-                $feedcontent = lockets_remove_script_tag($content);
-                if( preg_match_all("/<georss:point>.*<\/georss:featurename>/", $feedcontent, $matches) ){ $points = $matches[0]
-                ?>
-            <?php foreach ($points as $point) { ?>
-            <entry>
-                    <?php echo $point. "\n"; ?>
-            </entry>
-                <?php }
-}?>
-        </georss:where>
-
-<snf:analytics><![CDATA[
- <script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-<?php $ua=$lockets_feedpass = get_option('lockets_feedua'); ?>
-  ga('create', <?php echo $ua; ?> , 'auto');
-  ga('send', 'pageview');
-
-</script>
-]]></snf:analytics>
-<snf:advertisement>
-<snf:adcontent>
-<![CDATA[ 
-<!-- ad -->
-]]>
-</snf:adcontent>
-</snf:advertisement>
-<?php rss_enclosure(); ?>
-	<?php
-	/**
-	 * Fires at the end of each RSS2 feed item.
-	 *
-	 * @since 2.0.0
-	 */
-	do_action( 'rss2_item' );
-	?>
+		<?php if ( get_option( 'rss_use_excerpt' ) ) : ?>
+		<description><![CDATA[<?php the_excerpt_rss(); ?>]]></description>
+		<?php else : ?>
+		<description><![CDATA[<?php the_excerpt_rss(); ?>]]></description>
+			<?php $content = get_the_content_feed( 'rss2' ); ?>
+			<?php if ( strlen( $content ) > 0 ) : ?>
+		<content:encoded><![CDATA[<?php echo $content; ?>]]></content:encoded>
+	<?php else : ?>
+		<content:encoded><![CDATA[<?php the_excerpt_rss(); ?>]]></content:encoded>
+	<?php endif; ?>
+		<?php endif; ?>
+		<?php if ( get_comments_number() || comments_open() ) : ?>
+		<wfw:commentRss><?php echo esc_url( get_post_comments_feed_link( null, 'rss2' ) ); ?></wfw:commentRss>
+		<slash:comments><?php echo get_comments_number(); ?></slash:comments>
+		<?php endif; ?>
+		<?php rss_enclosure(); ?>
+		<?php
+		/**
+		 * Fires at the end of each RSS2 feed item.
+		 *
+		 * @since 2.0.0
+		 */
+		do_action( 'rss2_item' );
+		?>
 	</item>
-	<?php }
-    endwhile; ?>
+	<?php endwhile; ?>
 </channel>
 </rss>
