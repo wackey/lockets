@@ -34,6 +34,667 @@ function lockets_gmap_draw($keyword,$lat,$lng,$zoom,$width,$height) {
     $ret = '<iframe src="https://maps.google.co.jp/maps?q='.$keyword.'&ll='.$lat.','.$lng.'&output=embed&t=m&z='.$zoom.'&hl=ja" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" width="'.$width.'" height="'.$height.'"></iframe>';
     return $ret;}
 }
+/***------------------------------------------
+　楽天トラベルホテル情報表示
+------------------------------------------***/
+// 楽天トラベルホテル単体表示
+function lockets_rakuten_travel_func( $atts, $content = null ) {
+
+$rakutentoken= get_option('rakuten_search_token');
+$rakutenaffid= get_option('rakuten_affiliate_id');
+$lockets_rakuten_travel_template=get_option('lockets_rakuten_travel_template');
+
+// [LocketsRakutenTravel]属性情報取得
+extract(shortcode_atts(array(
+    'hotelno' => null,
+    'zoom' => null,
+    'width' => null,
+    'height' => null,), $atts));
+
+// リクエストURL
+$rwsurl="https://app.rakuten.co.jp/services/api/Travel/HotelDetailSearch/20170426?applicationId=$rakutentoken&affiliateId=$rakutenaffid&format=xml&hotelNo=$hotelno&datumType=1";
+
+// キャッシュ有無確認
+$Buff = get_transient( $rwsurl );
+if ( $Buff === false ) {
+    $options['ssl']['verify_peer']=false;
+    $options['ssl']['verify_peer_name']=false;
+    if ($Buff = @file_get_contents($rwsurl,false, stream_context_create($options))) {
+        $rakutentravelerror = "1";
+        set_transient( $rwsurl, $Buff, 3600 * 24 );
+    }
+}
+
+$xml = simplexml_load_string($Buff);
+$hotelBasicInfo = $xml->hotels->hotel->hotelBasicInfo;
+$hotelRatingInfo = $xml->hotels->hotel->hotelRatingInfo;
+
+//デフォルトテンプレートの登録
+if ($lockets_rakuten_travel_template=="") {
+$lockets_rakuten_travel_template= <<<EOT
+<p><strong>【施設名称】</strong></p>
+<p><a href="【施設情報ページURL】" rel="nofollow"><img src="【施設画像サムネイルURL】"> <img src="【部屋画像サムネイルURL】"></a></p>
+<p>【施設特色】<br>
+【郵便番号】<br>
+【住所１】【住所２】</p>
+<p><a href="【宿泊プラン一覧ページURL】" target="_blank" rel="nofollow">宿泊プランはこちら</a></p>
+【Google Maps埋め込み】
+<p>【楽天ウェブサービスクレジットC】</p>
+EOT;
+}
+$lockets_rakuten_travel_template=str_replace('\\','',$lockets_rakuten_travel_template);
+$lockets_rakuten_travel_template=str_replace('【施設番号】',locketsh($hotelBasicInfo->hotelNo),$lockets_rakuten_travel_template);
+$lockets_rakuten_travel_template=str_replace('【施設名称】',locketsh($hotelBasicInfo->hotelName),$lockets_rakuten_travel_template);
+$lockets_rakuten_travel_template=str_replace('【施設情報ページURL】',locketsh($hotelBasicInfo->hotelInformationUrl),$lockets_rakuten_travel_template);
+$lockets_rakuten_travel_template=str_replace('【宿泊プラン一覧ページURL】',locketsh($hotelBasicInfo->planListUrl),$lockets_rakuten_travel_template);
+$lockets_rakuten_travel_template=str_replace('【ダイナミックパッケージ宿泊プラン一覧ページUR】',locketsh($hotelBasicInfo->dpPlanListUrl),$lockets_rakuten_travel_template);
+$lockets_rakuten_travel_template=str_replace('【お客様の声ページURL】',locketsh($hotelBasicInfo->reviewUrl),$lockets_rakuten_travel_template);
+$lockets_rakuten_travel_template=str_replace('【施設かな名称】',locketsh($hotelBasicInfo->hotelKanaName),$lockets_rakuten_travel_template);
+$lockets_rakuten_travel_template=str_replace('【施設特色】',locketsh($hotelBasicInfo->hotelSpecial),$lockets_rakuten_travel_template);
+$lockets_rakuten_travel_template=str_replace('【最安料金】', number_format(locketsh($hotelBasicInfo->hotelMinCharge)),$lockets_rakuten_travel_template);
+$lockets_rakuten_travel_template=str_replace('【緯度】',locketsh($hotelBasicInfo->latitude),$lockets_rakuten_travel_template);
+$lockets_rakuten_travel_template=str_replace('【経度】',locketsh($hotelBasicInfo->longitude),$lockets_rakuten_travel_template);
+$lockets_rakuten_travel_template=str_replace('【郵便番号】',locketsh($hotelBasicInfo->postalCode),$lockets_rakuten_travel_template);
+$lockets_rakuten_travel_template=str_replace('【住所１】',locketsh($hotelBasicInfo->address1),$lockets_rakuten_travel_template);
+$lockets_rakuten_travel_template=str_replace('【住所２】',locketsh($hotelBasicInfo->address2),$lockets_rakuten_travel_template);
+$lockets_rakuten_travel_template=str_replace('【施設電話番号】',locketsh($hotelBasicInfo->telephoneNo),$lockets_rakuten_travel_template);
+$lockets_rakuten_travel_template=str_replace('【施設へのアクセス】',locketsh($hotelBasicInfo->access),$lockets_rakuten_travel_template);
+$lockets_rakuten_travel_template=str_replace('【駐車場情報】',locketsh($hotelBasicInfo->parkingInformation),$lockets_rakuten_travel_template);
+$lockets_rakuten_travel_template=str_replace('【最寄駅名称】',locketsh($hotelBasicInfo->nearestStation),$lockets_rakuten_travel_template);
+$lockets_rakuten_travel_template=str_replace('【施設画像URL】',locketsh($hotelBasicInfo->hotelImageUrl),$lockets_rakuten_travel_template);
+$lockets_rakuten_travel_template=str_replace('【施設画像サムネイルURL】',locketsh($hotelBasicInfo->hotelThumbnailUrl),$lockets_rakuten_travel_template);
+$lockets_rakuten_travel_template=str_replace('【部屋画像URL】',locketsh($hotelBasicInfo->roomImageUrl),$lockets_rakuten_travel_template);
+$lockets_rakuten_travel_template=str_replace('【部屋画像サムネイルURL】',locketsh($hotelBasicInfo->roomThumbnailUrl),$lockets_rakuten_travel_template);
+$lockets_rakuten_travel_template=str_replace('【施設提供地図画像URL】',locketsh($hotelBasicInfo->hotelMapImageUrl),$lockets_rakuten_travel_template);
+$lockets_rakuten_travel_template=str_replace('【投稿件数】',locketsh($hotelBasicInfo->reviewCount),$lockets_rakuten_travel_template);
+$lockets_rakuten_travel_template=str_replace('【★の数（総合）】',locketsh($hotelBasicInfo->reviewAverage),$lockets_rakuten_travel_template);
+$lockets_rakuten_travel_template=str_replace('【お客さまの声（1件目）】',locketsh($hotelBasicInfo->userReview),$lockets_rakuten_travel_template);
+$lockets_rakuten_travel_template=str_replace('【楽天ウェブサービスクレジットA】','<!-- Rakuten Web Services Attribution Snippet FROM HERE -->
+<a href="https://webservice.rakuten.co.jp/" target="_blank"><img src="https://webservice.rakuten.co.jp/img/credit/200709/credit_4936.gif" border="0" alt="楽天ウェブサービスセンター" title="楽天ウェブサービスセンター" width="49" height="36"/></a>
+<!-- Rakuten Web Services Attribution Snippet TO HERE -->',$lockets_rakuten_travel_template);
+$lockets_rakuten_travel_template=str_replace('【楽天ウェブサービスクレジットB】','<!-- Rakuten Web Services Attribution Snippet FROM HERE -->
+<a href="https://webservice.rakuten.co.jp/" target="_blank"><img src="https://webservice.rakuten.co.jp/img/credit/200709/credit_7052.gif" border="0" alt="楽天ウェブサービスセンター" title="楽天ウェブサービスセンター" width="70" height="52"/></a>
+<!-- Rakuten Web Services Attribution Snippet TO HERE -->',$lockets_rakuten_travel_template);
+$lockets_rakuten_travel_template=str_replace('【楽天ウェブサービスクレジットC】','<!-- Rakuten Web Services Attribution Snippet FROM HERE -->
+<a href="https://webservice.rakuten.co.jp/" target="_blank"><img src="https://webservice.rakuten.co.jp/img/credit/200709/credit_22121.gif" border="0" alt="楽天ウェブサービスセンター" title="楽天ウェブサービスセンター" width="221" height="21"/></a>
+<!-- Rakuten Web Services Attribution Snippet TO HERE -->',$lockets_rakuten_travel_template);
+$lockets_rakuten_travel_template=str_replace('【楽天ウェブサービスクレジットD】','<!-- Rakuten Web Services Attribution Snippet FROM HERE -->
+<a href="https://webservice.rakuten.co.jp/" target="_blank">Supported by Rakuten Developers</a>
+<!-- Rakuten Web Services Attribution Snippet TO HERE -->',$lockets_rakuten_travel_template);
+$lockets_rakuten_travel_template=str_replace('【楽天ウェブサービスクレジット E】','<!-- Rakuten Web Services Attribution Snippet FROM HERE -->
+<a href="https://webservice.rakuten.co.jp/" target="_blank"><img src="https://webservice.rakuten.co.jp/img/credit/200709/credit_31130.gif" border="0" alt="楽天ウェブサービスセンター" title="楽天ウェブサービスセンター" width="311" height="30"/></a>
+<!-- Rakuten Web Services Attribution Snippet TO HERE -->',$lockets_rakuten_travel_template);
+$gmap = lockets_gmap_draw(locketsh($hotelBasicInfo->hotelName),locketsh($hotelBasicInfo->latitude),locketsh($hotelBasicInfo->longitude),$zoom,$width,$height);
+$lockets_rakuten_travel_template=str_replace('【Google Maps埋め込み】',$gmap,$lockets_rakuten_travel_template);
+//メモ　その他の要素後日追加
+
+// Lockets feedへの緯度経度連携
+$lockets_rakuten_travel_template .= "<!--";
+$lockets_rakuten_travel_template .= "<georss:point>".locketsh($hotelBasicInfo->latitude)." ".locketsh($hotelBasicInfo->longitude)."</georss:point>";
+$lockets_rakuten_travel_template .= "<georss:featuretypetag>rakuten</georss:featuretypetag>";
+$lockets_rakuten_travel_template .= "<georss:relationshiptag>".locketsh($hotelBasicInfo->hotelNo)."</georss:relationshiptag>";
+$lockets_rakuten_travel_template .= "<georss:featurename>".locketsh($hotelBasicInfo->hotelName)."</georss:featurename>";
+$lockets_rakuten_travel_template .= "LocketsFeedend-->";
+    
+return $lockets_rakuten_travel_template;
+
+}
+
+/***------------------------------------------
+　じゃらんホテル情報表示
+------------------------------------------***/
+// じゃらんホテル単体表示
+function lockets_jalan_func( $atts, $content = null ) {
+
+$jalan_webservice_key= get_option('jalan_webservice_key');
+$lockets_jalan_template= get_option('lockets_jalan_template');
+
+// [LocketsJalan]属性情報取得
+extract(shortcode_atts(array(
+    'hotelno' => null,
+    'zoom' => null,
+    'width' => null,
+    'height' => null,), $atts));
+
+// リクエストURL
+$jalanurl="http://jws.jalan.net/APIAdvance/HotelSearch/V1/?key=$jalan_webservice_key&h_id=$hotelno";
+
+// キャッシュ有無確認
+$Buff = get_transient($jalanurl);
+if ( $Buff === false ) {
+    $Buff = file_get_contents($jalanurl);
+    set_transient($jalanurl, $Buff, 3600 * 24 );
+}
+
+$xml = @simplexml_load_string($Buff);//warning防止
+$jalanhotel = $xml->Hotel;
+
+//デフォルトテンプレートの登録
+if ($lockets_jalan_template=="") {
+$lockets_jalan_template= <<<EOT
+<p><strong>【宿名漢字】</strong></p>
+<p><a href="【宿詳細ページURL】" rel="nofollow"><img src="【宿画像URL】"></a></p>
+<p>【宿画像キャプション】<br>
+【郵便番号】<br>
+【住所】</p>
+【Google Maps埋め込み】
+<p>【じゃらんクレジットA】</p>
+EOT;
+}
+$lockets_jalan_template=str_replace('\\','',$lockets_jalan_template);
+$lockets_jalan_template=str_replace('【宿番号】',locketsh($jalanhotel->HotelID),$lockets_jalan_template);
+$lockets_jalan_template=str_replace('【宿名漢字】',locketsh($jalanhotel->HotelName),$lockets_jalan_template);
+$lockets_jalan_template=str_replace('【郵便番号】',locketsh($jalanhotel->PostCode	),$lockets_jalan_template);
+$lockets_jalan_template=str_replace('【住所】',locketsh($jalanhotel->HotelAddress	),$lockets_jalan_template);
+    
+$lockets_jalan_template=str_replace('【宿詳細ページURL】',locketsh($jalanhotel->HotelDetailURL),$lockets_jalan_template);
+
+$lockets_jalan_template=str_replace('【キャッチ】',locketsh($jalanhotel->HotelCatchCopy),$lockets_jalan_template);
+$lockets_jalan_template=str_replace('【コピー】',locketsh($jalanhotel->HotelCaption),$lockets_jalan_template);
+
+$lockets_jakan_yadogazo=str_replace ("http://","https://",locketsh($jalanhotel->PictureURL));
+$lockets_jalan_template=str_replace('【宿画像URL】',$lockets_jakan_yadogazo,$lockets_jalan_template);
+$lockets_jalan_template=str_replace('【宿画像キャプション】',locketsh($jalanhotel->PictureCaption),$lockets_jalan_template);
+
+$lockets_jalan_template=str_replace('【参考料金】',locketsh($jalanhotel->SampleRateFrom),$lockets_jalan_template);
+
+
+$lockets_jalan_template=str_replace('【じゃらんクレジットA】','<a href="http://www.jalan.net/jw/jwp0000/jww0001.do"><img src="https://www.jalan.net/jalan/doc/jws/images/jws_88_50_blue.gif" alt="じゃらん Web サービス" title="じゃらん Web サービス" border="0"></a>',$lockets_jalan_template);
+$lockets_jalan_template=str_replace('【じゃらんクレジットB】','<a href="http://www.jalan.net/jw/jwp0000/jww0001.do"><img src="https://www.jalan.net/jalan/doc/jws/images/jws_88_50_gray.gif" alt="じゃらん Web サービス" title="じゃらん Web サービス" border="0"></a>',$lockets_jalan_template);
+$lockets_jalan_template=str_replace('【じゃらんクレジットC】','<a href="http://www.jalan.net/jw/jwp0000/jww0001.do">じゃらん Web サービス</a>',$lockets_jalan_template);
+
+//　日本測地系（ミリ秒）から世界測地系へ変換
+$jalanlng = locketsh($jalanhotel->X);
+$jalanlat = locketsh($jalanhotel->Y);
+$lat = $jalanlat - $jalanlat * 0.00010695 + $jalanlng * 0.000017464 + 0.0046017;
+$lon = $jalanlng - $jalanlat * 0.000046038 - $jalanlng * 0.000083043 + 0.010040;
+
+$gmap = lockets_gmap_draw(locketsh($jalanhotel->HotelName),$lat,$lon,$zoom,$width,$height);
+$lockets_jalan_template=str_replace('【Google Maps埋め込み】',$gmap,$lockets_jalan_template);
+//メモ　その他の要素後日追加
+
+// Lockets feedへの緯度経度連携
+$lockets_jalan_template .= "<!--";
+$lockets_jalan_template .= "<georss:point>".$lat." ".$lon."</georss:point>";
+$lockets_jalan_template .= "<georss:featuretypetag>jalan</georss:featuretypetag>";
+$lockets_jalan_template .= "<georss:relationshiptag>".locketsh($jalanhotel->HotelID)."</georss:relationshiptag>";
+$lockets_jalan_template .= "<georss:featurename>".locketsh($jalanhotel->HotelName)."</georss:featurename>";
+$lockets_jalan_template .= "LocketsFeedend-->";
+
+return $lockets_jalan_template;
+
+}
+
+/***------------------------------------------
+　ホットペッパー店舗情報表示
+------------------------------------------***/
+// ホットペッパー店舗情報単体表示
+function lockets_hotpepper_func( $atts, $content = null ) {
+
+$recruit_webservice_key= get_option('recruit_webservice_key');
+$lockets_hotpepper_template= get_option('lockets_hotpepper_template');
+
+// [LocketsHotpepper]属性情報取得
+extract(shortcode_atts(array(
+    'shopid' => null,
+    'zoom' => null,
+    'width' => null,
+    'height' => null,), $atts));
+
+// リクエストURL
+$recruiturl="http://webservice.recruit.co.jp/hotpepper/gourmet/v1/?key=$recruit_webservice_key&id=$shopid&datum=world";
+//echo $recruiturl;//■テスト用
+
+// キャッシュ有無確認
+$Buff = get_transient( $recruiturl );
+if ( $Buff === false ) {
+    $Buff = file_get_contents($recruiturl);
+    set_transient( $shopid, $Buff, 3600 * 24 );
+}
+
+$xml = simplexml_load_string($Buff);
+$shop = $xml->shop;
+
+//デフォルトテンプレートの登録
+if ($lockets_hotpepper_template=="") {
+$lockets_hotpepper_template= <<<EOT
+<p><strong><a href="【店舗URL(PC)】">【掲載店名】</a></strong><p>
+<p>【お店キャッチ】</p>
+<p><img src="【写真PC向けLサイズ】 " class="img-responsive"></p>
+<p>住所：【住所】</p>
+<p>交通アクセス：【交通アクセス】</p>
+<p>営業時間：【営業時間】</p>
+<p>定休日：【定休日】</p>
+
+【Google Maps埋め込み】
+<p>【HOT PEPPERクレジットA】</p>
+EOT;
+}
+
+$lockets_hotpepper_template=str_replace('\\','',$lockets_hotpepper_template);
+$lockets_hotpepper_template=str_replace('【お店ID】',locketsh($shop->id),$lockets_hotpepper_template);
+$lockets_hotpepper_template=str_replace('【掲載店名】',locketsh($shop->name),$lockets_hotpepper_template);
+$lockets_hotpepper_template=str_replace('【ロゴ画像URL】',locketsh($shop->logo_image),$lockets_hotpepper_template);
+$lockets_hotpepper_template=str_replace('【掲載店名かな】',locketsh($shop->name_kana),$lockets_hotpepper_template);
+$lockets_hotpepper_template=str_replace('【住所】',locketsh($shop->address),$lockets_hotpepper_template);
+$lockets_hotpepper_template=str_replace('【最寄駅名】',locketsh($shop->station_name),$lockets_hotpepper_template);
+$lockets_hotpepper_template=str_replace('【緯度】',locketsh($shop->lat),$lockets_hotpepper_template);
+$lockets_hotpepper_template=str_replace('【経度】',locketsh($shop->lng),$lockets_hotpepper_template);
+$lockets_hotpepper_template=str_replace('【料金備考】',locketsh($shop->budget_memo),$lockets_hotpepper_template);
+$lockets_hotpepper_template=str_replace('【お店キャッチ】',locketsh($shop->catch),$lockets_hotpepper_template);
+$lockets_hotpepper_template=str_replace('【総席数】',locketsh($shop->capacity),$lockets_hotpepper_template);
+$lockets_hotpepper_template=str_replace('【交通アクセス】',locketsh($shop->access),$lockets_hotpepper_template);
+$lockets_hotpepper_template=str_replace('【店舗URL(PC)】',locketsh($shop->urls->pc),$lockets_hotpepper_template);
+$lockets_hotpepper_template=str_replace('【写真PC向けLサイズ】',locketsh($shop->photo->pc->l),$lockets_hotpepper_template);
+$lockets_hotpepper_template=str_replace('【写真PC向けMサイズ】',locketsh($shop->photo->pc->m),$lockets_hotpepper_template);
+$lockets_hotpepper_template=str_replace('【写真PC向けSサイズ】',locketsh($shop->photo->pc->s),$lockets_hotpepper_template);
+$lockets_hotpepper_template=str_replace('【営業時間】',locketsh($shop->open),$lockets_hotpepper_template);
+$lockets_hotpepper_template=str_replace('【定休日】',locketsh($shop->close),$lockets_hotpepper_template);
+$lockets_hotpepper_template=str_replace('【最大宴会収容人数】',locketsh($shop->party_capacity),$lockets_hotpepper_template);
+$lockets_hotpepper_template=str_replace('【WiFi 有無】',locketsh($shop->wifi),$lockets_hotpepper_template);
+$lockets_hotpepper_template=str_replace('【ウェディング･二次会】',locketsh($shop->wedding),$lockets_hotpepper_template);
+$lockets_hotpepper_template=str_replace('【コース】',locketsh($shop->course),$lockets_hotpepper_template);
+$lockets_hotpepper_template=str_replace('【飲み放題】',locketsh($shop->free_drink),$lockets_hotpepper_template);
+$lockets_hotpepper_template=str_replace('【食べ放題】',locketsh($shop->free_food),$lockets_hotpepper_template);
+$lockets_hotpepper_template=str_replace('【個室】',locketsh($shop->private_room),$lockets_hotpepper_template);
+$lockets_hotpepper_template=str_replace('【掘りごたつ】',locketsh($shop->horigotatsu),$lockets_hotpepper_template);
+$lockets_hotpepper_template=str_replace('【座敷】',locketsh($shop->tatami),$lockets_hotpepper_template);
+$lockets_hotpepper_template=str_replace('【カード可】',locketsh($shop->card),$lockets_hotpepper_template);
+$lockets_hotpepper_template=str_replace('【禁煙席】',locketsh($shop->non_smoking),$lockets_hotpepper_template);
+$lockets_hotpepper_template=str_replace('【貸切可】',locketsh($shop->charter),$lockets_hotpepper_template);
+$lockets_hotpepper_template=str_replace('【携帯電話OK】',locketsh($shop->ktai),$lockets_hotpepper_template);
+$lockets_hotpepper_template=str_replace('【駐車場】',locketsh($shop->parking),$lockets_hotpepper_template);
+$lockets_hotpepper_template=str_replace('【バリアフリー】',locketsh($shop->barrier_free),$lockets_hotpepper_template);
+$lockets_hotpepper_template=str_replace('【その他設備】',locketsh($shop->other_memo),$lockets_hotpepper_template);
+$lockets_hotpepper_template=str_replace('【ソムリエ】',locketsh($shop->sommelier),$lockets_hotpepper_template);
+$lockets_hotpepper_template=str_replace('【オープンエア】',locketsh($shop->open_air),$lockets_hotpepper_template);
+$lockets_hotpepper_template=str_replace('【ライブ・ショー】',locketsh($shop->show),$lockets_hotpepper_template);
+$lockets_hotpepper_template=str_replace('【エンタメ設備】',locketsh($shop->equipment),$lockets_hotpepper_template);
+$lockets_hotpepper_template=str_replace('【カラオケ】',locketsh($shop->karaoke),$lockets_hotpepper_template);
+$lockets_hotpepper_template=str_replace('【バンド演奏可】',locketsh($shop->band),$lockets_hotpepper_template);
+$lockets_hotpepper_template=str_replace('【TV・プロジェクター】',locketsh($shop->tv),$lockets_hotpepper_template);
+$lockets_hotpepper_template=str_replace('【英語メニュー】',locketsh($shop->english),$lockets_hotpepper_template);
+$lockets_hotpepper_template=str_replace('【ペット可】',locketsh($shop->pet),$lockets_hotpepper_template);
+$lockets_hotpepper_template=str_replace('【お子様連れ】',locketsh($shop->child),$lockets_hotpepper_template);
+$lockets_hotpepper_template=str_replace('【ランチ】',locketsh($shop->lunch),$lockets_hotpepper_template);
+$lockets_hotpepper_template=str_replace('【23時以降も営業】',locketsh($shop->midnight),$lockets_hotpepper_template);
+$lockets_hotpepper_template=str_replace('【備考】',locketsh($shop->shop_detail_memo),$lockets_hotpepper_template);
+//$lockets_hotpepper_template=str_replace('【クーポンURL(PC)】',locketsh($shop->coupon_urls->pc),$lockets_hotpepper_template);
+$lockets_hotpepper_template=str_replace('【クーポンURL(PC)】',locketsh($shop->urls->pc),$lockets_hotpepper_template);
+$lockets_hotpepper_template=str_replace('【HOT PEPPERクレジットA】','<a href="http://webservice.recruit.co.jp/"><img src="https://webservice.recruit.co.jp/banner/hotpepper-s.gif" alt="ホットペッパー Webサービス" width="135" height="17" border="0" title="ホットペッパー Webサービス"></a>',$lockets_hotpepper_template);
+$lockets_hotpepper_template=str_replace('【HOT PEPPERクレジットB】','<a href="http://webservice.recruit.co.jp/"><img src="https://webservice.recruit.co.jp/banner/hotpepper-m.gif" alt="ホットペッパー Webサービス" width="88" height="35" border="0" title="ホットペッパー Webサービス"></a>',$lockets_hotpepper_template);
+$lockets_hotpepper_template=str_replace('【HOT PEPPERクレジットC】','Powered by <a href="http://webservice.recruit.co.jp/">ホットペッパー Webサービス</a>',$lockets_hotpepper_template);
+$gmap = lockets_gmap_draw(locketsh($shop->name),locketsh($shop->lat),locketsh($shop->lng),$zoom,$width,$height);
+$lockets_hotpepper_template=str_replace('【Google Maps埋め込み】',$gmap,$lockets_hotpepper_template);
+//抜けている項目は後日追加する
+
+// Lockets feedへの緯度経度連携
+$lockets_hotpepper_template .= "<!--";
+$lockets_hotpepper_template .= "<georss:point>".locketsh($shop->lat)." ".locketsh($shop->lng)."</georss:point>";
+$lockets_hotpepper_template .= "<georss:featuretypetag>hotpepper</georss:featuretypetag>";
+$lockets_hotpepper_template .= "<georss:relationshiptag>".locketsh($shop->id)."</georss:relationshiptag>";
+$lockets_hotpepper_template .= "<georss:featurename>".locketsh($shop->name)."</georss:featurename>";
+$lockets_hotpepper_template .= "LocketsFeedend-->";
+
+return $lockets_hotpepper_template;
+}
+
+/***------------------------------------------
+　ぐるなび店舗情報表示
+------------------------------------------***/
+// ぐるなび店舗情報単体表示
+function lockets_gurunavi_func( $atts, $content = null ) {
+
+$gnavi_webservice_key= get_option('gnavi_webservice_key');
+$lockets_gnavi_template= get_option('lockets_gnavi_template');
+
+// [LocketsGurunavi]属性情報取得
+extract(shortcode_atts(array(
+    'shopid' => null,
+    'zoom' => null,
+    'width' => null,
+    'height' => null,), $atts));
+
+// リクエストURL
+$gurunaviurl="https://api.gnavi.co.jp/RestSearchAPI/v3/?keyid=$gnavi_webservice_key&id=$shopid&coordinates_mode=2";
+
+// キャッシュ有無確認
+$Buff = get_transient( $shopid );
+    if ( $Buff === false ) {
+    $Buff = file_get_contents($gurunaviurl);
+    set_transient( $shopid, $Buff, 3600 * 24 );
+}
+
+$json = json_decode($Buff);
+$shop = $json->rest[0];
+
+//デフォルトテンプレートの登録
+if ($lockets_gnavi_template=="") {
+$lockets_gnavi_template= <<<EOT
+<p><strong><a href="【店舗URL(PC)】">【掲載店名】</a></strong><p>
+<p>【PR文（短:最大50文字）】</p>
+<p><img src="【店舗画像1のURL】" class="img-responsive"></p>
+<p>住所：【住所】</p>
+<p>交通アクセス：【最寄駅名】</p>
+<p>営業時間：【営業時間】</p>
+<p>定休日：【休業日】</p>
+
+【Google Maps埋め込み】
+<p>【ぐるなびクレジットA】</p>
+EOT;
+}
+
+$lockets_gnavi_template=str_replace('\\','',$lockets_gnavi_template);
+$lockets_gnavi_template=str_replace('【お店ID】',locketsh($shop->id),$lockets_gnavi_template);
+$lockets_gnavi_template=str_replace('【情報更新日時】',locketsh($shop->update_date),$lockets_gnavi_template);
+$lockets_gnavi_template=str_replace('【掲載店名】',locketsh($shop->name),$lockets_gnavi_template);
+$lockets_gnavi_template=str_replace('【掲載店名かな】',locketsh($shop->name_kana),$lockets_gnavi_template);
+
+$lockets_gnavi_template=str_replace('【緯度】',locketsh($shop->latitude),$lockets_gnavi_template);
+$lockets_gnavi_template=str_replace('【経度】',locketsh($shop->longitude),$lockets_gnavi_template);
+
+$lockets_gnavi_template=str_replace('【フリーワードカテゴリー】',locketsh($shop->category),$lockets_gnavi_template);
+
+$lockets_gnavi_template=str_replace('【店舗URL(PC)】',locketsh($shop->url),$lockets_gnavi_template);
+$lockets_gnavi_template=str_replace('【クーポンURL(PC)】',locketsh($shop->coupon_url->pc),$lockets_gnavi_template);
+
+$lockets_gnavi_template=str_replace('【店舗画像1のURL】',locketsh($shop->image_url->shop_image1),$lockets_gnavi_template);
+$lockets_gnavi_template=str_replace('【店舗画像2のURL】',locketsh($shop->image_url->shop_image2),$lockets_gnavi_template);
+$lockets_gnavi_template=str_replace('【QRコード】',locketsh($shop->image_url->qrcode),$lockets_gnavi_template);
+
+
+$lockets_gnavi_template=str_replace('【住所】',locketsh($shop->address),$lockets_gnavi_template);
+$lockets_gnavi_template=str_replace('【電話番号】',locketsh($shop->tel),$lockets_gnavi_template);
+
+$lockets_gnavi_template=str_replace('【営業時間】',locketsh($shop->opentime),$lockets_gnavi_template);
+$lockets_gnavi_template=str_replace('【休業日】',locketsh($shop->holiday),$lockets_gnavi_template);
+
+$lockets_gnavi_template=str_replace('【最寄駅名】',locketsh($shop->access->line).locketsh($shop->access->station),$lockets_gnavi_template);
+$lockets_gnavi_template=str_replace('【交通アクセス】',locketsh($shop->access->line).locketsh($shop->access->station).locketsh($shop->access->station_exit)."徒歩".locketsh($shop->access->walk)."分<br>".locketsh($shop->access->note),$lockets_gnavi_template);
+
+$lockets_gnavi_template=str_replace('【平均予算】',locketsh($shop->budget),$lockets_gnavi_template);
+$lockets_gnavi_template=str_replace('【宴会・パーティ平均予算】',locketsh($shop->party),$lockets_gnavi_template);
+$lockets_gnavi_template=str_replace('【ランチタイム平均予算】',locketsh($shop->lunch),$lockets_gnavi_template);
+
+
+$lockets_gnavi_template=str_replace('【PR文（短:最大50文字）】',locketsh($shop->pr->pr_short),$lockets_gnavi_template);
+$lockets_gnavi_template=str_replace('【PR文（長:最大200文字）】',locketsh($shop->pr->pr_long),$lockets_gnavi_template);
+
+
+$lockets_gnavi_template=str_replace('【ぐるなびクレジットA】','<a href="http://api.gnavi.co.jp/api/scope/" target="_blank"><img src="https://api.gnavi.co.jp/api/img/credit/api_155_20.gif" width="155" height="20" border="0" alt="グルメ情報検索サイト　ぐるなび"></a>',$lockets_gnavi_template);
+$lockets_gnavi_template=str_replace('【ぐるなびクレジットB】','<a href="http://api.gnavi.co.jp/api/scope/" target="_blank"><img src="https://api.gnavi.co.jp/api/img/credit/api_90_35.gif" width="90" height="35" border="0" alt="グルメ情報検索サイト　ぐるなび"></a>',$lockets_gnavi_template);
+$lockets_gnavi_template=str_replace('【ぐるなびクレジットC】','Supported by <a href="http://api.gnavi.co.jp/api/scope/" target="_blank">ぐるなびWebService</a>',$lockets_gnavi_template);
+$gmap = lockets_gmap_draw(locketsh($shop->name),locketsh($shop->latitude),locketsh($shop->longitude),$zoom,$width,$height);
+$lockets_gnavi_template=str_replace('【Google Maps埋め込み】',$gmap,$lockets_gnavi_template);
+//抜けている項目は後日追加する
+    
+// Lockets feedへの緯度経度連携
+$lockets_gnavi_template .= "<!--";
+$lockets_gnavi_template .= "<georss:point>".locketsh($shop->latitude)." ".locketsh($shop->longitude)."</georss:point>";
+$lockets_gnavi_template .= "<georss:featuretypetag>gnavi</georss:featuretypetag>";
+$lockets_gnavi_template .= "<georss:relationshiptag>".locketsh($shop->id)."</georss:relationshiptag>";
+$lockets_gnavi_template .= "<georss:featurename>".locketsh($shop->name)."</georss:featurename>";
+$lockets_gnavi_template .= "LocketsFeedend-->";
+
+return $lockets_gnavi_template;
+}
+
+
+/***------------------------------------------
+　Google プレイス API ＆　Google Maps表示機能
+------------------------------------------***/
+// ショートコード呼び出し
+function lockets_gmaps_func ( $atts, $content = null ) {
+
+    // [LocketsGMaps]属性情報取得
+    extract(shortcode_atts(array(
+        'keyword' => null,
+        'lat' => null,
+        'lng' => null,
+        'zoom' => null,
+        'width' => null,
+        'height' => null,
+        'placeid' => null,), $atts));
+
+    if (!$placeid == null) {
+    //プレイスAPIを使う処理
+        $lockets_gmap_apikey= get_option('lockets_gmap_apikey');
+        $lockets_googleplace_template= get_option('lockets_googleplace_template');
+        $gmapurl="https://maps.googleapis.com/maps/api/place/details/xml?key=$lockets_gmap_apikey&placeid=$placeid&fields=name,rating,formatted_address,formatted_phone_number,geometry,website&language=ja";
+        $Buff = file_get_contents($gmapurl);//キャッシュ使用しない
+        $xml = simplexml_load_string($Buff);
+        $gmapplaces = $xml->result;
+        $keyword = locketsh($gmapplaces->name);
+        $lat = locketsh($gmapplaces->geometry->location->lat);
+        $lng = locketsh($gmapplaces->geometry->location->lng);
+
+        //デフォルトテンプレートの登録
+        if ($lockets_googleplace_template=="") {
+        $lockets_googleplace_template =  <<<EOT
+【Google Maps埋め込み】
+EOT;
+}
+    $lockets_googleplace_template=str_replace('【スポット名】',$keyword,$lockets_googleplace_template);
+    $gmap = lockets_gmap_draw($keyword,$lat,$lng,$zoom,$width,$height);
+    $lockets_googleplace_template=str_replace('【Google Maps埋め込み】',$gmap,$lockets_googleplace_template);
+    $lockets_googleplace_template=str_replace('【住所】',locketsh($gmapplaces->formatted_address),$lockets_googleplace_template);
+    $lockets_googleplace_template=str_replace('【電話番号】',locketsh($gmapplaces->formatted_phone_number),$lockets_googleplace_template);
+    if ($gmapplaces->website) {
+    $textlink = '<a href="'.locketsh($gmapplaces->website).'" target="_blank">'.$keyword.'</a>';
+
+    $lockets_googleplace_template=str_replace('【Webサイトテキストリンク】',$textlink,$lockets_googleplace_template);
+    } else {
+        $lockets_googleplace_template=str_replace('【Webサイトテキストリンク】',"-",$lockets_googleplace_template);
+    }
+    $lockets_googleplace_template=str_replace('【GoogleクレジットA】','<img src="'.WP_PLUGIN_URL.'/lockets/images/powered_by_google_on_white.png">',$lockets_googleplace_template);
+    $lockets_googleplace_template=str_replace('【GoogleクレジットB】','<img src="'.WP_PLUGIN_URL.'/lockets/images/powered_by_google_on_non_white.png">',$lockets_googleplace_template);
+    // Lockets feedへの緯度経度連携
+    $lockets_googleplace_template .= "<!--";
+    $lockets_googleplace_template .= "<georss:point>".$lat." ".$lng ."</georss:point>";
+    $lockets_googleplace_template .= "<georss:featuretypetag>google_place</georss:featuretypetag>";
+    $lockets_googleplace_template .= "<georss:relationshiptag>".$placeid."</georss:relationshiptag>";
+    $lockets_googleplace_template .= "<georss:featurename>".$keyword."</georss:featurename>";
+    $lockets_googleplace_template .= "LocketsFeedend-->";
+    $ret= $lockets_googleplace_template;
+} else {
+    $ret= lockets_gmap_draw($keyword,$lat,$lng,$zoom,$width,$height);
+}
+    return $ret;
+}
+
+
+/***------------------------------------------
+　楽天商品検索結果表示（タグID検索は追って実装）
+------------------------------------------***/
+function lockets_rekuten_item_func( $atts, $content = null ) {
+
+$rakutentoken= get_option('rakuten_search_token');
+$rakutenaffid= get_option('rakuten_affiliate_id');
+//$lockets_rakuten_travel_template=get_option('lockets_rakuten_item_template');
+
+// [LocketsRakutenItem]属性情報取得
+extract(shortcode_atts(array(
+    'itemcode' => null,
+    'tagid' => null,), $atts));
+
+// 商品ID検索（タグID検索は追って実装）
+$rwsurl="https://app.rakuten.co.jp/services/api/IchibaItem/Search/20170706?applicationId=$rakutentoken&affiliateId=$rakutenaffid&itemCode=$itemcode&tagid=$tagid&format=xml";
+
+// キャッシュ有無確認
+$Buff = get_transient( $rwsurl );
+if ( $Buff === false ) {
+    $options['ssl']['verify_peer']=false;
+    $options['ssl']['verify_peer_name']=false;
+    if ($Buff = @file_get_contents($rwsurl,false, stream_context_create($options))) {
+        $rakutentravelerror = "1";
+        set_transient( $rwsurl, $Buff, 3600 * 24 );
+    }
+}
+
+$xml = simplexml_load_string($Buff);
+$resultcount = $xml->count;
+$items = $xml->Items->Item;
+    
+//デフォルトテンプレートの登録
+if ($lockets_rakuten_item_template=="") {
+$lockets_rakuten_item_template= <<<EOT
+<p><a href="【商品URL】" rel="nofollow" target="_blank"><img src="【商品画像128x128URL】"></a></p>
+<p><a href="【商品URL】" rel="nofollow" target="_blank"><strong>【商品名】</strong></a><br>
+（<a href="【店舗URL】" rel="nofollow" target="_blank">【店舗名】</a>）</p>
+
+<p>【楽天ウェブサービスクレジットA】</p>
+EOT;
+}
+
+    $contents="";
+if ($items) {
+    foreach ($items as $item) {
+        $lockets_rakuten_item_template=str_replace('【商品名】',locketsh($item->itemName),$lockets_rakuten_item_template);
+        $lockets_rakuten_item_template=str_replace('【商品URL】',locketsh($item->itemUrl),$lockets_rakuten_item_template);
+        //$pictures128 = $item->mediumImageUrls->imageUrl;
+        $lockets_rakuten_item_template=str_replace('【商品画像128x128URL】',locketsh($item->mediumImageUrls->imageUrl[0]),$lockets_rakuten_item_template);
+        $lockets_rakuten_item_template=str_replace('【店舗URL】',locketsh($item->shopUrl),$lockets_rakuten_item_template);
+        $lockets_rakuten_item_template=str_replace('【店舗名】',locketsh($item->shopName),$lockets_rakuten_item_template);
+        $lockets_rakuten_item_template=str_replace('【楽天ウェブサービスクレジットA】','<!-- Rakuten Web Services Attribution Snippet FROM HERE -->
+        <a href="https://webservice.rakuten.co.jp/" target="_blank"><img src="https://webservice.rakuten.co.jp/img/credit/200709/credit_4936.gif" border="0" alt="楽天ウェブサービスセンター" title="楽天ウェブサービスセンター" width="49" height="36"/></a>
+        <!-- Rakuten Web Services Attribution Snippet TO HERE -->',$lockets_rakuten_item_template);
+        $lockets_rakuten_item_template=str_replace('【楽天ウェブサービスクレジットB】','<!-- Rakuten Web Services Attribution Snippet FROM HERE -->
+        <a href="https://webservice.rakuten.co.jp/" target="_blank"><img src="https://webservice.rakuten.co.jp/img/credit/200709/credit_7052.gif" border="0" alt="楽天ウェブサービスセンター" title="楽天ウェブサービスセンター" width="70" height="52"/></a>
+        <!-- Rakuten Web Services Attribution Snippet TO HERE -->',$lockets_rakuten_item_template);
+        $lockets_rakuten_item_template=str_replace('【楽天ウェブサービスクレジットC】','<!-- Rakuten Web Services Attribution Snippet FROM HERE -->
+        <a href="https://webservice.rakuten.co.jp/" target="_blank"><img src="https://webservice.rakuten.co.jp/img/credit/200709/credit_22121.gif" border="0" alt="楽天ウェブサービスセンター" title="楽天ウェブサービスセンター" width="221" height="21"/></a>
+        <!-- Rakuten Web Services Attribution Snippet TO HERE -->',$lockets_rakuten_item_template);
+        $lockets_rakuten_item_template=str_replace('【楽天ウェブサービスクレジットD】','<!-- Rakuten Web Services Attribution Snippet FROM HERE -->
+        <a href="https://webservice.rakuten.co.jp/" target="_blank">Supported by 楽天ウェブサービス</a>
+        <!-- Rakuten Web Services Attribution Snippet TO HERE -->',$lockets_rakuten_item_template);
+        $contents.=$lockets_rakuten_item_template;
+    }
+    return $contents;
+}
+}
+
+
+/***------------------------------------------
+　バリューコマース商品検索結果表示（JANコード検索は追って実装）
+------------------------------------------***/
+function lockets_valuecommerce_item_func( $atts, $content = null ) {
+
+        $lockets_valuecommerce_token = get_option('lockets_valuecommerce_token');
+
+// [LocketsRakutenItem]属性情報取得
+extract(shortcode_atts(array(
+    'itemcode' => null,
+    'jancode' => null,), $atts));
+
+        $vcurl = "http://webservice.valuecommerce.ne.jp/productdb/search?token=$lockets_valuecommerce_token&product_id=$itemcode";
+//echo $vcurl;
+        $Buff = get_transient( $vcurl );
+        if ( $Buff === false ) {
+            $options['ssl']['verify_peer']=false;
+            $options['ssl']['verify_peer_name']=false;
+            if ($Buff = @file_get_contents($vcurl,false, stream_context_create($options))) {
+                $rakutenitemerror = "1";
+                set_transient( $vcurl, $Buff, 3600 * 24 );
+            }
+        }
+
+        $Buff = str_replace('vc:', 'vc', $Buff);
+        $Buff = str_replace('&', '&amp;', $Buff);
+        $xml = simplexml_load_string($Buff);
+        $items = $xml->channel->item;
+        $resultcount = locketsh($xml->channel->vcresultcount);
+        $totalpage = locketsh($xml->channel->vcpagecount);
+
+//デフォルトテンプレートの登録
+if ($lockets_valuecommerce_item_template=="") {
+$lockets_valuecommerce_item_template= <<<EOT
+<p><a href="【商品URL】" rel="nofollow" target="_blank"><img src="【商品画像】"></a></p>
+<p><a href="【商品URL】" rel="nofollow" target="_blank"><strong>【商品名】</strong></a><br>
+（【店舗名】）</p>
+
+EOT;
+}
+
+    $contents="";
+        if ($items) {
+            foreach ($items as $item) {
+        $lockets_valuecommerce_item_template=str_replace('【商品名】',locketsh($item->title),$lockets_valuecommerce_item_template);
+            // 画像URL取り出し
+                
+            $img = array();
+            foreach($item->vcimage as $vcimg) {
+                $img[]=$vcimg["url"];
+            }
+
+            if (strlen($img[1])) {
+                $imgurl = locketsh($img[1]);
+            } else {
+                if (strlen($img[2])) {
+                    $imgurl = locketsh($img[2]);
+                } else {
+                $imgurl = WP_PLUGIN_URL."/vc_search/c_img/noimage.gif";
+                }
+            }
+            
+        $lockets_valuecommerce_item_template=str_replace('【商品URL】',locketsh($item->link),$lockets_valuecommerce_item_template);
+        //$pictures128 = $item->mediumImageUrls->imageUrl;
+        $lockets_valuecommerce_item_template=str_replace('【商品画像】',locketsh( $imgurl),$lockets_valuecommerce_item_template);
+        $lockets_valuecommerce_item_template=str_replace('【店舗名】',locketsh($item->vcmerchantName ),$lockets_valuecommerce_item_template);
+                $contents.=$lockets_valuecommerce_item_template;
+            }
+       return $contents;
+}
+}
+
+/***------------------------------------------
+　Amazon商品検索結果表示（JANコード検索は追って実装）
+------------------------------------------***/
+function lockets_amazon_item_func( $atts, $content = null ) {
+
+// [LocketsAmazonItem]属性情報取得
+extract(shortcode_atts(array(
+    'asin' => null,
+    'jancode' => null,), $atts));
+
+        $cacheid = "amazon".$asin;
+        $Buff = get_transient($cacheid);
+
+        if ( $Buff === false ) {
+            $lockets_Amazonitemsearchtapi= new lockets_Amazonitemsearchtapi();
+            $awsurl = $lockets_Amazonitemsearchtapi->awsasinrequesturl($asin);
+
+            if ($Buff = file_get_contents($awsurl,false, stream_context_create($options))) {
+                $rakutenitemerror = "1";
+                set_transient( $cacheid, $Buff, 3600 * 24 );
+            }
+        }
+
+        $xml = simplexml_load_string($Buff);
+        $items = $xml->Items->Item;
+        $resultcount = locketsh($xml->Items->TotalResults);
+        $totalpage = locketsh($xml->Items->TotalPages);
+
+//デフォルトテンプレートの登録
+if ($lockets_amazon_item_template=="") {
+$lockets_amazon_item_template= <<<EOT
+<p><a href="【商品URL】" rel="nofollow" target="_blank"><img src="【商品画像】"></a><br>
+<a href="【商品URL】" rel="nofollow" target="_blank"><strong>【商品名】</strong></a></p>
+
+EOT;
+}
+
+    $contents="";
+        if ($items) {
+            foreach ($items as $item) {
+                $lockets_amazon_item_template=str_replace('【商品名】',locketsh($item->ItemAttributes->Title),$lockets_amazon_item_template);
+                $lockets_amazon_item_template=str_replace('【商品URL】',locketsh($item->DetailPageURL),$lockets_amazon_item_template);
+                //$pictures128 = $item->mediumImageUrls->imageUrl;
+                $lockets_amazon_item_template=str_replace('【商品画像】',locketsh($item->MediumImage->URL),$lockets_amazon_item_template);
+                $contents.=$lockets_amazon_item_template;
+            }
+       return $contents;
+}
+}
 
 /***------------------------------------------
 　LinkSwitch追加
