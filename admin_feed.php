@@ -52,7 +52,7 @@ _e('外部配信を有効にする', 'lockets_feedswitch'); ?></label></th>
 _e('外部配信用URL設定', 'lockets_feedurl'); ?></label></th>
                     <td><input size="36" type="text" name="lockets_feedurl" id="lockets_feedurl" value="<?php
 echo attribute_escape($lockets_feedurl); ?>" /><br>
-                        <?php if ($lockets_feedurl !== "") { ?>
+                        <?php if ($lockets_feedurl == "" or $lockets_feedurl == null) { } else { ?>
                     設定したURLは“ <a href="<?php echo site_url()."/?feed=".attribute_escape($lockets_feedurl); ?>"><?php echo site_url()."/?feed=".attribute_escape($lockets_feedurl); ?></a> ”です
                         <?php } ?>
                     </td>
