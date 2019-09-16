@@ -4,7 +4,7 @@ Donate link:
 Tags: AD,affiliate,Web API,location
 Requires at least: 5.2
 Tested up to: 5.2
-Stable tag: 0.90
+Stable tag: 0.91
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -93,6 +93,9 @@ none.
 An answer to that question.
 
 == Changelog ==
+= 0.91 =
+* remove target="_blank"
+　target="_blank"をデフォルト出力フォーマットから削除
 = 0.90 =
 * icon changed.Lockets Plugin oficial page changed
 　アイコンを新ロゴのものに変更。管理画面に解説動画など挿入。プラグイン解説のサイト移転

@@ -4,8 +4,8 @@ function lockets_feed() {
 // ポストされた値の入力チェックと書き込み
 if (isset($_POST['update_option'])) {
 check_admin_referer('lockets-options');
-if(isset($_POST['lockets_feedswitch'])){
-update_option('lockets_feedswitch', sanitize_text_field($_POST['lockets_feedswitch']));
+if($_POST['lockets_feedswitch'] == 1){
+update_option('lockets_feedswitch', "1");
 } else {
 update_option('lockets_feedswitch', "0");
 }
@@ -36,11 +36,13 @@ $lockets_feedlogourl = get_option('lockets_feedlogourl');
                 <tr>
                     <th><label for="locketsfeedswitch"><?php
 _e('外部配信を有効にする', 'lockets_feedswitch'); ?></label></th>
-                    <td>
+                    <td><? echo $lockets_feedswitch; ?>
                         <?php if($lockets_feedswitch == "1"){ ?>
-                        <input type="checkbox" name="lockets_feedswitch" id="lockets_feedswitch" checked="checked" value="1" /> ONにする
+                        <input type="radio" name="lockets_feedswitch" value="1" checked>ON
+                        <input type="radio" name="lockets_feedswitch" value="0">OFF
                         <?php }else{ ?>
-                        <input type="checkbox" name="lockets_feedswitch" id="lockets_feedswitch" value="1" /> ONにする
+                        <input type="radio" name="lockets_feedswitch" value="1">ON
+                        <input type="radio" name="lockets_feedswitch" value="0" checked>OFF
                         <?php } ?>
                     </td>
                 </tr>
@@ -49,7 +51,8 @@ _e('外部配信を有効にする', 'lockets_feedswitch'); ?></label></th>
                     <th><label for="lockets_feedurl"><?php
 _e('外部配信用URL設定', 'lockets_feedurl'); ?></label></th>
                     <td><input size="36" type="text" name="lockets_feedurl" id="lockets_feedurl" value="<?php
-echo attribute_escape($lockets_feedurl); ?>" /></td>
+echo attribute_escape($lockets_feedurl); ?>" /><br>
+                    <?php echo site_url()."/?feed=".attribute_escape($lockets_feedurl); ?></td>
                 </tr>
 
                 <tr>

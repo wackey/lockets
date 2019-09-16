@@ -34,6 +34,7 @@ function lockets_gmap_draw($keyword,$lat,$lng,$zoom,$width,$height) {
     $ret = '<iframe src="https://maps.google.co.jp/maps?q='.$keyword.'&ll='.$lat.','.$lng.'&output=embed&t=m&z='.$zoom.'&hl=ja" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" width="'.$width.'" height="'.$height.'"></iframe>';
     return $ret;}
 }
+
 /***------------------------------------------
 　楽天トラベルホテル情報表示
 ------------------------------------------***/
@@ -77,7 +78,7 @@ $lockets_rakuten_travel_template= <<<EOT
 <p>【施設特色】<br>
 【郵便番号】<br>
 【住所１】【住所２】</p>
-<p><a href="【宿泊プラン一覧ページURL】" target="_blank" rel="nofollow">宿泊プランはこちら</a></p>
+<p><a href="【宿泊プラン一覧ページURL】"  rel="nofollow">宿泊プランはこちら</a></p>
 【Google Maps埋め込み】
 <p>【楽天ウェブサービスクレジットC】</p>
 EOT;
@@ -480,7 +481,7 @@ EOT;
     $lockets_googleplace_template=str_replace('【住所】',locketsh($gmapplaces->formatted_address),$lockets_googleplace_template);
     $lockets_googleplace_template=str_replace('【電話番号】',locketsh($gmapplaces->formatted_phone_number),$lockets_googleplace_template);
     if ($gmapplaces->website) {
-    $textlink = '<a href="'.locketsh($gmapplaces->website).'" target="_blank">'.$keyword.'</a>';
+    $textlink = '<a href="'.locketsh($gmapplaces->website).'">'.$keyword.'</a>';
 
     $lockets_googleplace_template=str_replace('【Webサイトテキストリンク】',$textlink,$lockets_googleplace_template);
     } else {
@@ -538,9 +539,9 @@ $items = $xml->Items->Item;
 //デフォルトテンプレートの登録
 if ($lockets_rakuten_item_template=="") {
 $lockets_rakuten_item_template= <<<EOT
-<p><a href="【商品URL】" rel="nofollow" target="_blank"><img src="【商品画像128x128URL】"></a></p>
-<p><a href="【商品URL】" rel="nofollow" target="_blank"><strong>【商品名】</strong></a><br>
-（<a href="【店舗URL】" rel="nofollow" target="_blank">【店舗名】</a>）</p>
+<p><a href="【商品URL】" rel="nofollow"<img src="【商品画像128x128URL】"></a></p>
+<p><a href="【商品URL】" rel="nofollow"><strong>【商品名】</strong></a><br>
+（<a href="【店舗URL】" rel="nofollow">【店舗名】</a>）</p>
 
 <p>【楽天ウェブサービスクレジットA】</p>
 EOT;
@@ -608,8 +609,8 @@ extract(shortcode_atts(array(
 //デフォルトテンプレートの登録
 if ($lockets_valuecommerce_item_template=="") {
 $lockets_valuecommerce_item_template= <<<EOT
-<p><a href="【商品URL】" rel="nofollow" target="_blank"><img src="【商品画像】"></a></p>
-<p><a href="【商品URL】" rel="nofollow" target="_blank"><strong>【商品名】</strong></a><br>
+<p><a href="【商品URL】" rel="nofollow"><img src="【商品画像】"></a></p>
+<p><a href="【商品URL】" rel="nofollow" <strong>【商品名】</strong></a><br>
 （【店舗名】）</p>
 
 EOT;
@@ -677,8 +678,8 @@ extract(shortcode_atts(array(
 //デフォルトテンプレートの登録
 if ($lockets_amazon_item_template=="") {
 $lockets_amazon_item_template= <<<EOT
-<p><a href="【商品URL】" rel="nofollow" target="_blank"><img src="【商品画像】"></a><br>
-<a href="【商品URL】" rel="nofollow" target="_blank"><strong>【商品名】</strong></a></p>
+<p><a href="【商品URL】" rel="nofollow"><img src="【商品画像】"></a><br>
+<a href="【商品URL】" rel="nofollow"><strong>【商品名】</strong></a></p>
 
 EOT;
 }
