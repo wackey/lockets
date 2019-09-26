@@ -4,7 +4,7 @@ Donate link:
 Tags: AD,affiliate,Web API,location
 Requires at least: 5.2
 Tested up to: 5.2
-Stable tag: 0.92
+Stable tag: 0.93
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -93,6 +93,10 @@ none.
 An answer to that question.
 
 == Changelog ==
+= 0.93 =
+* Locketsfeed noimage add,bagfix
+　外部配信βのバグ修正
+　外部配信βのfeedにおいてアイキャッチ画像が無い場合のnoimage画像として一時的に画像を含めた
 = 0.91 =
 * remove target="_blank"
 　target="_blank"をデフォルト出力フォーマットから削除

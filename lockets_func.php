@@ -13,7 +13,7 @@ function locketsh($str)
 
 /* scriptタグ削除 */
 function lockets_remove_script_tag($target) {
-	return mb_eregi_replace('/<script.*<\/script>/', '', $target);
+	return  preg_replace('/<script.*?>.*?<\/script>/mis', '', $target);//mb_eregi_replace('/<script.*<\/script>/', '', $target);
 }
 
 // Google Maps表示タグ出力（各API共通）

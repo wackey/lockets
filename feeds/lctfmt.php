@@ -109,7 +109,7 @@ $image_url = wp_get_attachment_image_src($image_id,'thumbnail', true);
 
 		<description><![CDATA[<?php echo lockets_remove_script_tag(get_the_excerpt()); ?>]]></description>
 	<?php $content = get_the_content_feed('rss2'); ?>
-    <?php if ( strlen( $content ) == 0 ) {$content = the_excerpt_rss();} ?>
+    <?php if ( strlen( $content ) == 0 ) {$content = get_the_excerpt();} ?>
 		<content:encoded><![CDATA[<?php echo lockets_remove_script_tag($content); ?>]]></content:encoded>
 
         <georss:where>
