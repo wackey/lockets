@@ -4,7 +4,7 @@ Plugin Name: Lockets
 Plugin URI: https://lockets.jp/
 Description: A plug-in that gets information on spots such as shops and inns from various APIs and displays the latest information embedded in the blog.Also, This plugin will assist you such as creating affiliate links. お店や旅館などスポットに関する情報を各種APIから取得し、ブログ内に最新の情報を埋め込んで表示するプラグイン。また、アフィリエイトリンク作成支援を行います。
 Author: wackey
-Version: 0.91
+Version: 0.92
 Author URI: https://lockets.jp/
 License: GPL2
 */
@@ -88,6 +88,8 @@ function lockets_options() {
     つまり、それぞれのサービス上で価格や営業時間などの情報が更新されればその最新の情報を元にコンテンツを表示します。</p>
 
     <p>また、表示するテンプレートはHTMLで自由にカスタマイズすることが可能です。そのカスタマイズで表示させたい項目を自由にアレンジ出来ます</p>
+    
+    <p>プラグイン設定解説サイトはこちら→<a href="https://plugins.lockets.jp/">Locketsプラグイン公式サイト</a></p>
     
     <p>使い方のイメージは下記動画をご確認ください。</p>
     

@@ -102,14 +102,14 @@ $image_url = wp_get_attachment_image_src($image_id,'thumbnail', true);
 ?>
 <?php if (has_post_thumbnail()) {$eyecatchimage=$image_url[0];//アイキャッチの指定 ?>
 		<media:thumbnail><?php echo $image_url[0]; ?></media:thumbnail>
-<?php } else {$eyecatchimage=get_template_directory_uri(); ?>/images/noimage.png;//アイキャッチ画像が無ければ ?>
+<?php } else { ?>
 		<media:thumbnail><?php echo plugins_url( 'images/noimage.png', dirname(__FILE__)); ?></media:thumbnail>
 <?php } ?>
 
 
 		<description><![CDATA[<?php echo lockets_remove_script_tag(get_the_excerpt()); ?>]]></description>
 	<?php $content = get_the_content_feed('rss2'); ?>
-
+    <?php if ( strlen( $content ) == 0 ) {$content = the_excerpt_rss();} ?>
 		<content:encoded><![CDATA[<?php echo lockets_remove_script_tag($content); ?>]]></content:encoded>
 
         <georss:where>
