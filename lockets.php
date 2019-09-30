@@ -4,7 +4,7 @@ Plugin Name: Lockets
 Plugin URI: https://lockets.jp/
 Description: A plug-in that gets information on spots such as shops and inns from various APIs and displays the latest information embedded in the blog.Also, This plugin will assist you such as creating affiliate links. お店や旅館などスポットに関する情報を各種APIから取得し、ブログ内に最新の情報を埋め込んで表示するプラグイン。また、アフィリエイトリンク作成支援を行います。
 Author: wackey
-Version: 0.93
+Version: 0.94
 Author URI: https://lockets.jp/
 License: GPL2
 */
@@ -220,7 +220,11 @@ function remove_lockets()
     delete_option('gnavi_webservice_key');
     delete_option('lockets_gnavi_template');
 
-    delete_option('locketsfeedswitch');  
+    delete_option('locketsfeedswitch'); 
+    delete_option('lockets_feedurl');
+    delete_option('lockets_feedua');
+    delete_option('lockets_feedlogourl');
+
 }
 
 
