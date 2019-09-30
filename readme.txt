@@ -93,8 +93,11 @@ none.
 An answer to that question.
 
 == Changelog ==
+= 0.94 =
+* bugfix,description
+　バグ修正、説明追加
 = 0.93 =
-* Locketsfeed noimage add,bagfix
+* Locketsfeed noimage add,bugfix
 　外部配信βのバグ修正
 　外部配信βのfeedにおいてアイキャッチ画像が無い場合のnoimage画像として一時的に画像を含めた
 = 0.91 =
