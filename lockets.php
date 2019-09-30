@@ -140,11 +140,6 @@ if ($lockets_gmap_apikey=="") {echo '<span style="color:#AA0000;font-weight:bold
 echo "Google プレイス"
 ?> </li>
 </ul>
-
-<p>参考：サーバーIPアドレス：<?php $url = plugins_url('lib/remoteaddr.php',__FILE__);
-$options['ssl']['verify_peer']=false;
-$options['ssl']['verify_peer_name']=false;
-echo file_get_contents($url,false, stream_context_create($options)); ?></p>
     
 <h3>その他アフィリエイト機能</h3>
 <ul>
