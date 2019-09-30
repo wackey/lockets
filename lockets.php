@@ -102,11 +102,13 @@ function lockets_options() {
 <li><?php
 if ($rakutentoken=="" and $rakutenaffid=="") {echo '<span style="color:#AA0000;font-weight:bold;">[未設定]</span>';} else {echo '<span style="color:#00AA00;:font-weight:bold;">[設定済]</span>';}
 echo "楽天トラベル（楽天アフィリエイト使用）"
-?> </li>
+?><br>
+    楽天トラベルのAPIからホテル・旅館など宿泊施設の検索をして、その詳細情報を表示するショートコードを埋め込みます。</li>
 <li><?php
 if ($jalan_webservice_key=="") {echo '<span style="color:#AA0000;font-weight:bold;">[未設定]</span>';} else {echo '<span style="color:#00AA00;:font-weight:bold;">[設定済]</span>';}
 echo "じゃらん　※LinkSwitchでバリューコマースアフィリエイト使用可"
-?> </li> 
+?><br>
+    じゃらんのAPIからホテル・旅館など宿泊施設の検索をして、その詳細情報を表示するショートコードを埋め込みます。</li> 
 </ul>
 
 <h3>飲食店情報系</h3>
@@ -114,44 +116,52 @@ echo "じゃらん　※LinkSwitchでバリューコマースアフィリエイ�
 <li><?php
 if ($recruit_webservice_key=="") {echo '<span style="color:#AA0000;font-weight:bold;">[未設定]</span>';} else {echo '<span style="color:#00AA00;:font-weight:bold;">[設定済]</span>';}
 echo "HOT PEPPER　※LinkSwitchでバリューコマースアフィリエイト使用可"
-?> </li> 
+?><br>
+    ホットペッパーのAPIからレストラン・居酒屋など飲食店情報を検索して、その詳細情報を表示するショートコードを埋め込みます。</li> 
 <li><?php
 if ($gnavi_webservice_key=="") {echo '<span style="color:#AA0000;font-weight:bold;">[未設定]</span>';} else {echo '<span style="color:#00AA00;:font-weight:bold;">[設定済]</span>';}
 echo "ぐるなび"
-?> </li> 
+?><br>
+    ぐるなびのAPIからレストラン・居酒屋など飲食店情報を検索して、その詳細情報を表示するショートコードを埋め込みます。</li> 
 </ul>
 
-<h3>商品情報系</h3>
-<ul>
-<li><?php
-if ($rakutentoken=="" and $rakutenaffid=="") {echo '<span style="color:#AA0000;font-weight:bold;">[未設定]</span>';} else {echo '<span style="color:#00AA00;:font-weight:bold;">[設定済]</span>';}
-echo "楽天市場（楽天アフィリエイト）"
-?> </li>
-<li><?php
-if ($lockets_amzacckey=="" and $lockets_amzseckey=="" and $lockets_amzassid=="") {echo '<span style="color:#AA0000;font-weight:bold;">[未設定]</span>';} else {echo '<span style="color:#00AA00;:font-weight:bold;">[設定済]</span>';}
-echo "Amazonアソシエイト"
-?> </li>
-</ul>
 
 <h3>その他スポット</h3>
 <ul>
 <li><?php
 if ($lockets_gmap_apikey=="") {echo '<span style="color:#AA0000;font-weight:bold;">[未設定]</span>';} else {echo '<span style="color:#00AA00;:font-weight:bold;">[設定済]</span>';}
 echo "Google プレイス"
-?> </li>
+?><br>
+    Googleプレイスに登録されているスポットを検索し、その詳細情報を表示するショートコードを埋め込みます。詳細情報で出力する内容は管理画面のテンプレートで編集できます。</li>
 </ul>
     
 <h3>その他アフィリエイト機能</h3>
 <ul>
 <li><?php
 if ($valuecommerce_pid=="") {echo '<span style="color:#AA0000;font-weight:bold;">[未設定]</span>';} else {echo '<span style="color:#00AA00;:font-weight:bold;">[設定済]</span>';}
-echo "バリューコマース LinkSwitch<br>LinkSwitchに必要なJavaScriptを自動的に挿入します。<br>HOTPEPPERやじゃらんなど対応ECサイトと提携していると上記リンクが自動的にバリューマースのアフィリエイトリンクに置き換わります。"
-?> </li>
-
+echo "バリューコマース LinkSwitch<br>LinkSwitchに必要なJavaScriptを自動的に挿入します。<br>HOTPEPPERやじゃらんなど対応ECサイトと提携していると上記リンクが自動的にバリューマースのアフィリエイトリンクに過去記事も含めて置き換わります。"
+?></li>
     
 </ul>
+    
+<h3>商品情報アフィリエイト</h3>
+<ul>
+<li><?php
+if ($rakutentoken=="" and $rakutenaffid=="") {echo '<span style="color:#AA0000;font-weight:bold;">[未設定]</span>';} else {echo '<span style="color:#00AA00;:font-weight:bold;">[設定済]</span>';}
+echo "楽天市場（楽天アフィリエイト）"
+?><br>
+    楽天市場の商品を検索してアフィリエイトリンク付きで商品表示します。</li>
+<li><?php
+if ($lockets_amzacckey=="" and $lockets_amzseckey=="" and $lockets_amzassid=="") {echo '<span style="color:#AA0000;font-weight:bold;">[未設定]</span>';} else {echo '<span style="color:#00AA00;:font-weight:bold;">[設定済]</span>';}
+echo "Amazonアソシエイト"
+?><br>
+    Amazon.co.jpの商品を検索してアソシエイトリンク付きで商品表示します。</li>
+    </ul>
+    
 <p>※[設定済][未設定]はAPIキーの入力のみのチェックです。HTMLテンプレートは編集しなくても動作します。<br>
     Google Maps表示は各スポット検索と連携して使用出来ますが、Googleプレイスは設定が必要です。</p>
+
+    
 
 </div>
 
