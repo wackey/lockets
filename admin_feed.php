@@ -62,7 +62,7 @@ echo attribute_escape($lockets_feedurl); ?>" /><br>
                     <th><label for="lockets_feedlogourl"><?php
 _e('logoの画像URL', 'lockets_feedlogourl'); ?></label></th>
                     <td><input size="36" type="text" name="lockets_feedlogourl" id="lockets_feedlogourl" value="<?php
-echo attribute_escape($lockets_feedlogourl); ?>" /><br>サイトロゴのURLをhttpから入れてください。</td>
+echo attribute_escape($lockets_feedlogourl); ?>" /><br>サイトロゴのURLをhttpから入れてください。「横700px以下 x 縦およそ100px」で背景が透明になっているPNGファイルを推奨しています。</td>
                 </tr>
                 
                 <tr>
