@@ -23,18 +23,17 @@ A plug-in that gets information on spots such as shops and inns from various API
 
 *HOTEL Search
  -Rakuten Travel Search API,Jalan Web Service(Hotel search)
- 　楽天トラベルAPIとじゃらんWebサービスに対応しています
-
 *Restaurant search
  -HOTPEPPER,Gurunavi (Restaurant search)
- 　ホットペッパーAPI、ぐるなびWebサービスに対応しています
-
 *Place Search
  -Google Places API,Maps Embed API
-  GoogleプレイスAPI、Google Maps Embed APIに対応しています。
-  
+
+*楽天トラベルAPIとじゃらんWebサービスに対応しています
+*ホットペッパーAPI、ぐるなびWebサービスに対応しています
+*GoogleプレイスAPI、Google Maps Embed APIに対応しています。
+
 *Lockets feed
-Locketsなど外部に配信可能なfeedを生成します。
+Webアプリ版Locketsなど外部に配信可能なfeedを生成します。
 
 *Affiliate Beta
  -Rakuten Affiliate
@@ -93,6 +92,9 @@ none.
 An answer to that question.
 
 == Changelog ==
+= 0.95 =
+* Google Place API,Placeid and lat,lng cache.
+　GoogleプレイスAPIにて、デフォルトテンプレート利用字（GoogleMaps埋め込み時）に緯度と経度のみ30日間のキャッシュを行うこととした（それ以外のキャッシュは利用規約上不可）。
 = 0.94 =
 * bugfix,description
 　バグ修正、説明追加
