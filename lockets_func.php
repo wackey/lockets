@@ -449,6 +449,7 @@ function lockets_gmaps_func ( $atts, $content = null ) {
 
     // [LocketsGMaps]属性情報取得
     extract(shortcode_atts(array(
+        'placename' => null,
         'keyword' => null,
         'lat' => null,
         'lng' => null,
@@ -456,11 +457,19 @@ function lockets_gmaps_func ( $atts, $content = null ) {
         'width' => null,
         'height' => null,
         'placeid' => null,), $atts));
+    
+//デフォルトテンプレートの登録
+if ($lockets_googleplace_template=="") {
+$lockets_googleplace_template =  <<<EOT
+【Google Maps埋め込み】
+EOT;
+}
 
-    if (!$placeid == null) {
-    //プレイスAPIを使う処理
+    if (!$placeid == null and $lockets_googleplace_template=="") {
+    //プレイスAPIを使い、詳細情報を使う場合
         $lockets_gmap_apikey= get_option('lockets_gmap_apikey');
         $lockets_googleplace_template= get_option('lockets_googleplace_template');
+        
         $gmapurl="https://maps.googleapis.com/maps/api/place/details/xml?key=$lockets_gmap_apikey&placeid=$placeid&fields=name,rating,formatted_address,formatted_phone_number,geometry,website&language=ja";
         $Buff = file_get_contents($gmapurl);//キャッシュ使用しない
         $xml = simplexml_load_string($Buff);
@@ -469,12 +478,7 @@ function lockets_gmaps_func ( $atts, $content = null ) {
         $lat = locketsh($gmapplaces->geometry->location->lat);
         $lng = locketsh($gmapplaces->geometry->location->lng);
 
-        //デフォルトテンプレートの登録
-        if ($lockets_googleplace_template=="") {
-        $lockets_googleplace_template =  <<<EOT
-【Google Maps埋め込み】
-EOT;
-}
+
     $lockets_googleplace_template=str_replace('【スポット名】',$keyword,$lockets_googleplace_template);
     $gmap = lockets_gmap_draw($keyword,$lat,$lng,$zoom,$width,$height);
     $lockets_googleplace_template=str_replace('【Google Maps埋め込み】',$gmap,$lockets_googleplace_template);
@@ -497,9 +501,33 @@ EOT;
     $lockets_googleplace_template .= "<georss:featurename>".$keyword."</georss:featurename>";
     $lockets_googleplace_template .= "LocketsFeedend-->";
     $ret= $lockets_googleplace_template;
-} else {
+        
+    } elseif (!$placeid == null) {
+    //プレイスAPIを使い、詳細情報を使う地図表示のみの場合
+        $lockets_gmap_apikey= get_option('lockets_gmap_apikey');
+        $lockets_googleplace_template= get_option('lockets_googleplace_template');
+        
+        $gmapurl="https://maps.googleapis.com/maps/api/place/details/xml?key=$lockets_gmap_apikey&placeid=$placeid&fields=geometry&language=ja";
+
+        // キャッシュ有無確認
+        $Buff = get_transient( $placeid );
+        if ( $Buff === false ) {
+        $Buff = file_get_contents($gmapurl);
+        set_transient( $placeid, $Buff, 3600 * 24 * 30 );
+        }
+
+
+        $xml = simplexml_load_string($Buff);
+        $gmapplaces = $xml->result;
+        $lat = locketsh($gmapplaces->geometry->location->lat);
+        $lng = locketsh($gmapplaces->geometry->location->lng);
+
+
+    $ret= lockets_gmap_draw($placename,$lat,$lng,$zoom,$width,$height);  
+
+    } else {
     $ret= lockets_gmap_draw($keyword,$lat,$lng,$zoom,$width,$height);
-}
+    }
     return $ret;
 }
 
