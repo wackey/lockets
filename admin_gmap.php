@@ -36,7 +36,7 @@ if (isset($_POST['update_option'])) {
 <th><label for="lockets_gmap_apikey"><?php
 _e('Google Places API Web Service キー', 'loclets_gmap_apikey'); ?></label></th> <td><input size="36" type="text" name="lockets_gmap_apikey"
 id="lockets_gmap_apikey" value="<?php
-echo attribute_escape($lockets_gmap_apikey); ?>" /><br />※Google プレイス検索を使用する場合は必須</td>
+echo attribute_escape($lockets_gmap_apikey); ?>" /><br />※必須</td>
 </tr>
 
 <tr>
@@ -70,7 +70,7 @@ _e('Googleプレイス<br>表示テンプレート<br>（HTMLと置換文字列�
 <?php echo str_replace('\\','',$lockets_googleplace_template); ?>
 </textarea> <br />
 <br />
-置き換え用の文字列は下記のとおり<br />
+置き換え用の文字列は下記のとおり。下記を使って表示テンプレートをカスタマイズされる場合は、下記詳細情報のキャッシュを行わないためAPIの使用量が著しく増加します（1PVごとに1リクエスト）。デフォルト（空白）の場合はGoogle Mapsの埋め込みのみで、その場合はキャッシュを行うためAPIの使用量も節約できます。<br />
 <h5>基本情報</h5>
 【スポット名】
 【住所】

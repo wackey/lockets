@@ -747,7 +747,8 @@ function lockets_head(){
                     top.tb_remove(); 
                 });
                 $('#gmapplaceresult input').on('click', function() {
-                    top.send_to_editor( '[LocketsGMaps placeid="' + this.id + '"]');
+                    var placename = $(this).next("span").text();
+                    top.send_to_editor( '[LocketsGMaps placeid="' + this.id + '" placename="' + placename + '"]');
                     top.tb_remove(); 
                 });
                 $('#rakutenitemresult input').on('click', function() {
@@ -1057,7 +1058,7 @@ switch ($useapi) {
         if ($gmapplaces) {
         echo "<form action='' id='gmapplaceresult'><ul>";
         foreach ($gmapplaces as $place) {
-            echo "<li><input type='button' value='挿入' class='button' id='".locketsh($place->place_id)."'>　<a href='"."https://www.google.com/maps/embed/v1/place?q=place_id:".locketsh($place->place_id)."&key=".$lockets_gmap_apikey."' target='_blank'>".locketsh($place->name)."</a>（".locketsh($place->id)."）</li>";
+            echo "<li><input type='button' value='挿入' class='button' id='".locketsh($place->place_id)."'><span>".locketsh($place->name)."</span>（".locketsh($place->id)."）</li>";
         }
         echo '<li><a href="https://developers.google.com/places/web-service/?hl=ja">Places API Web Service</a> <a href="https://developers.google.com/maps/documentation/embed/?hl=ja">Maps Embed API</a></li><li><img src="'.WP_PLUGIN_URL.'/lockets/images/powered_by_google_on_white.png"></li>';
         echo "</ul></form>";
