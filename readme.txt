@@ -4,7 +4,7 @@ Donate link:
 Tags: AD,affiliate,Web API,location
 Requires at least: 5.2
 Tested up to: 5.2
-Stable tag: 0.95
+Stable tag: 0.96
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -92,6 +92,9 @@ none.
 An answer to that question.
 
 == Changelog ==
+= 0.96 =
+*georss output.
+ Googleプレイスを使った地図表示でgeorssを出力するようにした。
 = 0.95 =
 * Google Place API,Placeid and lat,lng cache.
 　GoogleプレイスAPIにて、デフォルトテンプレート利用字（GoogleMaps埋め込み時）に緯度と経度のみ30日間のキャッシュを行うこととした（それ以外のキャッシュは利用規約上不可）。

@@ -524,7 +524,7 @@ EOT;
 
 
     $gmap= lockets_gmap_draw($placename,$lat,$lng,$zoom,$width,$height);
-        $lockets_googleplace_template .= $gmap;
+    $lockets_googleplace_template = $gmap;
     // Lockets feedへの緯度経度連携
     $lockets_googleplace_template .= "<!--";
     $lockets_googleplace_template .= "<georss:point>".$lat." ".$lng ."</georss:point>";
