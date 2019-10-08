@@ -523,8 +523,17 @@ EOT;
         $lng = locketsh($gmapplaces->geometry->location->lng);
 
 
-    $ret= lockets_gmap_draw($placename,$lat,$lng,$zoom,$width,$height);  
-
+    $gmap= lockets_gmap_draw($placename,$lat,$lng,$zoom,$width,$height);
+        $lockets_googleplace_template .= $gmap;
+    // Lockets feedへの緯度経度連携
+    $lockets_googleplace_template .= "<!--";
+    $lockets_googleplace_template .= "<georss:point>".$lat." ".$lng ."</georss:point>";
+    $lockets_googleplace_template .= "<georss:featuretypetag>google_place</georss:featuretypetag>";
+    $lockets_googleplace_template .= "<georss:relationshiptag>".$placeid."</georss:relationshiptag>";
+    $lockets_googleplace_template .= "<georss:featurename>".$placename."</georss:featurename>";
+    $lockets_googleplace_template .= "LocketsFeedend-->";
+    $ret= $lockets_googleplace_template;
+        
     } else {
     $ret= lockets_gmap_draw($keyword,$lat,$lng,$zoom,$width,$height);
     }
