@@ -3,8 +3,8 @@ Contributors: wackey
 Donate link: 
 Tags: AD,affiliate,Web API,location
 Requires at least: 5.2
-Tested up to: 5.2
-Stable tag: 0.96
+Tested up to: 5.2.4
+Stable tag: 0.97
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -92,6 +92,9 @@ none.
 An answer to that question.
 
 == Changelog ==
+= 0.97 =
+*Jalan Onsen Places Hotel search.
+じゃらんの温泉地ごとのホテル一覧検索結果表示機能
 = 0.96 =
 *georss output.
  Googleプレイスを使った地図表示でgeorssを出力するようにした。

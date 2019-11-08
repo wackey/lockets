@@ -1,0 +1,35 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">
+<title>じゃらんAPI 地域選択インターフェースサンプル</title>
+<script type="text/javascript" src="area_data.js"></script>
+<script type="text/javascript" src="area.js"></script>
+<style type="text/css">
+<!--
+.area_pd {
+	width: 200px;
+}
+-->
+</style>
+</head>
+
+<body onLoad="initAreaPulldown()">
+
+<h3>都道府県</h3>
+<select class="area_pd" name="pref" id="pref" onChange="changeLargeArea(this)"><option value="" selected>指定しない</option></select>
+
+<h3>大エリア</h3>
+<select class="area_pd" name="l_area" id="l_area" onChange="changeSmallArea(this)"><option value="" selected>指定しない</option></select>
+
+<h3>小エリア</h3>
+<select class="area_pd" name="s_area" id="s_area"><option value="" selected>指定しない</option></select>
+
+<!-- おまけ:値確認用ボタン -->
+<p><input type="button" value="値は？" onclick="alert(
+	'都道府県(pref): ' + document.getElementById('pref').value   + '\n' + 
+	'大エリア(l_area): ' + document.getElementById('l_area').value + '\n' +
+	'小エリア(s_area): ' + document.getElementById('s_area').value
+)" /></p>
+
+</body>
