@@ -176,7 +176,8 @@ if ( $Buff === false ) {
 
 $xml = @simplexml_load_string($Buff);//warning防止
 
-$jalanhotels = $xml->Hotel;
+if ($jalanhotels = $xml->Hotel) {
+
     foreach ($jalanhotels  as $jalanhotel) {
     $lockets_jalan_template=$lockets_jalan_template.$lockets_jalan_templates;
 
@@ -232,8 +233,8 @@ $lockets_jalan_template .= "<georss:relationshiptag>".locketsh($jalanhotel->Hote
 $lockets_jalan_template .= "<georss:featurename>".locketsh($jalanhotel->HotelName)."</georss:featurename>";
 $lockets_jalan_template .= "LocketsFeedend-->";
 
-}
-    
+    }
+} 
     
 return $lockets_jalan_template;
 
@@ -1151,7 +1152,7 @@ switch ($useapi) {
         echo '<li><a href="http://www.jalan.net/jw/jwp0000/jww0001.do">じゃらん Web サービス</a></li>';
         echo "</ul></form>";
             } else {
-            echo "<form id='noresult'><p>検索結果はありませんでした。キーワードもしくは検索対象を切り替えて試してみてください。</p></form>";
+            echo "<form id='noresult'><p>検索結果はありませんでした。キーワードもしくは検索対象を切り替えて試してみてください。<br>結果が多いホテルの場合は支店名も入れてみてください。</p></form>";
         }
 
     break;
