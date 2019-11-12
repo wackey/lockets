@@ -3,8 +3,8 @@ Contributors: wackey
 Donate link: 
 Tags: AD,affiliate,Web API,location
 Requires at least: 5.2
-Tested up to: 5.2.4
-Stable tag: 0.97
+Tested up to: 5.3
+Stable tag: 0.98
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -92,6 +92,9 @@ none.
 An answer to that question.
 
 == Changelog ==
+= 0.98 =
+*Jalan APA HOTEL search error
+200件以上検索結果があるホテルチェーンだとエラーが出てしまう問題を解決。WordPress5.3RC4で動作確認。
 = 0.97 =
 *Jalan Onsen Places Hotel search.
 じゃらんの温泉地ごとのホテル一覧検索結果表示機能
