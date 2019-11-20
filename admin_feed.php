@@ -12,6 +12,7 @@ update_option('lockets_feedswitch', "0");
 update_option('lockets_feedurl', sanitize_text_field($_POST['lockets_feedurl']));
 update_option('lockets_feedua', sanitize_text_field($_POST['lockets_feedua']));
 update_option('lockets_feedlogourl', sanitize_text_field($_POST['lockets_feedlogourl']));
+    update_option('lockets_kanrenfeed', esc_js($_POST['lockets_kanrenfeed']));
 ?>
 <div class="updated fade">
     <p><strong><?php _e('Options saved.'); ?></strong></p>
@@ -21,6 +22,7 @@ $lockets_feedswitch = get_option('lockets_feedswitch');
 $lockets_feedurl = get_option('lockets_feedurl');
 $lockets_feedua = get_option('lockets_feedua');
 $lockets_feedlogourl = get_option('lockets_feedlogourl');
+$lockets_kanrenfeed = get_option('lockets_kanrenfeed');
 ?>
 
 <div class="wrap">
@@ -72,6 +74,12 @@ _e('SmartView上に入れるGoogle AnalyticsのUA番号', 'lockets_feedua'); ?><
 echo attribute_escape($lockets_feedua); ?>" /><br>「UA-xxxxxxx-x」を入れてください。</td>
                 </tr>
 
+                <tr>
+                    <th><label for="lockets_kanrenfeed"><?php
+    _e('関連記事等以後feedから削除したい文言', 'lockets_kanrenfeed'); ?></label></th>
+                    <td><input size="36" type="text" name="lockets_kanrenfeed" id="lockets_kanrenfeed" value="<?php
+    echo attribute_escape($lockets_kanrenfeed); ?>" /><br>関連記事等、この文言以降の本文はfeedに含めない設定。</td>
+                </tr>
             </tbody>
         </table>
 
