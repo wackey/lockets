@@ -6,7 +6,6 @@
  */
 header( 'Content-Type: ' . feed_content_type( 'rss2' ) . '; charset=' . get_option( 'blog_charset' ), true );
 $more = 1;
-
 echo '<?xml version="1.0" encoding="' . get_option( 'blog_charset' ) . '"?' . '>';
 
 /**
@@ -48,7 +47,9 @@ do_action( 'rss_tag_pre', 'rss2' );
 	<language><?php bloginfo_rss( 'language' ); ?></language>
 	<copyright>(C) <?php bloginfo_rss('name'); ?></copyright>
 	<ttl>5</ttl>
-    <snf:logo><url><?php $lockets_feedlogourl = get_option('lockets_feedlogourl'); ?><?php echo $lockets_feedlogourl; ?></url></snf:logo>
+    <snf:logo><url><?php $lockets_feedlogourl = get_option('lockets_feedlogourl');
+        $lockets_kanrenfeed = get_option('lockets_kanrenfeed');
+    ?><?php echo $lockets_feedlogourl; ?></url></snf:logo>
 	<sy:updatePeriod><?php
 		$duration = 'hourly';
 
@@ -110,6 +111,9 @@ $image_url = wp_get_attachment_image_src($image_id,'thumbnail', true);
 		<description><![CDATA[<?php echo lockets_remove_script_tag(get_the_excerpt()); ?>]]></description>
 	<?php $content = get_the_content_feed('rss2'); ?>
     <?php if ( strlen( $content ) == 0 ) {$content = get_the_excerpt();} ?>
+    <?php 
+        $content = mb_strstr($content,htmlspecialchars_decode($lockets_kanrenfeed),true); 
+?>
 		<content:encoded><![CDATA[<?php echo lockets_remove_script_tag($content); ?>]]></content:encoded>
 
         <georss:where>
