@@ -112,7 +112,10 @@ $image_url = wp_get_attachment_image_src($image_id,'thumbnail', true);
 	<?php $content = get_the_content_feed('rss2'); ?>
     <?php if ( strlen( $content ) == 0 ) {$content = get_the_excerpt();} ?>
     <?php 
-        $content = mb_strstr($content,htmlspecialchars_decode($lockets_kanrenfeed),true); 
+        if(strpos($content,htmlspecialchars_decode($lockets_kanrenfeed)) !== false){
+            $content = mb_strstr($content,htmlspecialchars_decode($lockets_kanrenfeed),true);
+        }
+         
 ?>
 		<content:encoded><![CDATA[<?php echo lockets_remove_script_tag($content); ?>]]></content:encoded>
 
