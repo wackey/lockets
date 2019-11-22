@@ -4,7 +4,7 @@ Donate link:
 Tags: AD,affiliate,Web API,location
 Requires at least: 5.2
 Tested up to: 5.3
-Stable tag: 0.98
+Stable tag: 0.99
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -92,6 +92,10 @@ none.
 An answer to that question.
 
 == Changelog ==
+= 0.98 =
+*
+Added a function to delete the related article part near the end of the article in the feed
+feed内の記事最後のほうにある関連記事部分を削除する機能を追加
 = 0.98 =
 *Jalan APA HOTEL search error
 200件以上検索結果があるホテルチェーンだとエラーが出てしまう問題を解決。WordPress5.3RC4で動作確認。
