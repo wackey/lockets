@@ -183,50 +183,11 @@ add_shortcode( 'LocketsRakutenItem', 'lockets_rekuten_item_func' );
 add_shortcode( 'LocketsValuecommerceItem', 'lockets_valuecommerce_item_func' );
 add_shortcode( 'LocketsAmazonItem', 'lockets_amazon_item_func' );
 
-    
 //管理画面登録
 add_action('admin_menu', 'lockets_menu');
 
 // ヘッダーに追加
 add_action('wp_head','add_vc_automylink');
-
-
-// アンインストール
-register_deactivation_hook(__FILE__, 'remove_lockets');
-
-
-/***------------------------------------------
-　プラグインアンインストール
-------------------------------------------***/
-function remove_lockets()
-{
-	delete_option('rakuten_affiliate_id');
-	delete_option('rakuten_search_token');
-    delete_option('lockets_rakuten_travel_template');
-
-    delete_option('jalan_webservice_key');
-    delete_option('lockets_jalan_template');
-    
-    delete_option('valuecommerce_pid');
-    delete_option('lockets_valuecommerce_token');
-    delete_option('lockets_linkshare_token');
-    delete_option('lockets_amzacckey');
-    delete_option('lockets_amzseckey');
-    delete_option('lockets_amzassid');
-    
-    delete_option('recruit_webservice_key');
-    delete_option('lockets_hotpepper_template');
-    
-    delete_option('gnavi_webservice_key');
-    delete_option('lockets_gnavi_template');
-
-    delete_option('locketsfeedswitch'); 
-    delete_option('lockets_feedurl');
-    delete_option('lockets_feedua');
-    delete_option('lockets_feedlogourl');
-
-}
-
 
 /***------------------------------------------
 　メディアボタン設置
