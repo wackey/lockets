@@ -12,8 +12,10 @@ update_option('lockets_feedswitch', "0");
 update_option('lockets_feedurl', sanitize_text_field($_POST['lockets_feedurl']));
 update_option('lockets_feedua', sanitize_text_field($_POST['lockets_feedua']));
 update_option('lockets_feedlogourl', sanitize_text_field($_POST['lockets_feedlogourl']));
-    update_option('lockets_kanrenfeed', esc_js($_POST['lockets_kanrenfeed']));
+update_option('lockets_kanrenfeed', esc_js($_POST['lockets_kanrenfeed']));
+update_option('lockets_classfeed', esc_js($_POST['lockets_classfeed']));
 ?>
+
 <div class="updated fade">
     <p><strong><?php _e('Options saved.'); ?></strong></p>
 </div>
@@ -23,6 +25,7 @@ $lockets_feedurl = get_option('lockets_feedurl');
 $lockets_feedua = get_option('lockets_feedua');
 $lockets_feedlogourl = get_option('lockets_feedlogourl');
 $lockets_kanrenfeed = get_option('lockets_kanrenfeed');
+$lockets_classfeed = get_option('lockets_classfeed');
 ?>
 
 <div class="wrap">
@@ -80,6 +83,14 @@ echo attribute_escape($lockets_feedua); ?>" /><br>「UA-xxxxxxx-x」を入れて
                     <td><input size="36" type="text" name="lockets_kanrenfeed" id="lockets_kanrenfeed" value="<?php
     echo attribute_escape($lockets_kanrenfeed); ?>" /><br>関連記事等、この文言以降の本文はfeedに含めない設定。</td>
                 </tr>
+
+                <tr>
+                    <th><label for="lockets_classfeed"><?php
+    _e('ブログカードなど削除したいclass名', 'lockets_classfeed'); ?></label></th>
+                    <td><input size="36" type="text" name="lockets_classfeed" id="lockets_classfeed" value="<?php
+    echo attribute_escape($lockets_classfeed); ?>" /><br>このclass名を含んだブロックは削除する</td>
+                </tr>
+
             </tbody>
         </table>
 

@@ -37,6 +37,7 @@ function lockets_delete_plugin() {
     delete_option('lockets_feedua');
     delete_option('lockets_feedlogourl');
     delete_option('lockets_kanrenfeed');
+    delete_option('lockets_classfeed');
 }
 
 lockets_delete_plugin();

@@ -115,6 +115,7 @@ $image_url = wp_get_attachment_image_src($image_id,'thumbnail', true);
         if(strpos($content,htmlspecialchars_decode($lockets_kanrenfeed)) !== false){
             $content = mb_strstr($content,htmlspecialchars_decode($lockets_kanrenfeed),true);
         }
+        $content = preg_replace("/<p class=\"test\">(.+?)<\/p>/","",$content);
          
 ?>
 		<content:encoded><![CDATA[<?php echo lockets_remove_script_tag($content); ?>]]></content:encoded>
