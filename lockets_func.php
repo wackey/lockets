@@ -853,181 +853,113 @@ echo <<< EOS
 <div id="test">
     <form action="media-upload.php" method="get">
         <h2>Lockets Search</h2>
-        <p>お店やホテルやスポット、商品などを検索して挿入ボタンを押すと記事中にその情報表示用ショートコードを挿入します。</p>
+        <p>お店やホテルなどスポットなどを検索して挿入ボタンを押すと記事中にスポット情報表示用ショートコードを挿入します。</p>
         <h3>キーワード検索</h3>
         <input type="text" name="searchword" value="$searchword" /><br>
 EOS;
 switch ($useapi) {
-        case '':
         case 'ホットペッパー':
         echo <<< EOS
+        <input type="radio" name="usuapi" value="Googleプレイス（Google Maps）"> Googleプレイス（Google Maps）<br>
         <input type="radio" name="usuapi" value="ホットペッパー" checked> ホットペッパー　
         <input type="radio" name="usuapi" value="ぐるなび"> ぐるなび　
         <input type="radio" name="usuapi" value="楽天トラベル"> 楽天トラベル　
         <input type="radio" name="usuapi" value="じゃらん"> じゃらん　
-        <input type="radio" name="usuapi" value="Googleプレイス（Google Maps）"> Googleプレイス（Google Maps）
-        <br>
-        <input type="radio" name="usuapi" value="楽天市場"> 楽天市場タグ検索商品表示（β）
-        <input type="radio" name="usuapi" value="バリューコマース"> バリューコマース検索商品表示（β）
-        <input type="radio" name="usuapi" value="Amazon.co.jp"> Amazon.co.jp検索商品表示（β）
-        <h3>じゃらん温泉地検索用エリア</h3>        
-        <input type="radio" name="usuapi" value="じゃらん温泉地検索"> じゃらん温泉地検索　
-        
 EOS;
         break;
         
         case 'ぐるなび':
         echo <<< EOS
+        <input type="radio" name="usuapi" value="Googleプレイス（Google Maps）"> Googleプレイス（Google Maps）<br>
         <input type="radio" name="usuapi" value="ホットペッパー"> ホットペッパー　
         <input type="radio" name="usuapi" value="ぐるなび" checked> ぐるなび　
         <input type="radio" name="usuapi" value="楽天トラベル"> 楽天トラベル　
         <input type="radio" name="usuapi" value="じゃらん"> じゃらん　
-        <input type="radio" name="usuapi" value="Googleプレイス（Google Maps）"> Googleプレイス（Google Maps）
-        <br>
-        <input type="radio" name="usuapi" value="楽天市場"> 楽天市場タグ検索商品表示（β）
-        <input type="radio" name="usuapi" value="バリューコマース"> バリューコマース検索商品表示（β）
-        <input type="radio" name="usuapi" value="Amazon.co.jp"> Amazon.co.jp検索商品表示（β）
-        <h3>じゃらん温泉地検索用エリア</h3>        
-        <input type="radio" name="usuapi" value="じゃらん温泉地検索"> じゃらん温泉地検索　
 EOS;
         break;
 
         case '楽天トラベル':
         echo <<< EOS
+        <input type="radio" name="usuapi" value="Googleプレイス（Google Maps）"> Googleプレイス（Google Maps）<br>
         <input type="radio" name="usuapi" value="ホットペッパー"> ホットペッパー　
         <input type="radio" name="usuapi" value="ぐるなび"> ぐるなび　
         <input type="radio" name="usuapi" value="楽天トラベル" checked> 楽天トラベル　
         <input type="radio" name="usuapi" value="じゃらん"> じゃらん　
-        <input type="radio" name="usuapi" value="Googleプレイス（Google Maps）"> Googleプレイス（Google Maps）
-        <br>
-        <input type="radio" name="usuapi" value="楽天市場"> 楽天市場タグ検索商品表示（β）
-        <input type="radio" name="usuapi" value="バリューコマース"> バリューコマース検索商品表示（β）
-        <input type="radio" name="usuapi" value="Amazon.co.jp"> Amazon.co.jp検索商品表示（β）
-        <h3>じゃらん温泉地検索用エリア</h3>        
-        <input type="radio" name="usuapi" value="じゃらん温泉地検索"> じゃらん温泉地検索　
 EOS;
         break;
 
         case 'じゃらん':
         echo <<< EOS
+        <input type="radio" name="usuapi" value="Googleプレイス（Google Maps）"> Googleプレイス（Google Maps）<br>
         <input type="radio" name="usuapi" value="ホットペッパー"> ホットペッパー　
         <input type="radio" name="usuapi" value="ぐるなび"> ぐるなび　
         <input type="radio" name="usuapi" value="楽天トラベル"> 楽天トラベル　
         <input type="radio" name="usuapi" value="じゃらん" checked> じゃらん　
-        <input type="radio" name="usuapi" value="Googleプレイス（Google Maps）"> Googleプレイス（Google Maps）
-        <br>
-        <input type="radio" name="usuapi" value="楽天市場"> 楽天市場タグ検索商品表示（β）
-        <input type="radio" name="usuapi" value="バリューコマース"> バリューコマース検索商品表示（β）
-        <input type="radio" name="usuapi" value="Amazon.co.jp"> Amazon.co.jp検索商品表示（β）
-        <h3>じゃらん温泉地検索用エリア</h3>        
-        <input type="radio" name="usuapi" value="じゃらん温泉地検索"> じゃらん温泉地検索　
 EOS;
         break;
         case 'じゃらん':
         echo <<< EOS
+        <input type="radio" name="usuapi" value="Googleプレイス（Google Maps）"> Googleプレイス（Google Maps）<br>
         <input type="radio" name="usuapi" value="ホットペッパー"> ホットペッパー　
         <input type="radio" name="usuapi" value="ぐるなび"> ぐるなび　
         <input type="radio" name="usuapi" value="楽天トラベル"> 楽天トラベル　
         <input type="radio" name="usuapi" value="じゃらん" checked> じゃらん　
-        <input type="radio" name="usuapi" value="Googleプレイス（Google Maps）"> Googleプレイス（Google Maps）
-        <br>
-        <input type="radio" name="usuapi" value="楽天市場"> 楽天市場タグ検索商品表示（β）
-        <input type="radio" name="usuapi" value="バリューコマース"> バリューコマース検索商品表示（β）
-        <input type="radio" name="usuapi" value="Amazon.co.jp"> Amazon.co.jp検索商品表示（β）
-        <h3>じゃらん温泉地検索用エリア</h3>        
-        <input type="radio" name="usuapi" value="じゃらん温泉地検索"> じゃらん温泉地検索　
 EOS;
         break;
-
+        case '':
         case 'Googleプレイス（Google Maps）':
         echo <<< EOS
+        <input type="radio" name="usuapi" value="Googleプレイス（Google Maps）" checked> Googleプレイス（Google Maps）<br>
         <input type="radio" name="usuapi" value="ホットペッパー"> ホットペッパー　
         <input type="radio" name="usuapi" value="ぐるなび"> ぐるなび　
         <input type="radio" name="usuapi" value="楽天トラベル"> 楽天トラベル　
         <input type="radio" name="usuapi" value="じゃらん"> じゃらん　
-        <input type="radio" name="usuapi" value="Googleプレイス（Google Maps）" checked> Googleプレイス（Google Maps）
-        <br>
-        <input type="radio" name="usuapi" value="楽天市場"> 楽天市場タグ検索商品表示（β）
-        <input type="radio" name="usuapi" value="バリューコマース"> バリューコマース検索商品表示（β）
-        <input type="radio" name="usuapi" value="Amazon.co.jp"> Amazon.co.jp検索商品表示（β）
-        <h3>じゃらん温泉地検索用エリア</h3>        
-        <input type="radio" name="usuapi" value="じゃらん温泉地検索"> じゃらん温泉地検索　
 EOS;
         break;
 
         case '楽天市場':
         echo <<< EOS
+        <input type="radio" name="usuapi" value="Googleプレイス（Google Maps）"> Googleプレイス（Google Maps）<br>
         <input type="radio" name="usuapi" value="ホットペッパー"> ホットペッパー　
         <input type="radio" name="usuapi" value="ぐるなび"> ぐるなび　
         <input type="radio" name="usuapi" value="楽天トラベル"> 楽天トラベル　
         <input type="radio" name="usuapi" value="じゃらん"> じゃらん　
-        <input type="radio" name="usuapi" value="Googleプレイス（Google Maps）"> Googleプレイス（Google Maps）
-        <br>
-        <input type="radio" name="usuapi" value="楽天市場" checked> 楽天市場タグ検索商品表示（β）
-        <input type="radio" name="usuapi" value="バリューコマース"> バリューコマース検索商品表示（β）
-        <input type="radio" name="usuapi" value="Amazon.co.jp"> Amazon.co.jp検索商品表示（β）
-        <h3>じゃらん温泉地検索用エリア</h3>        
-        <input type="radio" name="usuapi" value="じゃらん温泉地検索"> じゃらん温泉地検索　
 EOS;
         break;
 
         case 'バリューコマース':
         echo <<< EOS
+        <input type="radio" name="usuapi" value="Googleプレイス（Google Maps）"> Googleプレイス（Google Maps）<br>
         <input type="radio" name="usuapi" value="ホットペッパー"> ホットペッパー　
         <input type="radio" name="usuapi" value="ぐるなび"> ぐるなび　
         <input type="radio" name="usuapi" value="楽天トラベル"> 楽天トラベル　
         <input type="radio" name="usuapi" value="じゃらん"> じゃらん　
-        <input type="radio" name="usuapi" value="Googleプレイス（Google Maps）"> Googleプレイス（Google Maps）
-        <br>
-        <input type="radio" name="usuapi" value="楽天市場"> 楽天市場タグ検索商品表示（β）
-        <input type="radio" name="usuapi" value="バリューコマース" checked> バリューコマース検索商品表示（β）
-        <input type="radio" name="usuapi" value="Amazon.co.jp"> Amazon.co.jp検索商品表示（β）
-        <h3>じゃらん温泉地検索用エリア</h3>        
-        <input type="radio" name="usuapi" value="じゃらん温泉地検索"> じゃらん温泉地検索　
 EOS;
         break;
     
         case 'Amazon.co.jp':
         echo <<< EOS
+        <input type="radio" name="usuapi" value="Googleプレイス（Google Maps）"> Googleプレイス（Google Maps）<br>
         <input type="radio" name="usuapi" value="ホットペッパー"> ホットペッパー　
         <input type="radio" name="usuapi" value="ぐるなび"> ぐるなび　
         <input type="radio" name="usuapi" value="楽天トラベル"> 楽天トラベル　
         <input type="radio" name="usuapi" value="じゃらん"> じゃらん　
-        <input type="radio" name="usuapi" value="Googleプレイス（Google Maps）"> Googleプレイス（Google Maps）
-        <br>
-        <input type="radio" name="usuapi" value="楽天市場"> 楽天市場タグ検索商品表示（β）
-        <input type="radio" name="usuapi" value="バリューコマース"> バリューコマース検索商品表示（β）
-        <input type="radio" name="usuapi" value="Amazon.co.jp" checked> Amazon.co.jp検索商品表示（β）
-        <h3>じゃらん温泉地検索用エリア</h3>        
-        <input type="radio" name="usuapi" value="じゃらん温泉地検索"> じゃらん温泉地検索　
 EOS;
         break;
 
     case 'じゃらん温泉地検索':
         echo <<< EOS
+        <input type="radio" name="usuapi" value="Googleプレイス（Google Maps）"> Googleプレイス（Google Maps）<br>
         <input type="radio" name="usuapi" value="ホットペッパー"> ホットペッパー　
         <input type="radio" name="usuapi" value="ぐるなび"> ぐるなび　
         <input type="radio" name="usuapi" value="楽天トラベル"> 楽天トラベル　
         <input type="radio" name="usuapi" value="じゃらん"> じゃらん　
-        <input type="radio" name="usuapi" value="Googleプレイス（Google Maps）"> Googleプレイス（Google Maps）
-        <br>
-        <input type="radio" name="usuapi" value="楽天市場"> 楽天市場タグ検索商品表示（β）
-        <input type="radio" name="usuapi" value="バリューコマース"> バリューコマース検索商品表示（β）
-        <input type="radio" name="usuapi" value="Amazon.co.jp"> Amazon.co.jp検索商品表示（β）
-        <h3>じゃらん温泉地検索用エリア</h3>        
-        <input type="radio" name="usuapi" value="じゃらん温泉地検索" checked> じゃらん温泉地検索　
 EOS;
         break;
 }
 
 echo <<< EOS
-<p>
-<select class="area_pd" name="pref" id="pref" onChange="changeLargeArea(this)"><option value="" selected>都道府県</option></select>
 
-<select class="area_pd" name="l_area" id="l_area" onChange="changeSmallArea(this)"><option value="" selected>大エリア</option></select>
-
-<select class="area_pd" name="s_area" id="s_area"><option value="" selected>小エリア</option></select>
-</p>
         <input type="hidden" name="tab" value="locketsSearch">
         <input type="hidden" name="type" value="locketsSearch">
         <input type="hidden" name="TB_iframe" value="true">

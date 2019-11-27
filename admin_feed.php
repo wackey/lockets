@@ -79,16 +79,17 @@ echo attribute_escape($lockets_feedua); ?>" /><br>「UA-xxxxxxx-x」を入れて
 
                 <tr>
                     <th><label for="lockets_kanrenfeed"><?php
-    _e('関連記事等以後feedから削除したい文言', 'lockets_kanrenfeed'); ?></label></th>
+    _e('関連記事等以後feedから削除したい文言HTML', 'lockets_kanrenfeed'); ?></label></th>
                     <td><input size="36" type="text" name="lockets_kanrenfeed" id="lockets_kanrenfeed" value="<?php
-    echo attribute_escape($lockets_kanrenfeed); ?>" /><br>関連記事等、この文言以降の本文はfeedに含めない設定。</td>
+    echo attribute_escape($lockets_kanrenfeed); ?>" /><br>関連記事等、このHTML含んだ文言以降の本文はfeedに含めなくします。<br>
+                        例：&#60;&#104;&#50;&#62;関連記事&#60;&#47;h2&#62;</td>
                 </tr>
 
                 <tr>
                     <th><label for="lockets_classfeed"><?php
     _e('ブログカードなど削除したいclass名', 'lockets_classfeed'); ?></label></th>
                     <td><input size="36" type="text" name="lockets_classfeed" id="lockets_classfeed" value="<?php
-    echo attribute_escape($lockets_classfeed); ?>" /><br>このclass名を含んだブロックは削除する</td>
+    echo attribute_escape($lockets_classfeed); ?>" /><br>このclass名を含んだdivブロックは削除します。</td>
                 </tr>
 
             </tbody>
