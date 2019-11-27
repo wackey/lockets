@@ -49,6 +49,7 @@ do_action( 'rss_tag_pre', 'rss2' );
 	<ttl>5</ttl>
     <snf:logo><url><?php $lockets_feedlogourl = get_option('lockets_feedlogourl');
         $lockets_kanrenfeed = get_option('lockets_kanrenfeed');
+        $lockets_classfeed = get_option('lockets_classfeed');
     ?><?php echo $lockets_feedlogourl; ?></url></snf:logo>
 	<sy:updatePeriod><?php
 		$duration = 'hourly';
@@ -115,7 +116,7 @@ $image_url = wp_get_attachment_image_src($image_id,'thumbnail', true);
         if(strpos($content,htmlspecialchars_decode($lockets_kanrenfeed)) !== false){
             $content = mb_strstr($content,htmlspecialchars_decode($lockets_kanrenfeed),true);
         }
-        $content = preg_replace("/<div class=\"blogcard02\">(.+?)<\/div>/s","",$content);
+        $content = preg_replace("/<div class=\"$lockets_classfeed\">(.+?)<\/div>/s","",$content);
          
 ?>
 		<content:encoded><![CDATA[<?php echo lockets_remove_script_tag($content); ?>]]></content:encoded>
