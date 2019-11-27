@@ -4,7 +4,7 @@ Donate link:
 Tags: AD,affiliate,Web API,location
 Requires at least: 5.2
 Tested up to: 5.3
-Stable tag: 0.99
+Stable tag: 0.991
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -92,7 +92,11 @@ none.
 An answer to that question.
 
 == Changelog ==
-= 0.98 =
+= 0.991 =
+*
+Delete specific blocks in feed, narrow down the posting panel to main functions
+feed内の特定ブロックの削除、投稿パネルを主要機能に絞り込み
+= 0.99 =
 *
 Added a function to delete the related article part near the end of the article in the feed
 feed内の記事最後のほうにある関連記事部分を削除する機能を追加
