@@ -2,9 +2,9 @@
 Contributors: wackey
 Donate link: 
 Tags: AD,affiliate,Web API,location
-Requires at least: 5.2
+Requires at least: 4.9
 Tested up to: 5.3
-Stable tag: 0.992
+Stable tag: 0.993
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
