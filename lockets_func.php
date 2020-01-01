@@ -60,7 +60,7 @@ $Buff = get_transient( $rwsurl );
 if ( $Buff === false ) {
     $options['ssl']['verify_peer']=false;
     $options['ssl']['verify_peer_name']=false;
-    if ($Buff = @file_get_contents($rwsurl,false, stream_context_create($options))) {
+    if ($Buff = wp_remote_get($rwsurl)) {
         $rakutentravelerror = "1";
         set_transient( $rwsurl, $Buff, 3600 * 24 );
     }
@@ -170,7 +170,7 @@ if ($hotelno==null) {
 // キャッシュ有無確認
 $Buff = get_transient($jalanurl);
 if ( $Buff === false ) {
-    $Buff = file_get_contents($jalanurl);
+    $Buff = wp_remote_get($jalanurl);
     set_transient($jalanurl, $Buff, 3600 * 24 );
 }
 
@@ -264,7 +264,7 @@ $recruiturl="http://webservice.recruit.co.jp/hotpepper/gourmet/v1/?key=$recruit_
 // キャッシュ有無確認
 $Buff = get_transient( $recruiturl );
 if ( $Buff === false ) {
-    $Buff = file_get_contents($recruiturl);
+    $Buff = wp_remote_get($recruiturl);
     set_transient( $shopid, $Buff, 3600 * 24 );
 }
 
@@ -377,7 +377,7 @@ $gurunaviurl="https://api.gnavi.co.jp/RestSearchAPI/v3/?keyid=$gnavi_webservice_
 // キャッシュ有無確認
 $Buff = get_transient( $shopid );
     if ( $Buff === false ) {
-    $Buff = file_get_contents($gurunaviurl);
+        $Buff = wp_remote_get($gurunaviurl);
     set_transient( $shopid, $Buff, 3600 * 24 );
 }
 
@@ -486,7 +486,7 @@ EOT;
         $lockets_googleplace_template= get_option('lockets_googleplace_template');
         
         $gmapurl="https://maps.googleapis.com/maps/api/place/details/xml?key=$lockets_gmap_apikey&placeid=$placeid&fields=name,rating,formatted_address,formatted_phone_number,geometry,website&language=ja";
-        $Buff = file_get_contents($gmapurl);//キャッシュ使用しない
+        $Buff = wp_remote_get($gmapurl);//キャッシュ使用しない
         $xml = simplexml_load_string($Buff);
         $gmapplaces = $xml->result;
         $keyword = locketsh($gmapplaces->name);
@@ -527,7 +527,7 @@ EOT;
         // キャッシュ有無確認
         $Buff = get_transient( $placeid );
         if ( $Buff === false ) {
-        $Buff = file_get_contents($gmapurl);
+            $Buff = wp_remote_get($gmapurl);
         set_transient( $placeid, $Buff, 3600 * 24 * 30 );
         }
 
@@ -578,7 +578,7 @@ $Buff = get_transient( $rwsurl );
 if ( $Buff === false ) {
     $options['ssl']['verify_peer']=false;
     $options['ssl']['verify_peer_name']=false;
-    if ($Buff = @file_get_contents($rwsurl,false, stream_context_create($options))) {
+    if ($Buff = wp_remote_get($rwsurl)) {
         $rakutentravelerror = "1";
         set_transient( $rwsurl, $Buff, 3600 * 24 );
     }
@@ -645,7 +645,7 @@ extract(shortcode_atts(array(
         if ( $Buff === false ) {
             $options['ssl']['verify_peer']=false;
             $options['ssl']['verify_peer_name']=false;
-            if ($Buff = @file_get_contents($vcurl,false, stream_context_create($options))) {
+            if ($Buff = wp_remote_get($vcurl)) {
                 $rakutenitemerror = "1";
                 set_transient( $vcurl, $Buff, 3600 * 24 );
             }
@@ -716,7 +716,7 @@ extract(shortcode_atts(array(
             $lockets_Amazonitemsearchtapi= new lockets_Amazonitemsearchtapi();
             $awsurl = $lockets_Amazonitemsearchtapi->awsasinrequesturl($asin);
 
-            if ($Buff = file_get_contents($awsurl,false, stream_context_create($options))) {
+            if ($Buff = wp_remote_get($awsurl)) {
                 $rakutenitemerror = "1";
                 set_transient( $cacheid, $Buff, 3600 * 24 );
             }
@@ -988,7 +988,7 @@ switch ($useapi) {
         
         $Buff = get_transient( $recruiturl );
         if ( $Buff === false ) {
-            $Buff = file_get_contents($recruiturl);
+            $Buff = wp_remote_get($recruiturl);
             set_transient( $shopid, $Buff, 3600 * 24 );
         }
         
@@ -1012,7 +1012,7 @@ switch ($useapi) {
 
         $Buff = get_transient( $gurunaviurl );
         if ( $Buff === false ) {
-            $Buff = file_get_contents($gurunaviurl);
+            $Buff = wp_remote_get($gurunaviurl);
             set_transient( $gurunaviurl, $Buff, 3600 * 24 );
         }
         $json = json_decode($Buff);
@@ -1038,12 +1038,12 @@ switch ($useapi) {
         if ( $Buff === false ) {
             $options['ssl']['verify_peer']=false;
             $options['ssl']['verify_peer_name']=false;
-            if ($Buff = @file_get_contents($rwsurl,false, stream_context_create($options))) {
-                $rakutentravelerror = "1";
-                set_transient( $rwsurl, $Buff, 3600 * 24 );
-            }
+            $Buff = wp_remote_get($rwsurl);
+                if (!is_wp_error($Buff) && $Buff["response"]["code"]===200) {
+                    set_transient( $rwsurl, $Buff, 3600 * 24 );
+                }
         }
-
+        print_r($Buff);
         $xml = simplexml_load_string($Buff);
         $hotels = $xml->hotels->hotel;
         $resultcount = $xml->pagingInfo->recordCount;
@@ -1069,7 +1069,7 @@ switch ($useapi) {
         // キャッシュ有無確認
         $Buff = get_transient($jalanurl);
         if ( $Buff === false ) {
-            $Buff = file_get_contents($jalanurl);
+            $Buff = wp_remote_get($jalanurl);
             set_transient($jalanurl, $Buff, 3600 * 24 );
         }
 
@@ -1093,7 +1093,7 @@ switch ($useapi) {
         $lockets_gmap_apikey= get_option('lockets_gmap_apikey');
         $gmapurl="https://maps.googleapis.com/maps/api/place/textsearch/xml?key=$lockets_gmap_apikey&query=$url4searchword&language=ja";
 
-        $Buff = file_get_contents($gmapurl);//キャッシュ使わない
+        $Buff = wp_remote_get($gmapurl);//キャッシュ使わない
         $xml = simplexml_load_string($Buff);
         // print_r($xml);//エラー確認用
         $gmapplaces = $xml->result;
@@ -1120,8 +1120,8 @@ switch ($useapi) {
         if ( $Buff === false ) {
             $options['ssl']['verify_peer']=false;
             $options['ssl']['verify_peer_name']=false;
-            if ($Buff = @file_get_contents($rwsurl,false, stream_context_create($options))) {
-                $rakutenitemerror = "1";
+            $Buff = wp_remote_get($rwsurl);
+            if (!is_wp_error($Buff) && $Buff["response"]["code"]===200) {
                 set_transient( $rwsurl, $Buff, 3600 * 24 );
             }
         }
@@ -1153,7 +1153,7 @@ switch ($useapi) {
         if ( $Buff === false ) {
             $options['ssl']['verify_peer']=false;
             $options['ssl']['verify_peer_name']=false;
-            if ($Buff = @file_get_contents($vcurl,false, stream_context_create($options))) {
+            if ($Buff = wp_remote_get($vcurl)) {
                 $rakutenitemerror = "1";
                 set_transient( $vcurl, $Buff, 3600 * 24 );
             }
@@ -1185,7 +1185,7 @@ switch ($useapi) {
         
         $Buff = get_transient( $awsurl );
         if ( $Buff === false ) {
-            if ($Buff = file_get_contents($awsurl,false, stream_context_create($options))) {
+            if ($Buff = wp_remote_get($awsurl)) {
                 $rakutenitemerror = "1";
                 set_transient( $awsurl, $Buff, 3600 * 24 );
             }
@@ -1219,7 +1219,7 @@ switch ($useapi) {
         // キャッシュ有無確認
         $Buff = get_transient($jalanurl);
         if ( $Buff === false ) {
-            $Buff = file_get_contents($jalanurl);
+            $Buff = wp_remote_get($jalanurl);
             set_transient($jalanurl, $Buff, 3600 * 24 );
         }
 
