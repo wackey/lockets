@@ -862,7 +862,6 @@ switch ($useapi) {
         echo <<< EOS
         <input type="radio" name="usuapi" value="Googleプレイス（Google Maps）"> Googleプレイス（Google Maps）<br>
         <input type="radio" name="usuapi" value="ホットペッパー" checked> ホットペッパー　
-        <input type="radio" name="usuapi" value="ぐるなび"> ぐるなび　
         <input type="radio" name="usuapi" value="楽天トラベル"> 楽天トラベル　
         <input type="radio" name="usuapi" value="じゃらん"> じゃらん　
 EOS;
@@ -872,7 +871,6 @@ EOS;
         echo <<< EOS
         <input type="radio" name="usuapi" value="Googleプレイス（Google Maps）"> Googleプレイス（Google Maps）<br>
         <input type="radio" name="usuapi" value="ホットペッパー"> ホットペッパー　
-        <input type="radio" name="usuapi" value="ぐるなび" checked> ぐるなび　
         <input type="radio" name="usuapi" value="楽天トラベル"> 楽天トラベル　
         <input type="radio" name="usuapi" value="じゃらん"> じゃらん　
 EOS;
@@ -882,7 +880,6 @@ EOS;
         echo <<< EOS
         <input type="radio" name="usuapi" value="Googleプレイス（Google Maps）"> Googleプレイス（Google Maps）<br>
         <input type="radio" name="usuapi" value="ホットペッパー"> ホットペッパー　
-        <input type="radio" name="usuapi" value="ぐるなび"> ぐるなび　
         <input type="radio" name="usuapi" value="楽天トラベル" checked> 楽天トラベル　
         <input type="radio" name="usuapi" value="じゃらん"> じゃらん　
 EOS;
@@ -892,7 +889,6 @@ EOS;
         echo <<< EOS
         <input type="radio" name="usuapi" value="Googleプレイス（Google Maps）"> Googleプレイス（Google Maps）<br>
         <input type="radio" name="usuapi" value="ホットペッパー"> ホットペッパー　
-        <input type="radio" name="usuapi" value="ぐるなび"> ぐるなび　
         <input type="radio" name="usuapi" value="楽天トラベル"> 楽天トラベル　
         <input type="radio" name="usuapi" value="じゃらん" checked> じゃらん　
 EOS;
@@ -901,7 +897,6 @@ EOS;
         echo <<< EOS
         <input type="radio" name="usuapi" value="Googleプレイス（Google Maps）"> Googleプレイス（Google Maps）<br>
         <input type="radio" name="usuapi" value="ホットペッパー"> ホットペッパー　
-        <input type="radio" name="usuapi" value="ぐるなび"> ぐるなび　
         <input type="radio" name="usuapi" value="楽天トラベル"> 楽天トラベル　
         <input type="radio" name="usuapi" value="じゃらん" checked> じゃらん　
 EOS;
@@ -911,7 +906,6 @@ EOS;
         echo <<< EOS
         <input type="radio" name="usuapi" value="Googleプレイス（Google Maps）" checked> Googleプレイス（Google Maps）<br>
         <input type="radio" name="usuapi" value="ホットペッパー"> ホットペッパー　
-        <input type="radio" name="usuapi" value="ぐるなび"> ぐるなび　
         <input type="radio" name="usuapi" value="楽天トラベル"> 楽天トラベル　
         <input type="radio" name="usuapi" value="じゃらん"> じゃらん　
 EOS;
@@ -921,7 +915,6 @@ EOS;
         echo <<< EOS
         <input type="radio" name="usuapi" value="Googleプレイス（Google Maps）"> Googleプレイス（Google Maps）<br>
         <input type="radio" name="usuapi" value="ホットペッパー"> ホットペッパー　
-        <input type="radio" name="usuapi" value="ぐるなび"> ぐるなび　
         <input type="radio" name="usuapi" value="楽天トラベル"> 楽天トラベル　
         <input type="radio" name="usuapi" value="じゃらん"> じゃらん　
 EOS;
@@ -931,7 +924,6 @@ EOS;
         echo <<< EOS
         <input type="radio" name="usuapi" value="Googleプレイス（Google Maps）"> Googleプレイス（Google Maps）<br>
         <input type="radio" name="usuapi" value="ホットペッパー"> ホットペッパー　
-        <input type="radio" name="usuapi" value="ぐるなび"> ぐるなび　
         <input type="radio" name="usuapi" value="楽天トラベル"> 楽天トラベル　
         <input type="radio" name="usuapi" value="じゃらん"> じゃらん　
 EOS;
@@ -941,7 +933,6 @@ EOS;
         echo <<< EOS
         <input type="radio" name="usuapi" value="Googleプレイス（Google Maps）"> Googleプレイス（Google Maps）<br>
         <input type="radio" name="usuapi" value="ホットペッパー"> ホットペッパー　
-        <input type="radio" name="usuapi" value="ぐるなび"> ぐるなび　
         <input type="radio" name="usuapi" value="楽天トラベル"> 楽天トラベル　
         <input type="radio" name="usuapi" value="じゃらん"> じゃらん　
 EOS;
@@ -951,7 +942,6 @@ EOS;
         echo <<< EOS
         <input type="radio" name="usuapi" value="Googleプレイス（Google Maps）"> Googleプレイス（Google Maps）<br>
         <input type="radio" name="usuapi" value="ホットペッパー"> ホットペッパー　
-        <input type="radio" name="usuapi" value="ぐるなび"> ぐるなび　
         <input type="radio" name="usuapi" value="楽天トラベル"> 楽天トラベル　
         <input type="radio" name="usuapi" value="じゃらん"> じゃらん　
 EOS;

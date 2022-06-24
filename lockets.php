@@ -4,7 +4,7 @@ Plugin Name: Lockets
 Plugin URI: https://lockets.jp/
 Description: A plug-in that gets information on spots such as shops and inns from various APIs and displays the latest information embedded in the blog.Also, This plugin will assist you such as creating affiliate links. お店や旅館などスポットに関する情報を各種APIから取得し、ブログ内に最新の情報を埋め込んで表示するプラグイン。また、アフィリエイトリンク作成支援を行います。
 Author: wackey
-Version: 0.992
+Version: 0.993
 Author URI: https://lockets.jp/
 License: GPL2
 */
@@ -52,7 +52,6 @@ add_menu_page('Lockets', 'Lockets', 8,__FILE__, 'lockets_options','
 dashicons-location-alt');
 add_submenu_page(__FILE__, '楽天ウェブサービス', '楽天ウェブサービス', 8, "admin_rakuten", 'lockets_rws');
 add_submenu_page(__FILE__, 'リクルートWEBサービス', 'リクルートWEBサービス', 8, "admin_recruit_webservice", 'lockets_recruit_webservice');
-add_submenu_page(__FILE__, 'ぐるなびWebサービス', 'ぐるなびWebサービス', 8, "admin_gnavi_webservice", 'lockets_gnavi_webservice');
 add_submenu_page(__FILE__, 'じゃらんWebサービス', 'じゃらんWebサービス', 8, "admin_jalan_webservice", 'lockets_jalan_webservice');
 add_submenu_page(__FILE__, 'Google プレイス', 'Google プレイス', 8, "admin_gmap", 'lockets_gmap');
 add_submenu_page(__FILE__, '外部配信β', '外部配信β', 8, "admin_feed", 'lockets_feed');

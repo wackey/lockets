@@ -3,7 +3,7 @@ Contributors: wackey
 Donate link: 
 Tags: AD,affiliate,Web API,location
 Requires at least: 4.9
-Tested up to: 5.3
+Tested up to: 6.0
 Stable tag: 0.993
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -14,8 +14,6 @@ Use API and output information shops,hotels,etc.
 and,ability to convert links to affiliate links with "Valuecommerce LinkSwitch Service(JavaScript)".
 
 == Description ==
-<a href="https://plugins.lockets.jp/">日本語の説明を読む</a>
-
 A plug-in that gets information on spots such as shops and inns from various APIs and displays the latest information embedded in the blog.Also, This plugin will assist you such as creating affiliate links.
 
 *Available only with Classic Editor
@@ -24,12 +22,12 @@ A plug-in that gets information on spots such as shops and inns from various API
 *HOTEL Search
  -Rakuten Travel Search API,Jalan Web Service(Hotel search)
 *Restaurant search
- -HOTPEPPER,Gurunavi (Restaurant search)
+ -HOTPEPPER
 *Place Search
  -Google Places API,Maps Embed API
 
 *楽天トラベルAPIとじゃらんWebサービスに対応しています
-*ホットペッパーAPI、ぐるなびWebサービスに対応しています
+*ホットペッパーAPIに対応しています
 *GoogleプレイスAPI、Google Maps Embed APIに対応しています。
 
 *Lockets feed
@@ -56,9 +54,6 @@ Webアプリ版Locketsなど外部に配信可能なfeedを生成します。
 
 *HOTPEPPER Search API(Restaurant search)  https://webservice.recruit.co.jp/hotpepper/reference.html#a1to
 　リクルートWebサービスのホットペッパーグルメサーチAPIを使用して飲食店情報を取得し、WordPressで作成したブログ上にその情報を表示します。
-
-*Gurunavi Web Service(Restaurant search)  http://api.gnavi.co.jp/api/manual/restsearch/
-　ぐるなびWebサービスのレストラン検索APIを使用して飲食店情報を取得し、WordPressで作成したブログ上にその情報を表示します。
 
 *Jalan Web Service(Hotel search)  http://www.jalan.net/jw/jwp0000/jww0001.do
 　じゃらんWebサービスじゃらん宿表示API（アドバンス）を使用してホテルや旅館の施設情報を取得し、WordPressで作成したブログ上にその情報を表示します。
@@ -92,6 +87,8 @@ none.
 An answer to that question.
 
 == Changelog ==
+= 0.993 =
+ぐるなびAPI廃止に伴う対応として管理画面からぐるなび関連の削除。ファイル整理等して次期開発に備えています。WP6.0で動作することを確認していますが、gutenberg対応していなくてごめんなさい。
 = 0.992 =
 *bugfix
 バグフィックス
