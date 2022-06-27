@@ -4,7 +4,7 @@ Donate link:
 Tags: AD,affiliate,Web API,location
 Requires at least: 4.9
 Tested up to: 6.0
-Stable tag: 0.993
+Stable tag: 0.9991
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
